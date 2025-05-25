@@ -1,4 +1,4 @@
-package oncog.cogroom.common.entity;
+package oncog.cogroom.global.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

@@ -2,8 +2,8 @@ package oncog.cogroom.domain.content.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import oncog.cogroom.common.entity.BaseTimeEntity;
-import oncog.cogroom.common.entity.Category;
+import oncog.cogroom.global.common.entity.BaseTimeEntity;
+import oncog.cogroom.global.common.entity.Category;
 import oncog.cogroom.domain.content.enums.ContentLevel;
 import oncog.cogroom.domain.content.enums.ContentStatus;
 import oncog.cogroom.domain.content.enums.ContentType;

@@ -2,7 +2,7 @@ package oncog.cogroom.domain.member.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import oncog.cogroom.common.entity.BaseTimeEntity;
+import oncog.cogroom.global.common.entity.BaseTimeEntity;
 import oncog.cogroom.domain.member.enums.Provider;
 import oncog.cogroom.domain.member.enums.MemberRole;
 import oncog.cogroom.domain.member.enums.MemberStatus;

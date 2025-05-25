@@ -15,6 +15,10 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
         time_zone: UTC
+jwt:
+  secret: ${JWT_SECRET_KEY}
+  access-token-expiration: ${JWT_ACCESS_EXPIRATION}
+  refresh-token-expiration: ${JWT_REFRESH_EXPIRATION}
 aws:
   s3:
     bucket: ${S3_BUCKET}
