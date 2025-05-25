@@ -1,6 +1,5 @@
-package oncog.cogroom.common.response;
+package oncog.cogroom.global.common.response;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

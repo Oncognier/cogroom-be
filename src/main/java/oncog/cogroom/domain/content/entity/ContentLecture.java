@@ -2,7 +2,7 @@ package oncog.cogroom.domain.content.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import oncog.cogroom.common.entity.BaseTimeEntity;
+import oncog.cogroom.global.common.entity.BaseTimeEntity;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity

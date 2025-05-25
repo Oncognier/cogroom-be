@@ -1,4 +1,4 @@
-package oncog.cogroom.config;
+package oncog.cogroom.global.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
