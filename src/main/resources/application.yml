@@ -15,6 +15,10 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
         time_zone: UTC
+oauth:
+  kakao:
+    client_id: ${KAKAO_REST_API_KEY}
+    client_secret: ${KAKAO_CLIENT_SECRET}
 jwt:
   secret: ${JWT_SECRET_KEY}
   access-token-expiration: ${JWT_ACCESS_EXPIRATION}

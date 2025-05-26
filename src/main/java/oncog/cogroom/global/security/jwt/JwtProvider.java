@@ -38,9 +38,6 @@ public class JwtProvider {
                 .compact();
     }
 
-    /**
-     * 식별자를 email로 하는지 id로 하는지 논의 필요
-     */
     public String generateRefreshToken(String email) {
         return Jwts.builder()
                 .subject(email)
