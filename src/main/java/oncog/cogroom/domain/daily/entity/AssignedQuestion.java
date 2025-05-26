@@ -1,4 +1,4 @@
-package oncog.cogroom.domain.streak.entity;
+package oncog.cogroom.domain.daily.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,23 +12,26 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@Table(name = "STREAK_LOG")
-public class StreakLog {
+@Table(name = "ASSIGNED_QUESTION")
+public class AssignedQuestion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
-    private Streak streak;
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(nullable = false)
     private Member member;
 
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private Question question;
+
+    @Column(nullable = false)
+    private boolean isAnswered = false;
+
     @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    @Column(updatable = false)
+    private LocalDateTime assignedDate;
 
 }

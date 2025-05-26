@@ -19,7 +19,7 @@ public class QuestionCategory {
     private QuestionCategoryId id;
 
     @CreatedDate
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)

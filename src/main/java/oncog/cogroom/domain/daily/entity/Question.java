@@ -2,6 +2,7 @@ package oncog.cogroom.domain.daily.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import oncog.cogroom.domain.daily.enums.QuestionLevel;
 import oncog.cogroom.global.common.entity.BaseTimeEntity;
 import oncog.cogroom.domain.member.entity.Member;
 
@@ -19,6 +20,9 @@ public class Question extends BaseTimeEntity {
 
     @Column(nullable = false)
     private String question;
+
+    @Column(nullable = false)
+    private QuestionLevel level;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "created_by")
