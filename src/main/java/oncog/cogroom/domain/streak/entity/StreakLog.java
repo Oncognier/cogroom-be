@@ -2,8 +2,10 @@ package oncog.cogroom.domain.streak.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import oncog.cogroom.global.common.entity.BaseTimeEntity;
 import oncog.cogroom.domain.member.entity.Member;
+import org.springframework.data.annotation.CreatedDate;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -11,7 +13,7 @@ import oncog.cogroom.domain.member.entity.Member;
 @AllArgsConstructor
 @Builder
 @Table(name = "STREAK_LOG")
-public class StreakLog extends BaseTimeEntity {
+public class StreakLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,4 +26,9 @@ public class StreakLog extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private Member member;
+
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
 }
