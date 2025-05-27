@@ -23,10 +23,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class KakaoAuthService extends AbstractSocialAuthService{
-    @Value("${oauth.kakao.client_id}")
+//    @Value("${spring.security.oauth2.client.registration.kakao.client_id}")
     private String clientId;
 
-    @Value("${oauth.kakao.client_secret:}")
+//    @Value("${spring.security.oauth2.client.registration.kakao.client_secret}")
     private String clientSecret;
 
     private final RestTemplate restTemplate;
@@ -35,7 +35,7 @@ public class KakaoAuthService extends AbstractSocialAuthService{
 
     public OauthTokenResponseDTO.KakaoTokenDTO getTokens(String code) {
 
-        HttpEntity<MultiValueMap<String, String>> request = getMultiValueMapHttpEntity(code);
+        HttpEntity<MultiValueMap<String, String>> request = getHttpEntity(code);
 
         ResponseEntity<OauthTokenResponseDTO.KakaoTokenDTO> response = restTemplate.exchange(
                 "https://kauth.kakao.com/oauth/token",
@@ -48,7 +48,7 @@ public class KakaoAuthService extends AbstractSocialAuthService{
         return response.getBody();
     }
 
-    private HttpEntity<MultiValueMap<String, String>> getMultiValueMapHttpEntity(String code) {
+    private HttpEntity<MultiValueMap<String, String>> getHttpEntity(String code) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
@@ -61,8 +61,7 @@ public class KakaoAuthService extends AbstractSocialAuthService{
             params.add("client_secret", clientSecret);
         }
 
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
-        return request;
+        return new HttpEntity<>(params, headers);
     }
 
     @Override
@@ -90,6 +89,11 @@ public class KakaoAuthService extends AbstractSocialAuthService{
                 .build();
     }
 
+    @Override
+    protected Provider getProvider() {
+        return Provider.KAKAO;
+    }
+
     private SocialResponseDTO.ServiceTokenDTO createTokens(Optional<Member> member) {
         CustomUserDetails userDetails = CustomUserDetails.builder()
                 .provider(Provider.KAKAO)
@@ -104,10 +108,5 @@ public class KakaoAuthService extends AbstractSocialAuthService{
         return SocialResponseDTO.ServiceTokenDTO.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken).build();
-    }
-
-    @Override
-    protected Provider getProvider() {
-        return Provider.KAKAO;
     }
 }

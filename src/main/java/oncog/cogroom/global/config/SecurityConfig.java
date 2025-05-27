@@ -1,6 +1,8 @@
 package oncog.cogroom.global.config;
 
 import lombok.RequiredArgsConstructor;
+import oncog.cogroom.domain.auth.service.CustomOAuth2UserService;
+import oncog.cogroom.domain.auth.service.OAuthSuccessHandler;
 import oncog.cogroom.global.security.jwt.JwtAuthenticationFilter;
 import oncog.cogroom.global.security.jwt.JwtProvider;
 import oncog.cogroom.global.security.service.CustomUserDetailService;
@@ -19,12 +21,16 @@ public class SecurityConfig {
 
     private final JwtProvider jwtProvider;
     private final CustomUserDetailService userDetailService;
-
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuthSuccessHandler oAuthSuccessHandler;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         configureCommonSecuritySettings(http);
 
         return http
+                .oauth2Login(o -> o
+                        .userInfoEndpoint(user -> user.userService(customOAuth2UserService))
+                        .successHandler(oAuthSuccessHandler))
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider, userDetailService), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
@@ -34,7 +40,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)  // csrf disable
                 .anonymous(AbstractHttpConfigurer::disable)
-                .formLogin(AbstractHttpConfigurer::disable) // form login disable
+//                .formLogin(AbstractHttpConfigurer::disable) // form login disable
                 .httpBasic(AbstractHttpConfigurer::disable)  // http basic 인증 방식 disable
                 .rememberMe(AbstractHttpConfigurer::disable)
                 .headers(headers -> headers
