@@ -19,14 +19,13 @@ public class SecurityConfig {
 
     private final JwtProvider jwtProvider;
     private final CustomUserDetailService userDetailService;
-    private final CustomOAuth2UserService customOAuth2UserService;
-    private final OAuthSuccessHandler oAuthSuccessHandler;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         configureCommonSecuritySettings(http);
 
         return http
-                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider, userDetailService), UsernamePasswordAuthenticationFilter.class)
+//                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider, userDetailService), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 

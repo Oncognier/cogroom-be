@@ -22,9 +22,6 @@ public class OauthTokenResponseDTO {
         @JsonProperty("refresh_token")
         private String refreshToken;
 
-        @JsonProperty("id_token")
-        private KakaoIdToken idToken;
-
         @JsonProperty("expires_in")
         private String expires;
 
@@ -32,17 +29,4 @@ public class OauthTokenResponseDTO {
         private String refreshTokenExpires;
     }
 
-    @Getter
-    @Builder
-    public static class KakaoIdToken{
-        @JsonProperty("sub")
-        private String providerId;
-
-        @JsonProperty("email")
-        private String email;
-        @JsonProperty("nickname")
-        private String nickname;
-        @JsonProperty("picture")
-        private String profileImage;
-    }
 }
