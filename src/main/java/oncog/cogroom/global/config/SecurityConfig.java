@@ -1,8 +1,6 @@
 package oncog.cogroom.global.config;
 
 import lombok.RequiredArgsConstructor;
-import oncog.cogroom.domain.auth.service.CustomOAuth2UserService;
-import oncog.cogroom.domain.auth.service.OAuthSuccessHandler;
 import oncog.cogroom.global.security.jwt.JwtAuthenticationFilter;
 import oncog.cogroom.global.security.jwt.JwtProvider;
 import oncog.cogroom.global.security.service.CustomUserDetailService;
@@ -28,9 +26,6 @@ public class SecurityConfig {
         configureCommonSecuritySettings(http);
 
         return http
-                .oauth2Login(o -> o
-                        .userInfoEndpoint(user -> user.userService(customOAuth2UserService))
-                        .successHandler(oAuthSuccessHandler))
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider, userDetailService), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

@@ -23,10 +23,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class KakaoAuthService extends AbstractSocialAuthService{
-//    @Value("${spring.security.oauth2.client.registration.kakao.client_id}")
+    @Value("${oauth.kakao.client-id}")
     private String clientId;
 
-//    @Value("${spring.security.oauth2.client.registration.kakao.client_secret}")
+    @Value("${oauth.kakao.client-secret}")
     private String clientSecret;
 
     private final RestTemplate restTemplate;
@@ -82,7 +82,7 @@ public class KakaoAuthService extends AbstractSocialAuthService{
         }
 
         return SocialResponseDTO.LoginResponseDTO.builder()
-                .email(null)
+                .email(tokens.getIdToken().getEmail())
                 .nickname(null)
                 .tokens(createTokens(member))
                 .needSignup(false)
