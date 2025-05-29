@@ -1,6 +1,7 @@
 package oncog.cogroom.domain.member.repository;
 
 import oncog.cogroom.domain.member.entity.Member;
+import oncog.cogroom.domain.member.enums.Provider;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
@@ -9,4 +10,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Optional<Member> findByEmail(String userEmail);
 
+    Optional<Member> findByProviderId(String providerId);
+
+    Optional<Member> findByProviderAndProviderId(Provider provider, String providerId);
+
+    Boolean existsByProviderId(String ProviderId);
 }
