@@ -19,17 +19,17 @@ public class CustomUserDetailService implements UserDetailsService {
 
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Member member = memberRepository.findByEmail(username)
+    public UserDetails loadUserByUsername(String providerId) throws UsernameNotFoundException {
+        Member member = memberRepository.findByProviderId(providerId)
                 .orElseThrow(() -> new UsernameNotFoundException("사용자가 존재하지 않습니다."));
 
         log.info("사용자 조회 완료");
 
         return CustomUserDetails.builder()
                 .memberId(member.getId())
-                .memberEmail(member.getEmail())
                 .role(member.getRole())
                 .provider(member.getProvider())
+                .providerId(member.getProviderId())
                 .build();
     }
 }

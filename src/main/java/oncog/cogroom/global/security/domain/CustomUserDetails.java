@@ -16,9 +16,9 @@ import java.util.List;
 public class CustomUserDetails implements UserDetails {
 
     private Long memberId;
-    private String memberEmail;
     private MemberRole role;
     private Provider provider;
+    private String providerId;
 
 
     @Override
@@ -53,6 +53,6 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return memberEmail;
+        return provider + "_" + providerId;
     }
 }

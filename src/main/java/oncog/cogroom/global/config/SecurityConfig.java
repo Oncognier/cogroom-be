@@ -25,7 +25,7 @@ public class SecurityConfig {
         configureCommonSecuritySettings(http);
 
         return http
-//                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider, userDetailService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider, userDetailService), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
@@ -34,7 +34,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)  // csrf disable
                 .anonymous(AbstractHttpConfigurer::disable)
-//                .formLogin(AbstractHttpConfigurer::disable) // form login disable
+                .formLogin(AbstractHttpConfigurer::disable) // form login disable
                 .httpBasic(AbstractHttpConfigurer::disable)  // http basic 인증 방식 disable
                 .rememberMe(AbstractHttpConfigurer::disable)
                 .headers(headers -> headers

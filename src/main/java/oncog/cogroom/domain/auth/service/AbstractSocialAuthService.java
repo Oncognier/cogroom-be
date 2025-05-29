@@ -49,12 +49,12 @@ public abstract class AbstractSocialAuthService {
         CustomUserDetails userDetails = CustomUserDetails.builder()
                         .provider(Provider.KAKAO)
                         .role(MemberRole.USER)
-                        .memberEmail(member.getEmail())
+                        .providerId(member.getProviderId())
                         .memberId(member.getId())
                         .build();
 
         String accessToken = jwtProvider.generateAccessToken(userDetails);
-        String refreshToken = jwtProvider.generateRefreshToken(userDetails.getMemberEmail());
+        String refreshToken = jwtProvider.generateRefreshToken(userDetails.getProviderId());
 
         return SocialResponseDTO.ServiceTokenDTO.builder()
                 .accessToken(accessToken)
