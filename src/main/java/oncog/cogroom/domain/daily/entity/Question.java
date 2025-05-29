@@ -21,6 +21,7 @@ public class Question extends BaseTimeEntity {
     @Column(nullable = false)
     private String question;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private QuestionLevel level;
 

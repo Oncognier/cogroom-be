@@ -20,7 +20,7 @@ public class Member extends BaseTimeEntity {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column
     private Provider provider; // KAKAO 등
 
     @Column

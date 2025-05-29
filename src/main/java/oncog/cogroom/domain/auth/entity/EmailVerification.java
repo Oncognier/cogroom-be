@@ -2,6 +2,7 @@ package oncog.cogroom.domain.auth.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
@@ -26,6 +27,7 @@ public class EmailVerification {
     @Column(nullable = false)
     private boolean verifyStatus;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(nullable = false)
     private LocalDateTime expireDate;
 }

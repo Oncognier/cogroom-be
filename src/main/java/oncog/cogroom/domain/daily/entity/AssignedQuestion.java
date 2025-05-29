@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import oncog.cogroom.domain.member.entity.Member;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
@@ -31,7 +32,8 @@ public class AssignedQuestion {
     private boolean isAnswered = false;
 
     @CreatedDate
-    @Column(updatable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Column(nullable = false, updatable = false)
     private LocalDateTime assignedDate;
 
 }
