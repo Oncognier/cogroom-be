@@ -2,8 +2,8 @@ package oncog.cogroom.domain.auth.service.social;
 
 
 import lombok.RequiredArgsConstructor;
-import oncog.cogroom.domain.auth.dto.request.AuthRequestDTO;
-import oncog.cogroom.domain.auth.dto.response.AuthResponseDTO.*;
+import static oncog.cogroom.domain.auth.dto.request.AuthRequestDTO.*;
+import static oncog.cogroom.domain.auth.dto.response.AuthResponseDTO.*;
 import oncog.cogroom.domain.auth.service.AuthService;
 import oncog.cogroom.domain.auth.userInfo.SocialUserInfo;
 import oncog.cogroom.domain.member.entity.Member;
@@ -22,7 +22,7 @@ public abstract class AbstractSocialAuthService implements AuthService {
     private final MemberRepository memberRepository;
 
     // 소셜 로그인 공통 로직
-    public final LoginResponseDTO login(AuthRequestDTO.LoginRequestDTO request){
+    public final LoginResponseDTO login(LoginRequestDTO request){
         String accessToken = requestAccessToken(request.getCode());
         SocialUserInfo userInfo = requestUserInfo(accessToken);
 
@@ -48,7 +48,7 @@ public abstract class AbstractSocialAuthService implements AuthService {
     }
 
     // 소셜 로그인의 경우 회원가입 클릭 -> 로그인 처리가 ui적으로 깔끔하기에 토큰 발급
-    public final SignupResponseDTO signup(AuthRequestDTO.SignupRequestDTO request) {
+    public final SignupResponseDTO signup(SignupRequestDTO request) {
         Member savedMember = memberRepository.save(Member.builder()
                 .email(request.getEmail())
                 .nickname(request.getNickname())

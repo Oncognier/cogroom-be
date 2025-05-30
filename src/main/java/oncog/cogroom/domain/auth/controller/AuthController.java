@@ -3,8 +3,6 @@ package oncog.cogroom.domain.auth.controller;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import oncog.cogroom.domain.auth.dto.request.AuthRequestDTO;
-import oncog.cogroom.domain.auth.dto.response.AuthResponseDTO;
 import oncog.cogroom.domain.auth.service.EmailService;
 import oncog.cogroom.domain.auth.service.AuthServiceRouter;
 import oncog.cogroom.global.common.response.apiResponse;
@@ -12,6 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+
+import static oncog.cogroom.domain.auth.dto.request.AuthRequestDTO.*;
+import static oncog.cogroom.domain.auth.dto.response.AuthResponseDTO.*;
 
 @RestController
 @Slf4j
@@ -23,15 +24,15 @@ public class AuthController {
     private final EmailService emailService;
 
     @PostMapping("/social-login")
-    public ResponseEntity<apiResponse<AuthResponseDTO.LoginResponseDTO>> socialLogin(@RequestBody AuthRequestDTO.LoginRequestDTO request) {
-        AuthResponseDTO.LoginResponseDTO responseDTO = router.login(request);
+    public ResponseEntity<apiResponse<LoginResponseDTO>> socialLogin(@RequestBody LoginRequestDTO request) {
+        LoginResponseDTO responseDTO = router.login(request);
 
         return ResponseEntity.ok(apiResponse.success(responseDTO));
     }
 
     @PostMapping("/social-signup")
-    public ResponseEntity<apiResponse<AuthResponseDTO.SignupResponseDTO>> socialSignup(@RequestBody AuthRequestDTO.SignupRequestDTO request) {
-        AuthResponseDTO.SignupResponseDTO result = router.signup(request);
+    public ResponseEntity<apiResponse<SignupResponseDTO>> socialSignup(@RequestBody SignupRequestDTO request) {
+        SignupResponseDTO result = router.signup(request);
 
         return ResponseEntity.ok(apiResponse.success(result));
     }
@@ -49,8 +50,8 @@ public class AuthController {
         emailService.verifyCode(userEmail,verificationCode);
 
         return ResponseEntity.ok(apiResponse.success());
-
     }
+
     // 인가 코드 반환받을 테스트 컨트롤러
     @GetMapping("/login/code")
     public ResponseEntity<String> test(@RequestParam String code) {

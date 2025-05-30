@@ -5,7 +5,7 @@ import oncog.cogroom.domain.auth.dto.response.SocialUserInfoDTO;
 import oncog.cogroom.domain.member.enums.Provider;
 
 @RequiredArgsConstructor
-public class KakaoUserInfo implements oncog.cogroom.domain.auth.userInfo.SocialUserInfo {
+public class KakaoUserInfo implements SocialUserInfo {
 
     private final SocialUserInfoDTO.KakaoUserInfoDTO kakaoUserInfo;
 

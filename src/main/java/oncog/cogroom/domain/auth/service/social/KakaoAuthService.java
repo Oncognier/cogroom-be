@@ -16,6 +16,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import static oncog.cogroom.domain.auth.dto.response.SocialUserInfoDTO.*;
+
 @Service
 @Slf4j
 public class KakaoAuthService extends AbstractSocialAuthService {
@@ -53,10 +55,10 @@ public class KakaoAuthService extends AbstractSocialAuthService {
         headers.setBearerAuth(accessToken);
 
         try {
-            SocialUserInfoDTO.KakaoUserInfoDTO responseDTO = restTemplate.postForEntity(
+            KakaoUserInfoDTO responseDTO = restTemplate.postForEntity(
                     "https://kapi.kakao.com/v2/user/me",
                     new HttpEntity<>(headers),
-                    SocialUserInfoDTO.KakaoUserInfoDTO.class
+                    KakaoUserInfoDTO.class
             ).getBody();
 
             return new KakaoUserInfo(responseDTO);
