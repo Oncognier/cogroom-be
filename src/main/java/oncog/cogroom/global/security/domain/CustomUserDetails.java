@@ -16,10 +16,8 @@ import java.util.List;
 public class CustomUserDetails implements UserDetails {
 
     private Long memberId;
-    private String memberEmail;
     private MemberRole role;
     private Provider provider;
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -53,6 +51,6 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return memberEmail;
+        return String.valueOf(memberId);
     }
 }
