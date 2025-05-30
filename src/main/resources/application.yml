@@ -15,11 +15,21 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
         time_zone: UTC
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${SMTP_ADDRESS}
+    password: your-app-password
+    email-link-url: ${EMAIL_LINK_URL}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 oauth:
   kakao:
     client-id: ${KAKAO_REST_API_KEY}
-    client-secret: ${KAKAO_CLIENT_SECRET}
-    redirect-uri: "http://localhost:8080/login/oauth2/code/kakao"
 jwt:
   secret: ${JWT_SECRET_KEY}
   access-token-expiration: ${JWT_ACCESS_EXPIRATION}
