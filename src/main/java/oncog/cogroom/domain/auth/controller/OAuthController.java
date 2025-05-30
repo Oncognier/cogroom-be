@@ -30,8 +30,12 @@ public class OAuthController {
         return ResponseEntity.ok(apiResponse.success(responseDTO));
     }
 
+//    @PostMapping("/social-signup")
+//    public ResponseEntity<apiResponse<Void>> socialSignup() {
+//
+//    }
 
-    @PostMapping("/send-verification")
+    @PostMapping("/email-verification")
     public ResponseEntity<apiResponse<String>> sendEmail(@RequestParam String userEmail) throws MessagingException, IOException {
         emailService.sendEmail(userEmail);
 
@@ -39,7 +43,10 @@ public class OAuthController {
     }
 
     @GetMapping("/check-verification")
-    public ResponseEntity<apiResponse<Void>> verifyEmail(@RequestParam String verificationCode) {
+    public ResponseEntity<apiResponse<Void>> verifyEmail(@RequestParam String userEmail,
+                                                         @RequestParam String verificationCode) {
+        emailService.verifyCode(userEmail,verificationCode);
+
         return ResponseEntity.ok(apiResponse.success());
 
     }
