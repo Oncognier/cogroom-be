@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import oncog.cogroom.domain.member.enums.Provider;
 import oncog.cogroom.global.security.service.CustomUserDetailService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,16 +23,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtProvider jwtProvider;
     private final CustomUserDetailService userDetailService;
 
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = resolveToken(request);
 
         if(token != null && jwtProvider.isValid(token)){
-            Claims claims = jwtProvider.getClaims(token);
-            String providerId = claims.getSubject();
 
-            UserDetails userDetails = userDetailService.loadUserByUsername(providerId);
+            Claims claims = jwtProvider.getClaims(token);
+            String memberId = claims.getSubject();
+
+            // 서비스 UUID로 사용자 조회
+            UserDetails userDetails = userDetailService.loadUserByUsername(memberId);
 
             Authentication auth = new UsernamePasswordAuthenticationToken(
                     userDetails,null,userDetails.getAuthorities());

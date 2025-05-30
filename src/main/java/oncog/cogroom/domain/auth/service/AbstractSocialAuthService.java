@@ -24,6 +24,7 @@ public abstract class AbstractSocialAuthService {
         String accessToken = requestAccessToken(code);
         SocialUserInfo userInfo = requestUserInfo(accessToken);
 
+        // provider와 ProviderId를 복합 유니크 키로 검사하여 사용자 조회
         Optional<Member> memberOpt = memberRepository.findByProviderAndProviderId(getProvider(), userInfo.getProviderId());
 
         // 사용자 유무에 따른 로직 분기
@@ -49,12 +50,11 @@ public abstract class AbstractSocialAuthService {
         CustomUserDetails userDetails = CustomUserDetails.builder()
                         .provider(Provider.KAKAO)
                         .role(MemberRole.USER)
-                        .providerId(member.getProviderId())
                         .memberId(member.getId())
                         .build();
 
         String accessToken = jwtProvider.generateAccessToken(userDetails);
-        String refreshToken = jwtProvider.generateRefreshToken(userDetails.getProviderId());
+        String refreshToken = jwtProvider.generateRefreshToken(String.valueOf(userDetails.getMemberId()));
 
         return SocialResponseDTO.ServiceTokenDTO.builder()
                 .accessToken(accessToken)

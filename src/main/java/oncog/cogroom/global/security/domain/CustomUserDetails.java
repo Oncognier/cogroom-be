@@ -18,8 +18,6 @@ public class CustomUserDetails implements UserDetails {
     private Long memberId;
     private MemberRole role;
     private Provider provider;
-    private String providerId;
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -53,6 +51,6 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return provider + "_" + providerId;
+        return String.valueOf(memberId);
     }
 }

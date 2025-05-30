@@ -28,8 +28,7 @@ public class JwtProvider {
 
     public String generateAccessToken(CustomUserDetails userDetails){
         return Jwts.builder()
-                .subject(userDetails.getUsername())
-                .claim("memberId", userDetails.getMemberId())
+                .subject(String.valueOf(userDetails.getMemberId()))
                 .claim("role", userDetails.getRole())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + accessExpiration))
@@ -37,9 +36,9 @@ public class JwtProvider {
                 .compact();
     }
 
-    public String generateRefreshToken(String providerId) {
+    public String generateRefreshToken(String memberId) {
         return Jwts.builder()
-                .subject(providerId)
+                .subject(memberId)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + refreshExpiration))
                 .signWith(generateSecretKey())

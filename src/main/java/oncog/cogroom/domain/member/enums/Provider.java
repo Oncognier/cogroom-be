@@ -1,5 +1,5 @@
 package oncog.cogroom.domain.member.enums;
 
 public enum Provider {
-    KAKAO
+    KAKAO,LOCAL
 }
