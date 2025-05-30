@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 
-public class OauthTokenResponseDTO {
+public class SocialTokenResponseDTO {
 
     /**
      * KAKAO DTO

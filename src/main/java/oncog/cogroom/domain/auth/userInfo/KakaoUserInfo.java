@@ -1,27 +1,27 @@
 package oncog.cogroom.domain.auth.userInfo;
 
 import lombok.RequiredArgsConstructor;
-import oncog.cogroom.domain.auth.dto.response.SocialResponseDTO;
+import oncog.cogroom.domain.auth.dto.response.SocialUserInfoDTO;
 import oncog.cogroom.domain.member.enums.Provider;
 
 @RequiredArgsConstructor
-public class KakaoUserInfo implements SocialUserInfo{
+public class KakaoUserInfo implements oncog.cogroom.domain.auth.userInfo.SocialUserInfo {
 
-    private final SocialResponseDTO.KakaoUserResponseDTO kakaoUserResponse;
+    private final SocialUserInfoDTO.KakaoUserInfoDTO kakaoUserInfo;
 
     @Override
     public String getProviderId() {
-        return kakaoUserResponse.getUserId().toString();
+        return kakaoUserInfo.getUserId().toString();
     }
 
     @Override
     public String getEmail() {
-        return kakaoUserResponse.getKakaoAccount().getKakaoEmail();
+        return kakaoUserInfo.getKakaoAccount().getKakaoEmail();
     }
 
     @Override
     public String getNickname() {
-        return kakaoUserResponse.getProperties().get("nickname");
+        return kakaoUserInfo.getProperties().get("nickname");
     }
 
     @Override
