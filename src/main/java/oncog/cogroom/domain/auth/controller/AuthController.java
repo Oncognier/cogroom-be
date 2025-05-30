@@ -23,14 +23,14 @@ public class AuthController {
     private final AuthServiceRouter router;
     private final EmailService emailService;
 
-    @PostMapping("/social-login")
+    @PostMapping("/login")
     public ResponseEntity<apiResponse<LoginResponseDTO>> socialLogin(@RequestBody LoginRequestDTO request) {
         LoginResponseDTO responseDTO = router.login(request);
 
         return ResponseEntity.ok(apiResponse.success(responseDTO));
     }
 
-    @PostMapping("/social-signup")
+    @PostMapping("/signup")
     public ResponseEntity<apiResponse<SignupResponseDTO>> socialSignup(@RequestBody SignupRequestDTO request) {
         SignupResponseDTO result = router.signup(request);
 
