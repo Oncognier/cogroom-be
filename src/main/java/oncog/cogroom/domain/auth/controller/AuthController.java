@@ -52,6 +52,13 @@ public class AuthController {
         return ResponseEntity.ok(apiResponse.success());
     }
 
+    @PostMapping("/email/{userEmail}/status")
+    public ResponseEntity<apiResponse<Boolean>> checkEmailVerificationStatus(@PathVariable String userEmail) {
+        boolean result = emailService.verifiedEmail(userEmail);
+
+        return ResponseEntity.ok(apiResponse.success(result));
+    }
+
     // 인가 코드 반환받을 테스트 컨트롤러
     @GetMapping("/login/code")
     public ResponseEntity<String> test(@RequestParam String code) {

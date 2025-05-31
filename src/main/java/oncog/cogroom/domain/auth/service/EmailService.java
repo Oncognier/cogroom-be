@@ -73,7 +73,12 @@ public class EmailService {
         return memberRepository.existsByEmail(toEmail);
     }
 
-    // 이메일 인증
+    // 이메일의 인증 상태 반환
+    public boolean verifiedEmail(String toEmail) {
+        return emailRepository.existsByEmailAndVerifyStatus(toEmail,true);
+    }
+
+    // 이메일 인증 (boolean 형으로 변경 예정)
     public void verifyCode(String userEmail, String verificationCode) {
         Optional<EmailVerification> byEmailAndVerifyCode = emailRepository.findByEmailAndVerifyCode(userEmail, verificationCode);
 
