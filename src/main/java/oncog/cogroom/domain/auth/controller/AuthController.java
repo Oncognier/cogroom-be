@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.auth.service.EmailService;
 import oncog.cogroom.domain.auth.service.AuthServiceRouter;
 import oncog.cogroom.global.common.response.ApiResponse;
+import oncog.cogroom.global.common.util.CookieUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,21 +26,18 @@ public class AuthController {
 
     private final AuthServiceRouter router;
     private final EmailService emailService;
+    private final CookieUtil cookieUtil;
 
     @PostMapping("/login")
     @Operation(summary = "소셜/로컬 통합 로그인", description = "소셜/로컬 통합 로그인 로직을 처리합니다. \n 응답 코드에 따른 자세한 결과는 Notion 명세서를 참고 부탁드립니다.")
     public ResponseEntity<ApiResponse<LoginResponseDTO>> socialLogin(@RequestBody LoginRequestDTO request, HttpServletResponse response) {
         LoginResponseDTO result = router.login(request);
 
-        Cookie refreshToken = new Cookie("refreshToken", result.getTokens().getRefreshToken());
-        refreshToken.setHttpOnly(true);
-        refreshToken.setPath("/");
-
         // refreshToken 쿠키로 셋팅
-        response.addCookie(refreshToken);
+        cookieUtil.addRefreshToken(response, result.getTokens().getRefreshToken());
 
-
-        return ResponseEntity.ok(ApiResponse.success(result.getResponseExcludedRefreshToken()));
+        LoginResponseDTO responseExcludedRefreshToken = result.excludeRefreshToken();
+        return ResponseEntity.ok(ApiResponse.success(responseExcludedRefreshToken));
     }
 
     @PostMapping("/signup")
@@ -47,14 +45,11 @@ public class AuthController {
     public ResponseEntity<ApiResponse<SignupResponseDTO>> socialSignup(@RequestBody SignupRequestDTO request, HttpServletResponse response) {
         SignupResponseDTO result = router.signup(request);
 
-        Cookie refreshToken = new Cookie("refreshToken", result.getTokens().getRefreshToken());
-        refreshToken.setHttpOnly(true);
-        refreshToken.setPath("/");
-
         // refreshToken 쿠키로 셋팅
-        response.addCookie(refreshToken);
+        cookieUtil.addRefreshToken(response, result.getTokens().getRefreshToken());
 
-        return ResponseEntity.ok(ApiResponse.success(result.getResponseExcludedRefreshToken()));
+        SignupResponseDTO responseExcludedRefreshToken = result.excludeRefreshToken();
+        return ResponseEntity.ok(ApiResponse.success(responseExcludedRefreshToken));
     }
 
     @PostMapping("/email-verification")

@@ -17,7 +17,7 @@ public class AuthResponseDTO {
         boolean needSignup;
 
         // accessToken만 반환하는 형식으로 변형
-        public LoginResponseDTO getResponseExcludedRefreshToken() {
+        public LoginResponseDTO excludeRefreshToken() {
             ServiceTokenDTO tokens = ServiceTokenDTO.builder()
                     .refreshToken(null)
                     .accessToken(this.getTokens().getAccessToken())
@@ -39,7 +39,7 @@ public class AuthResponseDTO {
         ServiceTokenDTO tokens;
 
         // accessToken만 반환하는 형식으로 변형
-        public SignupResponseDTO getResponseExcludedRefreshToken() {
+        public SignupResponseDTO excludeRefreshToken() {
             ServiceTokenDTO tokens = ServiceTokenDTO.builder()
                     .refreshToken(null)
                     .accessToken(this.getTokens().getAccessToken())
