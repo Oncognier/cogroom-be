@@ -1,36 +1,17 @@
 package oncog.cogroom.domain.auth.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
-import oncog.cogroom.domain.auth.userInfo.SocialUserInfo;
 
 import java.util.Date;
 import java.util.Map;
 
-public class SocialResponseDTO {
-
-    @Builder
-    @Getter
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class LoginResponseDTO{
-        private ServiceTokenDTO tokens;
-        SocialUserInfo socialUserInfo;
-        private boolean needSignup;
-    }
-
-    @Builder
-    @Getter
-    public static class ServiceTokenDTO {
-        private String accessToken;
-        private String refreshToken;
-    }
+public class SocialUserInfoDTO {
 
     @Getter
     @Builder
-    public static class KakaoUserResponseDTO {
+    public static class KakaoUserInfoDTO {
 
         @JsonProperty("id")
         private Long userId;

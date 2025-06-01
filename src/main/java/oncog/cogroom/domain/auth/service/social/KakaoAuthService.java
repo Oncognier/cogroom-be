@@ -1,8 +1,8 @@
-package oncog.cogroom.domain.auth.service;
+package oncog.cogroom.domain.auth.service.social;
 
 import lombok.extern.slf4j.Slf4j;
-import oncog.cogroom.domain.auth.dto.response.OauthTokenResponseDTO;
-import oncog.cogroom.domain.auth.dto.response.SocialResponseDTO;
+import oncog.cogroom.domain.auth.dto.response.SocialTokenResponseDTO;
+import oncog.cogroom.domain.auth.dto.response.SocialUserInfoDTO;
 import oncog.cogroom.domain.auth.userInfo.KakaoUserInfo;
 import oncog.cogroom.domain.auth.userInfo.SocialUserInfo;
 import oncog.cogroom.domain.member.enums.Provider;
@@ -16,9 +16,11 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import static oncog.cogroom.domain.auth.dto.response.SocialUserInfoDTO.*;
+
 @Service
 @Slf4j
-public class KakaoAuthService extends AbstractSocialAuthService{
+public class KakaoAuthService extends AbstractSocialAuthService {
     @Value("${oauth.kakao.client-id}")
     private String clientId;
 
@@ -34,11 +36,11 @@ public class KakaoAuthService extends AbstractSocialAuthService{
     protected String requestAccessToken(String code) {
        HttpEntity<MultiValueMap<String, String>> request = getHttpEntityForToken(code);
 
-        ResponseEntity<OauthTokenResponseDTO.KakaoTokenDTO> response = restTemplate.exchange(
+        ResponseEntity<SocialTokenResponseDTO.KakaoTokenDTO> response = restTemplate.exchange(
                 "https://kauth.kakao.com/oauth/token",
                 HttpMethod.POST,
                 request,
-                OauthTokenResponseDTO.KakaoTokenDTO.class
+                SocialTokenResponseDTO.KakaoTokenDTO.class
         );
 
         log.info("카카오 토큰 응답: {}", response.getBody());
@@ -53,10 +55,10 @@ public class KakaoAuthService extends AbstractSocialAuthService{
         headers.setBearerAuth(accessToken);
 
         try {
-            SocialResponseDTO.KakaoUserResponseDTO responseDTO = restTemplate.postForEntity(
+            KakaoUserInfoDTO responseDTO = restTemplate.postForEntity(
                     "https://kapi.kakao.com/v2/user/me",
                     new HttpEntity<>(headers),
-                    SocialResponseDTO.KakaoUserResponseDTO.class
+                    KakaoUserInfoDTO.class
             ).getBody();
 
             return new KakaoUserInfo(responseDTO);
@@ -67,8 +69,7 @@ public class KakaoAuthService extends AbstractSocialAuthService{
         }
     }
 
-    @Override
-    protected Provider getProvider() {
+    public Provider getProvider() {
         return Provider.KAKAO;
     }
 

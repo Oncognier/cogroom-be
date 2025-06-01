@@ -30,4 +30,16 @@ public class EmailVerification {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(nullable = false)
     private LocalDateTime expireDate;
+
+    public void updateStatus() {
+        this.verifyStatus = true;
+    }
+
+    public void updateCode(String verifyCode) {
+        this.verifyCode = verifyCode;
+    }
+
+    public void updateExpireDate() {
+        this.expireDate = LocalDateTime.now().plusMinutes(10);
+    }
 }
