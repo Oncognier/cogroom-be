@@ -29,6 +29,7 @@ public class AssignedQuestion {
     private Question question;
 
     @Column(nullable = false)
+    @Builder.Default
     private boolean isAnswered = false;
 
     @CreatedDate

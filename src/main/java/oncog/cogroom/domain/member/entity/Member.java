@@ -43,9 +43,11 @@ public class Member extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, name = "role")
-    private MemberRole role; // USER, ADMIN, INSTRUCTOR
+    @Builder.Default
+    private MemberRole role = MemberRole.USER; // USER, ADMIN, INSTRUCTOR
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, name = "status")
-    private MemberStatus status; // ACTIVE, SUSPENDED, WITHDRAWN
+    @Builder.Default
+    private MemberStatus status = MemberStatus.ACTIVE; // ACTIVE, SUSPENDED, WITHDRAWN
 }
