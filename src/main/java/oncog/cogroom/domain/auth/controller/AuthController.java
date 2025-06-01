@@ -1,5 +1,6 @@
 package oncog.cogroom.domain.auth.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ public class AuthController {
     private final EmailService emailService;
 
     @PostMapping("/login")
+    @Operation(summary = "소셜/로컬 통합 로그인", description = "소셜/로컬 통합 로그인 로직을 처리합니다. \n 응답 코드에 따른 자세한 결과는 Notion 명세서를 참고 부탁드립니다.")
     public ResponseEntity<apiResponse<LoginResponseDTO>> socialLogin(@RequestBody LoginRequestDTO request) {
         LoginResponseDTO responseDTO = router.login(request);
 
@@ -31,6 +33,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
+    @Operation(summary = "소셜/로컬 통합 회원가입", description = "소셜/로컬 통합 회원가입 로직을 처리합니다. \n 응답 코드에 따른 자세한 결과는 Notion 명세서를 참고 부탁드립니다.")
     public ResponseEntity<apiResponse<SignupResponseDTO>> socialSignup(@RequestBody SignupRequestDTO request) {
         SignupResponseDTO result = router.signup(request);
 
@@ -38,6 +41,7 @@ public class AuthController {
     }
 
     @PostMapping("/email-verification")
+    @Operation(summary = "인증 이메일 전송", description = "인증용 링크가 포함된 이메일을 전송합니다. \n 응답 코드에 따른 자세한 결과는 Notion 명세서를 참고 부탁드립니다.")
     public ResponseEntity<apiResponse<String>> sendEmail(@RequestParam String userEmail) throws MessagingException, IOException {
         emailService.sendEmail(userEmail);
 
@@ -45,6 +49,7 @@ public class AuthController {
     }
 
     @GetMapping("/check-verification")
+    @Operation(summary = "이메일 인증", description = "링크가 클릭되었을 때 이메일을 인증합니다. \n 응답 코드에 따른 자세한 결과는 Notion 명세서를 참고 부탁드립니다.")
     public ResponseEntity<apiResponse<Void>> verifyEmail(@RequestParam String userEmail,
                                                          @RequestParam String verificationCode) {
         emailService.verifyCode(userEmail,verificationCode);
@@ -53,6 +58,7 @@ public class AuthController {
     }
 
     @PostMapping("/email/{userEmail}/status")
+    @Operation(summary = "이메일 인증 여부 반환", description = "이메일의 인증이 완료되었는지 여부를 반환합니다. \n 응답 코드에 따른 자세한 결과는 Notion 명세서를 참고 부탁드립니다.")
     public ResponseEntity<apiResponse<Boolean>> checkEmailVerificationStatus(@PathVariable String userEmail) {
         boolean result = emailService.verifiedEmail(userEmail);
 
