@@ -1,5 +1,6 @@
 package oncog.cogroom.domain.auth.service;
 
+import oncog.cogroom.domain.auth.dto.response.AuthResponseDTO;
 import oncog.cogroom.domain.member.enums.Provider;
 import org.springframework.stereotype.Component;
 
@@ -7,8 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static oncog.cogroom.domain.auth.dto.request.AuthRequestDTO.*;
-import static oncog.cogroom.domain.auth.dto.response.AuthResponseDTO.*;
+import static oncog.cogroom.domain.auth.dto.request.AuthRequestDTO.LoginRequestDTO;
+import static oncog.cogroom.domain.auth.dto.request.AuthRequestDTO.SignupRequestDTO;
+import static oncog.cogroom.domain.auth.dto.response.AuthResponseDTO.LoginResponseDTO;
+import static oncog.cogroom.domain.auth.dto.response.AuthResponseDTO.SignupResponseDTO;
 
 /**
  * 해당 라우터를 통해 로그인의 진입점을 하나로 통일

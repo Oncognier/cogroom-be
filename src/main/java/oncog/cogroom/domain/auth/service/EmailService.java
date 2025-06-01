@@ -38,7 +38,7 @@ public class EmailService {
             MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
 
             helper.setTo(toEmail); // 목적지
-            helper.setSubject("Oncognire auth email"); // 타이틀
+            helper.setSubject("Oncognier auth email"); // 타이틀
             helper.setText(generateVerificationLink(toEmail));
             helper.setFrom(fromEmail); // 발신 이메일
             mailSender.send(message);
