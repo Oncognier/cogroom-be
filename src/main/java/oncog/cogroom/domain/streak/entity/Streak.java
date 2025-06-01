@@ -3,6 +3,7 @@ package oncog.cogroom.domain.streak.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import oncog.cogroom.domain.member.entity.Member;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Getter
@@ -24,6 +25,14 @@ public class Streak {
     private String shareUrl;
 
     @Column(nullable = false)
-    private Integer totalDays; // 누적 스트릭 일 수
+    @Builder.Default
+    private Integer totalDays = 0; // 누적 스트릭 일 수
 
+    public void updateTotalDays() {
+        this.totalDays += 1;
+    }
+
+    public void resetTotalDays() {
+        this.totalDays = 0;
+    }
 }

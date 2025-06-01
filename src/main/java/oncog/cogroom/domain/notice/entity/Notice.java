@@ -21,6 +21,7 @@ public class Notice extends BaseTimeEntity {
     private String ImageUrl;
 
     @Column(nullable = false)
+    @Builder.Default
     private Long viewCount = 0L;
 
     @ManyToOne(fetch = FetchType.LAZY)
