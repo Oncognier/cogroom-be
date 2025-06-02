@@ -6,7 +6,6 @@ import oncog.cogroom.domain.daily.dto.response.DailyQuestionResponse;
 import oncog.cogroom.domain.daily.service.DailyService;
 import oncog.cogroom.global.common.response.ApiResponse;
 import oncog.cogroom.global.security.domain.CustomUserDetails;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,12 +21,7 @@ public class DailyController {
 
     @GetMapping("/questions")
     public ApiResponse<DailyQuestionResponse> getDailyQuestion() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new RuntimeException("로그인이 필요합니다.");
-        }
-
-        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+        CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         DailyQuestionResponse response = dailyService.getTodayDailyQuestion(user.getMemberId());
 
