@@ -16,8 +16,8 @@ public class DailyQuestionAssignSchduler {
     @Scheduled(cron = "0 0 0 * * *") // 자정마다
 //    @Scheduled(cron = "0 */1 * * * *") // 1분마다, 테스트용
     public void assignDailyQuestionsAtMidnight() {
-        log.info("Daily question assignment started.");
+        log.info("데일리 질문 할당 시작");
         dailyQuestionAssignService.assignDailyQuestions();
-        log.info("Daily question assignment completed.");
+        log.info("데일리 질문 할당 완료");
     }
 }
