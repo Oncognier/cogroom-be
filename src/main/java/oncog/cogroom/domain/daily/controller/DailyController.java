@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.daily.dto.response.DailyQuestionResponse;
 import oncog.cogroom.domain.daily.service.DailyService;
 import oncog.cogroom.global.common.response.ApiResponse;
+import oncog.cogroom.global.common.response.code.ApiSuccessCode;
 import oncog.cogroom.global.security.domain.CustomUserDetails;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +26,7 @@ public class DailyController {
 
         DailyQuestionResponse response = dailyService.getTodayDailyQuestion(user.getMemberId());
 
-        return ApiResponse.success(response);
+        return ApiResponse.success(ApiSuccessCode.SUCCESS, response);
     }
 
 
