@@ -9,18 +9,24 @@ import java.util.List;
 
 public interface QuestionRepository extends JpaRepository<Question, Long> {
     @Query("""
-        SELECT COUNT(aq) FROM AssignedQuestion aq
-        WHERE aq.member.id = :id
-        AND aq.isAnswered = false
-        AND aq.question.level = :level
+        SELECT COUNT(q) FROM Question q
+        WHERE q.level = :level
+          AND q.id NOT IN (
+            SELECT aq.question.id FROM AssignedQuestion aq
+            WHERE aq.member.id = :id
+              AND aq.isAnswered = true
+          )
     """)
     int countUnansweredByMemberAndLevel(Long id, QuestionLevel level);
 
     @Query("""
-        SELECT aq.question FROM AssignedQuestion aq
-        WHERE aq.member.id = :id
-        AND aq.isAnswered = false
-        AND aq.question.level = :level
+        SELECT q FROM Question q
+        WHERE q.level = :level
+          AND q.id NOT IN (
+            SELECT aq.question.id FROM AssignedQuestion aq
+            WHERE aq.member.id = :id
+              AND aq.isAnswered = true
+          )
     """)
     List<Question> findUnansweredByMemberAndLevel(Long id, QuestionLevel level);
 }

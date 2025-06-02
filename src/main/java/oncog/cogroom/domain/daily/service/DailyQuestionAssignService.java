@@ -38,17 +38,18 @@ public class DailyQuestionAssignService {
         if (alreadyAssignedQuestionToday(member)) return;
 
         QuestionLevel level = getNextQuestionLevel(member);
+        log.info("Assigned {} questions to {}", level, member.getId());
 
         List<Question> candidates = (level != null)
                 ? questionRepository.findUnansweredByMemberAndLevel(member.getId(), level)
                 : questionRepository.findAll();
 
-        Question question = candidates.get(random.nextInt(candidates.size()));
-
         if (candidates.isEmpty()) {
-            System.out.println("No question candidates found for " + member);
+            log.warn("할당 가능한 질문이 없습니다. memberId={}, level={}", member.getId(), level);
             return;
         }
+
+        Question question = candidates.get(random.nextInt(candidates.size()));
 
         saveAssignedQuestion(member, question);
     }
@@ -64,6 +65,9 @@ public class DailyQuestionAssignService {
     private QuestionLevel getNextQuestionLevel(Member member) {
         for (QuestionLevel level : QuestionLevel.values()) {
             int count = questionRepository.countUnansweredByMemberAndLevel(member.getId(), level);
+
+            log.info("member: {}, level: {}, 남은 질문 수: {}", member.getId(), level, count);
+
             if (count > 0) return level;
         }
         return null; // 모든 질문을 다 답한 경우
