@@ -8,7 +8,6 @@ import oncog.cogroom.domain.daily.respository.AnswerRepository;
 import oncog.cogroom.domain.daily.respository.AssignedQuestionRepository;
 import oncog.cogroom.domain.streak.entity.Streak;
 import oncog.cogroom.domain.streak.repository.StreakRepository;
-import org.springframework.expression.spel.ast.Assign;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -24,22 +23,20 @@ public class DailyService {
     private final StreakRepository streakRepository;
 
     public DailyQuestionResponse getTodayDailyQuestion(Long memberId) {
-        LocalDateTime today = LocalDate.now().atStartOfDay();
+        LocalDateTime startOfToday = LocalDate.now().atStartOfDay();
+        LocalDateTime endOfToday = startOfToday.plusDays(1).minusNanos(1);
 
         int streakDays = streakRepository.findByMemberId(memberId)
                 .map(Streak::getTotalDays)
                 .orElse(0); // 존재하지 않을 경우 0으로 반환
 
         AssignedQuestion question = assignedQuestionRepository
-                .findByMemberAndAssignedDate(memberId, today)
+                .findByMemberAndAssignedDate(memberId, startOfToday)
                 .orElseThrow(() -> new RuntimeException("오늘 할당된 질문이 없습니다."));
 
-        String answer = null;
-
-        if (question.isAnswered()) { // 답변이 이미 존재하는 경우
-            LocalDateTime endOfToday = today.plusDays(1).minusNanos(1);
-            answer = answerRepository.findByMemberAndCreatedAtBetween(memberId, today, endOfToday).orElse(null);
-        }
+        String answer = question.isAnswered()
+                ? getAnswerIfExists(memberId, startOfToday, endOfToday)
+                : null;
 
         return DailyQuestionResponse.builder()
                 .streakDays(streakDays)
@@ -48,5 +45,9 @@ public class DailyService {
                 .answer(answer)
                 .build();
 
+    }
+
+    private String getAnswerIfExists(Long memberId, LocalDateTime start, LocalDateTime end) {
+        return answerRepository.findByMemberAndCreatedAtBetween(memberId, start, end).orElse(null);
     }
 }
