@@ -42,14 +42,14 @@ public class S3Service {
                 .contentType(contentType)
                 .build();
 
-        PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
+        PutObjectPresignRequest preSignRequest = PutObjectPresignRequest.builder()
                 .signatureDuration(Duration.ofMinutes(10))
                 .putObjectRequest(uploadFile)
                 .build();
 
-        PresignedPutObjectRequest presignedRequest = s3Presigner.presignPutObject(presignRequest);
+        PresignedPutObjectRequest preSignedRequest = s3Presigner.presignPutObject(preSignRequest);
 
-        return presignedRequest.url().toString();
+        return preSignedRequest.url().toString();
     }
 
     // 복수 파일 업로드
@@ -64,12 +64,12 @@ public class S3Service {
                     .build();
 
             // preSignedUrl 요청 생성
-            PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
+            PutObjectPresignRequest preSignRequest = PutObjectPresignRequest.builder()
                     .signatureDuration(Duration.ofMinutes(10))
                     .putObjectRequest(uploadFile)
                     .build();
 
-            return s3Presigner.presignPutObject(presignRequest).url().toString();
+            return s3Presigner.presignPutObject(preSignRequest).url().toString();
         }).collect(Collectors.toList());
     }
 
