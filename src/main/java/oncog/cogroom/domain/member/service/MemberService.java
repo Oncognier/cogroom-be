@@ -24,7 +24,7 @@ public class MemberService {
         return MemberInfoDTO.builder()
                 .email(member.getEmail())
                 .description(member.getDescription())
-                .imgUrl(member.getProfileImageUrl())
+                .imgUrl(member.getProfileImageUrl()) // preSignedUrl 방식 적용 필요
                 .nickname(member.getNickname())
                 .phoneNumber(member.getPhoneNumber())
                 .build();
