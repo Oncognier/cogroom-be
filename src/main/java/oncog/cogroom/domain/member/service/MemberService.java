@@ -6,11 +6,13 @@ import oncog.cogroom.domain.member.entity.Member;
 import oncog.cogroom.domain.member.repository.MemberRepository;
 import oncog.cogroom.global.security.jwt.JwtProvider;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static oncog.cogroom.domain.member.dto.MemberResponseDTO.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class MemberService {
 
     private final MemberRepository memberRepository;

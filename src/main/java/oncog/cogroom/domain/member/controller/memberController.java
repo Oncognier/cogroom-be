@@ -7,10 +7,7 @@ import oncog.cogroom.domain.member.service.MemberService;
 import oncog.cogroom.global.common.response.ApiResponse;
 import oncog.cogroom.global.common.response.code.ApiSuccessCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static oncog.cogroom.domain.member.dto.MemberResponseDTO.MemberInfoDTO;
 
@@ -21,7 +18,7 @@ import static oncog.cogroom.domain.member.dto.MemberResponseDTO.MemberInfoDTO;
 public class memberController {
 
     private final MemberService memberService;
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<ApiResponse<MemberInfoDTO>> getMemberInfo() {
         MemberInfoDTO memberInfo = memberService.findMemberInfo();
 
@@ -29,7 +26,7 @@ public class memberController {
     }
 
     @PatchMapping("/me")
-    public ResponseEntity<ApiResponse<Void>> updateMemberInfo(MemberRequestDTO.MemberInfoUpdateDTO request) {
+    public ResponseEntity<ApiResponse<Void>> updateMemberInfo(@RequestBody MemberRequestDTO.MemberInfoUpdateDTO request) {
         memberService.updateMemberInfo(request);
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
