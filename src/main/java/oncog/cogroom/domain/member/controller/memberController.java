@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.member.dto.MemberRequestDTO;
 import oncog.cogroom.domain.member.service.MemberService;
 import oncog.cogroom.global.common.response.ApiResponse;
+import oncog.cogroom.global.common.response.code.ApiSuccessCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -24,14 +25,14 @@ public class memberController {
     public ResponseEntity<ApiResponse<MemberInfoDTO>> getMemberInfo() {
         MemberInfoDTO memberInfo = memberService.findMemberInfo();
 
-        return ResponseEntity.ok(ApiResponse.success(memberInfo));
+        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS,memberInfo));
     }
 
     @PatchMapping("/me")
     public ResponseEntity<ApiResponse<Void>> updateMemberInfo(MemberRequestDTO.MemberInfoUpdateDTO request) {
         memberService.updateMemberInfo(request);
 
-        return ResponseEntity.ok(ApiResponse.success());
+        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
     }
 
 }
