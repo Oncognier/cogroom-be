@@ -1,27 +1,18 @@
 package oncog.cogroom.global.common.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import oncog.cogroom.global.common.response.code.BaseErrorCode;
 
 @Getter
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL) // null 값이면 JSON 응답에서 제외
 public class ApiErrorResponse {
-    private final Integer code;
+    private final String code;
     private final String message;
 
-    public static ApiErrorResponse badRequest(String detail) {
-        return new ApiErrorResponse(400, "잘못된 요청입니다.");
-    }
-
-    public static ApiErrorResponse unauthorized(String detail) {
-        return new ApiErrorResponse(401, "인증이 필요합니다.");
-    }
-
-    public static ApiErrorResponse forbidden(String detail) {
-        return new ApiErrorResponse(403, "접근이 거부되었습니다.");
-    }
-
-    public static ApiErrorResponse serverError(String detail) {
-        return new ApiErrorResponse(500, "서버 오류가 발생했습니다.");
+    public static ApiErrorResponse of(BaseErrorCode errorCode) {
+        return new ApiErrorResponse(errorCode.getCode(), errorCode.getMessage());
     }
 }

@@ -2,13 +2,13 @@ package oncog.cogroom.domain.auth.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.mail.MessagingException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.auth.service.EmailService;
 import oncog.cogroom.domain.auth.service.AuthServiceRouter;
 import oncog.cogroom.global.common.response.ApiResponse;
+import oncog.cogroom.global.common.response.code.ApiSuccessCode;
 import oncog.cogroom.global.common.util.CookieUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,8 +37,12 @@ public class AuthController {
         cookieUtil.addRefreshToken(response, result.getTokens().getRefreshToken());
 
         LoginResponseDTO responseExcludedRefreshToken = result.excludeRefreshToken();
-        return ResponseEntity.ok(ApiResponse.success(responseExcludedRefreshToken));
+//        return ResponseEntity.ok(ApiResponse.success(responseExcludedRefreshToken));
+        return ResponseEntity
+                .status(ApiSuccessCode.SUCCESS.getStatus())
+                .body(ApiResponse.of(ApiSuccessCode.SUCCESS, responseExcludedRefreshToken));
     }
+
 
     @PostMapping("/signup")
     @Operation(summary = "소셜/로컬 통합 회원가입", description = "소셜/로컬 통합 회원가입 로직을 처리합니다. \n 응답 코드에 따른 자세한 결과는 Notion 명세서를 참고 부탁드립니다.")
@@ -49,7 +53,10 @@ public class AuthController {
         cookieUtil.addRefreshToken(response, result.getTokens().getRefreshToken());
 
         SignupResponseDTO responseExcludedRefreshToken = result.excludeRefreshToken();
-        return ResponseEntity.ok(ApiResponse.success(responseExcludedRefreshToken));
+//        return ResponseEntity.ok(ApiResponse.success(responseExcludedRefreshToken));
+        return ResponseEntity
+                .status(ApiSuccessCode.SUCCESS.getStatus())
+                .body(ApiResponse.of(ApiSuccessCode.SUCCESS, responseExcludedRefreshToken));
     }
 
     @PostMapping("/email-verification")
@@ -57,7 +64,10 @@ public class AuthController {
     public ResponseEntity<ApiResponse<String>> sendEmail(@RequestParam String userEmail) throws MessagingException, IOException {
         emailService.sendEmail(userEmail);
 
-        return ResponseEntity.ok(ApiResponse.success());
+//        return ResponseEntity.ok(ApiResponse.success());
+        return ResponseEntity
+                .status(ApiSuccessCode.SUCCESS.getStatus())
+                .body(ApiResponse.of(ApiSuccessCode.SUCCESS));
     }
 
     @GetMapping("/check-verification")
@@ -66,7 +76,10 @@ public class AuthController {
                                                          @RequestParam String verificationCode) {
         emailService.verifyCode(userEmail,verificationCode);
 
-        return ResponseEntity.ok(ApiResponse.success());
+//        return ResponseEntity.ok(ApiResponse.success());
+        return ResponseEntity
+                .status(ApiSuccessCode.SUCCESS.getStatus())
+                .body(ApiResponse.of(ApiSuccessCode.SUCCESS));
     }
 
     @PostMapping("/email/{userEmail}/status")
@@ -74,7 +87,10 @@ public class AuthController {
     public ResponseEntity<ApiResponse<Boolean>> checkEmailVerificationStatus(@PathVariable String userEmail) {
         boolean result = emailService.verifiedEmail(userEmail);
 
-        return ResponseEntity.ok(ApiResponse.success(result));
+//        return ResponseEntity.ok(ApiResponse.success(result));
+        return ResponseEntity
+                .status(ApiSuccessCode.SUCCESS.getStatus())
+                .body(ApiResponse.of(ApiSuccessCode.SUCCESS, result));
     }
 
     // 인가 코드 반환받을 테스트 컨트롤러
