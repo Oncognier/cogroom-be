@@ -27,9 +27,7 @@ public class DailyController {
 
         DailyQuestionResponse response = dailyService.getTodayDailyQuestion(user.getMemberId());
 
-        return ResponseEntity
-                .status(ApiSuccessCode.SUCCESS.getStatus())
-                .body(ApiResponse.of(ApiSuccessCode.SUCCESS, response));
+        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, response));
     }
 
 
