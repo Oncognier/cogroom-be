@@ -1,16 +1,18 @@
 package oncog.cogroom.global.common.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import oncog.cogroom.global.common.response.code.ApiErrorCode;
+import oncog.cogroom.global.common.response.code.BaseErrorCode;
 
 @Getter
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL) // null 값이면 JSON 응답에서 제외
 public class ApiErrorResponse {
     private final String code;
     private final String message;
 
-    public static <T> ApiResponse<T> success(ApiErrorCode code) {
-        return new ApiResponse<>(code.name(), code.getMessage(), null);
+    public static ApiErrorResponse of(BaseErrorCode errorCode) {
+        return new ApiErrorResponse(errorCode.getCode(), errorCode.getMessage());
     }
 }
