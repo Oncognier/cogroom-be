@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/files")
@@ -18,10 +20,10 @@ public class S3Controller {
     private final S3Service s3Service;
 
     @GetMapping("/preSigned-url/upload")
-    public ResponseEntity<ApiResponse<String>> getPreSignedUrl(@RequestBody S3RequestDTO.PreSignedUrlRequestDTO request) {
-        String preSignedUrl = s3Service.generatePreSignedUrl(request.getFileName(), request.getContentType()); // 추후 DTO로 대체
+    public ResponseEntity<ApiResponse<List<String>>> getPreSignedUrl(@RequestBody S3RequestDTO.PreSignedUrlRequestDTO request) {
+        List<String> preSignedUrls = s3Service.generatePreSignedUrl(request);
 
-        return ResponseEntity.ok(ApiResponse.success(preSignedUrl));
+        return ResponseEntity.ok(ApiResponse.success(preSignedUrls));
     }
 
 

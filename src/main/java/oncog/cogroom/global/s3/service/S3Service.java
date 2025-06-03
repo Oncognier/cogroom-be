@@ -2,6 +2,7 @@ package oncog.cogroom.global.s3.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import oncog.cogroom.global.s3.dto.S3RequestDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -53,9 +54,9 @@ public class S3Service {
     }
 
     // 복수 파일 업로드
-    public List<String> generatePreSignedUrl(Map<String, String> fileSet) {
+    public List<String> generatePreSignedUrl(S3RequestDTO.PreSignedUrlRequestDTO request) {
 
-        return fileSet.entrySet().stream().map(file -> {
+        return request.getFileSet().entrySet().stream().map(file -> {
             // 업로드 파일 요청 생성
             PutObjectRequest uploadFile = PutObjectRequest.builder()
                     .bucket(bucket)
@@ -93,16 +94,18 @@ public class S3Service {
         }
     }
 
-    // s3 파일 삭제
-    public void deleteFile(String fileUrl) {
-        String fileKey = extractKey(fileUrl);
+    // s3 파일 삭제 (추후 강의 기능 적용시 변경 사항 발생 가능)
+    public void deleteFile(List<String> fileUrls) {
+        fileUrls.forEach(fileUrl -> {
+            String fileKey = extractKey(fileUrl);
 
-        DeleteObjectRequest deleteRequest = DeleteObjectRequest.builder()
-                .bucket(bucket)
-                .key(fileKey)
-                .build();
+            DeleteObjectRequest deleteRequest = DeleteObjectRequest.builder()
+                    .bucket(bucket)
+                    .key(fileKey)
+                    .build();
 
-        s3Client.deleteObject(deleteRequest);
+            s3Client.deleteObject(deleteRequest);
+        });
     }
     public String extractKey(String fileUrl) {
         return fileUrl.replace(cloudFrontUrl, "");
