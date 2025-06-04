@@ -1,34 +1,61 @@
 package oncog.cogroom.domain.member.service;
 
 import lombok.RequiredArgsConstructor;
+import oncog.cogroom.domain.member.dto.MemberRequestDTO;
 import oncog.cogroom.domain.member.entity.Member;
-import oncog.cogroom.domain.member.enums.MemberRole;
-import oncog.cogroom.domain.member.enums.MemberStatus;
 import oncog.cogroom.domain.member.repository.MemberRepository;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import oncog.cogroom.global.security.jwt.JwtProvider;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import static oncog.cogroom.domain.member.dto.MemberResponseDTO.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final JwtProvider jwtProvider;
 
-    public boolean isExist(String providerId) {
-        return memberRepository.existsByProviderId(providerId);
+    public MemberInfoDTO findMemberInfo() {
+        Long memberId = jwtProvider.extractMemberId();
+
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("member not found"));
+
+        return MemberInfoDTO.builder()
+                .email(member.getEmail())
+                .description(member.getDescription())
+                .imgUrl(member.getProfileImageUrl()) // preSignedUrl 방식 적용 필요
+                .nickname(member.getNickname())
+                .phoneNumber(member.getPhoneNumber())
+                .build();
     }
 
-    public Member find(OAuth2User user) {
-        return memberRepository.findByProviderId(user.getAttribute("providerId"))
-                .orElseGet(() -> {
-                    return Member.builder()
-                            .email(user.getAttribute("email"))
-                            .nickname(user.getAttribute("nickname"))
-                            .role(MemberRole.USER)
-                            .provider(user.getAttribute("provider"))
-                            .providerId(user.getAttribute("providerId"))
-                            .status(MemberStatus.ACTIVE)
-                            .build();
-                });
+    public void updateMemberInfo(MemberRequestDTO.MemberInfoUpdateDTO request){
+        Long memberId = jwtProvider.extractMemberId();
+
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("member not found"));
+
+        if(!request.getPhoneNumber().matches("^01[016789]-\\d{3,4}-\\d{4}$")){
+            throw new IllegalArgumentException("전화번호 형식 오류");
+        }
+
+        member.updateMemberInfo(request);
     }
-}
+
+    public boolean existNickname(MemberRequestDTO.ExistNicknameDTO request) {
+
+        if(memberRepository.existsByNickname(request.getNickname())){
+            throw new IllegalArgumentException("이미 존재하는 닉네임");
+        }
+
+        return false;
+    }
+
+    public boolean isExist(String memberId) {
+        return memberRepository.existsById(Long.valueOf(memberId));
+    }
+
+
+    }
