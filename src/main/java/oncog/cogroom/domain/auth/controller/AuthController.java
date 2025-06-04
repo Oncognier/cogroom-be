@@ -37,10 +37,7 @@ public class AuthController {
         cookieUtil.addRefreshToken(response, result.getTokens().getRefreshToken());
 
         LoginResponseDTO responseExcludedRefreshToken = result.excludeRefreshToken();
-//        return ResponseEntity.ok(ApiResponse.success(responseExcludedRefreshToken));
-        return ResponseEntity
-                .status(ApiSuccessCode.SUCCESS.getStatus())
-                .body(ApiResponse.of(ApiSuccessCode.SUCCESS, responseExcludedRefreshToken));
+        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, responseExcludedRefreshToken));
     }
 
 
@@ -53,10 +50,7 @@ public class AuthController {
         cookieUtil.addRefreshToken(response, result.getTokens().getRefreshToken());
 
         SignupResponseDTO responseExcludedRefreshToken = result.excludeRefreshToken();
-//        return ResponseEntity.ok(ApiResponse.success(responseExcludedRefreshToken));
-        return ResponseEntity
-                .status(ApiSuccessCode.SUCCESS.getStatus())
-                .body(ApiResponse.of(ApiSuccessCode.SUCCESS, responseExcludedRefreshToken));
+        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, responseExcludedRefreshToken));
     }
 
     @PostMapping("/email-verification")
@@ -64,10 +58,7 @@ public class AuthController {
     public ResponseEntity<ApiResponse<String>> sendEmail(@RequestParam String userEmail) throws MessagingException, IOException {
         emailService.sendEmail(userEmail);
 
-//        return ResponseEntity.ok(ApiResponse.success());
-        return ResponseEntity
-                .status(ApiSuccessCode.SUCCESS.getStatus())
-                .body(ApiResponse.of(ApiSuccessCode.SUCCESS));
+        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
     }
 
     @GetMapping("/check-verification")
@@ -76,10 +67,7 @@ public class AuthController {
                                                          @RequestParam String verificationCode) {
         emailService.verifyCode(userEmail,verificationCode);
 
-//        return ResponseEntity.ok(ApiResponse.success());
-        return ResponseEntity
-                .status(ApiSuccessCode.SUCCESS.getStatus())
-                .body(ApiResponse.of(ApiSuccessCode.SUCCESS));
+        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
     }
 
     @PostMapping("/email/{userEmail}/status")
@@ -87,10 +75,7 @@ public class AuthController {
     public ResponseEntity<ApiResponse<Boolean>> checkEmailVerificationStatus(@PathVariable String userEmail) {
         boolean result = emailService.verifiedEmail(userEmail);
 
-//        return ResponseEntity.ok(ApiResponse.success(result));
-        return ResponseEntity
-                .status(ApiSuccessCode.SUCCESS.getStatus())
-                .body(ApiResponse.of(ApiSuccessCode.SUCCESS, result));
+        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, result));
     }
 
     // 인가 코드 반환받을 테스트 컨트롤러
