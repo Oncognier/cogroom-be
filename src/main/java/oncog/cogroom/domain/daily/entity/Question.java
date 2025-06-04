@@ -3,8 +3,7 @@ package oncog.cogroom.domain.daily.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import oncog.cogroom.domain.daily.enums.QuestionLevel;
-import oncog.cogroom.global.common.entity.BaseTimeEntity;
-import oncog.cogroom.domain.member.entity.Member;
+import oncog.cogroom.global.common.entity.BaseEntity;
 
 @Entity
 @Getter
@@ -12,7 +11,7 @@ import oncog.cogroom.domain.member.entity.Member;
 @AllArgsConstructor
 @Builder
 @Table(name = "QUESTION")
-public class Question extends BaseTimeEntity {
+public class Question extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,12 +23,4 @@ public class Question extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private QuestionLevel level;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, name = "created_by")
-    private Member createdBy;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, name = "updated_by")
-    private Member updatedBy;
 }
