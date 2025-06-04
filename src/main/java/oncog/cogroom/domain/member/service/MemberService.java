@@ -37,7 +37,20 @@ public class MemberService {
 
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("member not found"));
 
+        if(!request.getPhoneNumber().matches("^01[016789]-\\d{3,4}-\\d{4}$")){
+            throw new IllegalArgumentException("전화번호 형식 오류");
+        }
+
         member.updateMemberInfo(request);
+    }
+
+    public boolean existNickname(MemberRequestDTO.ExistNicknameDTO request) {
+
+        if(memberRepository.existsByNickname(request.getNickname())){
+            throw new IllegalArgumentException("이미 존재하는 닉네임");
+        }
+
+        return false;
     }
 
     public boolean isExist(String memberId) {

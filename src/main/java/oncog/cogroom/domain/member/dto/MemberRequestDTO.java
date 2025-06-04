@@ -16,4 +16,10 @@ public class MemberRequestDTO {
         private String description;
         private String phoneNumber;
     }
+
+    @Getter
+    @Builder
+    public static class ExistNicknameDTO {
+        private String nickname;
+    }
 }
