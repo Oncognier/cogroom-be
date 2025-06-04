@@ -6,7 +6,6 @@ import oncog.cogroom.domain.streak.dto.response.StreakCalenderResponse;
 import oncog.cogroom.domain.streak.entity.Streak;
 import oncog.cogroom.domain.streak.repository.StreakLogRepository;
 import oncog.cogroom.domain.streak.repository.StreakRepository;
-import oncog.cogroom.global.security.jwt.JwtProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +23,6 @@ public class StreakService {
     private final StreakRepository streakRepository;
     private final StreakLogRepository streakLogRepository;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    private final JwtProvider jwtProvider;
 
     // 특정 멤버의 스트릭 기록 초기화
     @Transactional
@@ -51,9 +49,7 @@ public class StreakService {
         });
     }
 
-    public StreakCalenderResponse getStreakDates() {
-        Long memberId = jwtProvider.extractMemberId();
-
+    public StreakCalenderResponse getStreakDates(Long memberId) {
         LocalDate today = LocalDate.now();
         LocalDate firstDayOfMonth = today.withDayOfMonth(1);
         LocalDate lastDayOfMonth = today.withDayOfMonth(today.lengthOfMonth());
