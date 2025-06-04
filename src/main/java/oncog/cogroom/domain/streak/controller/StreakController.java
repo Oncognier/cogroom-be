@@ -23,9 +23,7 @@ public class StreakController {
 
     @GetMapping("/calender")
     public ResponseEntity<ApiResponse<StreakCalenderResponse>> getStreakCalender() {
-        CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        StreakCalenderResponse response = streakService.getStreakDates(user.getMemberId());
+        StreakCalenderResponse response = streakService.getStreakDates();
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, response));
     }
