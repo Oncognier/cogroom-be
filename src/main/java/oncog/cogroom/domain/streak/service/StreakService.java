@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.streak.entity.Streak;
 import oncog.cogroom.domain.streak.repository.StreakLogRepository;
 import oncog.cogroom.domain.streak.repository.StreakRepository;
-import oncog.cogroom.domain.streak.dto.response.StreakCalenderResponse;
+import oncog.cogroom.domain.streak.dto.response.StreakCalenderResponseDTO;
 import oncog.cogroom.global.common.service.BaseService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,7 +48,7 @@ public class StreakService extends BaseService {
     }
 
     // 스트릭 날짜 리스트 조회
-    public StreakCalenderResponse getStreakDates() {
+    public StreakCalenderResponseDTO getStreakDates() {
         Long memberId = getMemberId();
 
         LocalDateTime startOfMonth = getStartOfMonth();
@@ -61,7 +61,7 @@ public class StreakService extends BaseService {
                 .sorted()
                 .toList();
 
-        return StreakCalenderResponse.builder()
+        return StreakCalenderResponseDTO.builder()
                 .streakDateList(streakDates)
                 .build();
     }

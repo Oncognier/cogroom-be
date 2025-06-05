@@ -2,7 +2,7 @@ package oncog.cogroom.domain.daily.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import oncog.cogroom.domain.daily.dto.response.DailyQuestionResponse;
+import oncog.cogroom.domain.daily.dto.response.DailyQuestionResponseDTO;
 import oncog.cogroom.domain.daily.entity.AssignedQuestion;
 import oncog.cogroom.domain.daily.exception.DailyErrorCode;
 import oncog.cogroom.domain.daily.respository.AnswerRepository;
@@ -25,7 +25,7 @@ public class DailyService extends BaseService {
     private final AssignedQuestionRepository assignedQuestionRepository;
     private final StreakRepository streakRepository;
 
-    public DailyQuestionResponse getTodayDailyQuestion() {
+    public DailyQuestionResponseDTO getTodayDailyQuestion() {
         Long memberId = getMemberId();
 
         LocalDateTime startOfToday = getStartOfToday();
@@ -37,7 +37,7 @@ public class DailyService extends BaseService {
 
         String answer = question.isAnswered() ? getAnswerIfExists(memberId, startOfToday, endOfToday) : null;
 
-        return DailyQuestionResponse.builder()
+        return DailyQuestionResponseDTO.builder()
                 .streakDays(streakDays)
                 .questionId(question.getQuestion().getId())
                 .question(question.getQuestion().getQuestion())

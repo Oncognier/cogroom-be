@@ -2,7 +2,7 @@ package oncog.cogroom.domain.daily.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import oncog.cogroom.domain.daily.dto.response.DailyQuestionResponse;
+import oncog.cogroom.domain.daily.dto.response.DailyQuestionResponseDTO;
 import oncog.cogroom.domain.daily.service.DailyService;
 import oncog.cogroom.global.common.response.ApiResponse;
 import oncog.cogroom.global.common.response.code.ApiSuccessCode;
@@ -20,9 +20,9 @@ public class DailyController {
     private final DailyService dailyService;
 
     @GetMapping("/questions")
-    public ResponseEntity<ApiResponse<DailyQuestionResponse>> getDailyQuestion() {
+    public ResponseEntity<ApiResponse<DailyQuestionResponseDTO>> getDailyQuestion() {
 
-        DailyQuestionResponse response = dailyService.getTodayDailyQuestion();
+        DailyQuestionResponseDTO response = dailyService.getTodayDailyQuestion();
 
         return ResponseEntity
                 .status(ApiSuccessCode.SUCCESS.getStatus())
