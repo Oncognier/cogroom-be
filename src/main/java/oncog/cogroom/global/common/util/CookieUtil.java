@@ -15,16 +15,18 @@ public class CookieUtil {
     private String accessExpiration;
 
     public void addTokenForCookie(HttpServletResponse response, AuthResponseDTO.ServiceTokenDTO tokens) {
-        Cookie refreshToken = new Cookie("refreshToken", tokens.getRefreshToken());
-        refreshToken.setHttpOnly(true);
-        refreshToken.setPath("/");
-        refreshToken.setMaxAge(Integer.parseInt(refreshExpiration));
+        if (tokens != null) {
+            Cookie refreshToken = new Cookie("refreshToken", tokens.getRefreshToken());
+            refreshToken.setHttpOnly(true);
+            refreshToken.setPath("/");
+            refreshToken.setMaxAge(Integer.parseInt(refreshExpiration));
 
-        Cookie accessToken = new Cookie("accessToken", tokens.getAccessToken());
-        accessToken.setPath("/");
-        accessToken.setMaxAge(Integer.parseInt(accessExpiration));
+            Cookie accessToken = new Cookie("accessToken", tokens.getAccessToken());
+            accessToken.setPath("/");
+            accessToken.setMaxAge(Integer.parseInt(accessExpiration));
 
-        response.addCookie(refreshToken);
-        response.addCookie(accessToken);
+            response.addCookie(refreshToken);
+            response.addCookie(accessToken);
+        }
     }
 }
