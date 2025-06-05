@@ -8,7 +8,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.auth.exception.AuthErrorCode;
-import oncog.cogroom.global.exception.domain.AuthException;
+import oncog.cogroom.domain.auth.exception.AuthException;
 import oncog.cogroom.global.security.domain.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;

@@ -1,4 +1,4 @@
-package oncog.cogroom.global.exception.domain;
+package oncog.cogroom.domain.auth.exception;
 
 import lombok.Getter;
 import oncog.cogroom.global.common.response.code.BaseErrorCode;

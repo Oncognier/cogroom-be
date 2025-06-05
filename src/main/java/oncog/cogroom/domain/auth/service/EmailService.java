@@ -8,7 +8,7 @@ import oncog.cogroom.domain.auth.entity.EmailVerification;
 import oncog.cogroom.domain.auth.exception.AuthErrorCode;
 import oncog.cogroom.domain.auth.repository.EmailRepository;
 import oncog.cogroom.domain.member.repository.MemberRepository;
-import oncog.cogroom.global.exception.domain.AuthException;
+import oncog.cogroom.domain.auth.exception.AuthException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
