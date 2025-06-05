@@ -2,8 +2,7 @@ package oncog.cogroom.domain.notice.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import oncog.cogroom.global.common.entity.BaseTimeEntity;
-import oncog.cogroom.domain.member.entity.Member;
+import oncog.cogroom.global.common.entity.BaseEntity;
 
 @Entity
 @Getter
@@ -11,7 +10,7 @@ import oncog.cogroom.domain.member.entity.Member;
 @AllArgsConstructor
 @Builder
 @Table(name = "NOTICE")
-public class Notice extends BaseTimeEntity {
+public class Notice extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,12 +22,4 @@ public class Notice extends BaseTimeEntity {
     @Column(nullable = false)
     @Builder.Default
     private Long viewCount = 0L;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, name = "created_by")
-    private Member createdBy;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, name = "updated_by")
-    private Member updatedBy;
 }

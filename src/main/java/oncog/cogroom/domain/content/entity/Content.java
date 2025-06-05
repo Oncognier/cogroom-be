@@ -2,12 +2,11 @@ package oncog.cogroom.domain.content.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import oncog.cogroom.global.common.entity.BaseTimeEntity;
+import oncog.cogroom.global.common.entity.BaseEntity;
 import oncog.cogroom.global.common.entity.Category;
 import oncog.cogroom.domain.content.enums.ContentLevel;
 import oncog.cogroom.domain.content.enums.ContentStatus;
 import oncog.cogroom.domain.content.enums.ContentType;
-import oncog.cogroom.domain.member.entity.Member;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
@@ -17,7 +16,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Builder
 @EntityListeners(value = {AuditingEntityListener.class})
 @Table(name = "CONTENT")
-public class Content extends BaseTimeEntity {
+public class Content extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,13 +58,5 @@ public class Content extends BaseTimeEntity {
 
     @Column(nullable = false)
     private Integer totalLectureTime; // 초 단위
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, name = "created_by")
-    private Member createdBy;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, name = "updated_by")
-    private Member updatedBy;
 
 }
