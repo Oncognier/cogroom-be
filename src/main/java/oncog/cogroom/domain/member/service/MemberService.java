@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import oncog.cogroom.domain.member.dto.MemberRequestDTO;
 import oncog.cogroom.domain.member.entity.Member;
 import oncog.cogroom.domain.member.repository.MemberRepository;
-import oncog.cogroom.global.security.jwt.JwtProvider;
+import oncog.cogroom.global.common.service.BaseService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,13 +13,12 @@ import static oncog.cogroom.domain.member.dto.MemberResponseDTO.*;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class MemberService {
+public class MemberService extends BaseService {
 
     private final MemberRepository memberRepository;
-    private final JwtProvider jwtProvider;
 
     public MemberInfoDTO findMemberInfo() {
-        Long memberId = jwtProvider.extractMemberId();
+        Long memberId = getMemberId();
 
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("member not found"));
 
@@ -33,7 +32,7 @@ public class MemberService {
     }
 
     public void updateMemberInfo(MemberRequestDTO.MemberInfoUpdateDTO request){
-        Long memberId = jwtProvider.extractMemberId();
+        Long memberId = getMemberId();
 
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("member not found"));
 

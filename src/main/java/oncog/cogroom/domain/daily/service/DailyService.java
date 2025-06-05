@@ -4,10 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.daily.dto.response.DailyQuestionResponse;
 import oncog.cogroom.domain.daily.entity.AssignedQuestion;
+import oncog.cogroom.domain.daily.exception.DailyErrorCode;
 import oncog.cogroom.domain.daily.respository.AnswerRepository;
 import oncog.cogroom.domain.daily.respository.AssignedQuestionRepository;
 import oncog.cogroom.domain.streak.entity.Streak;
 import oncog.cogroom.domain.streak.repository.StreakRepository;
+import oncog.cogroom.global.common.service.BaseService;
+import oncog.cogroom.global.exception.domain.DailyException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -16,27 +19,23 @@ import java.time.LocalDateTime;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class DailyService {
+public class DailyService extends BaseService {
 
     private final AnswerRepository answerRepository;
     private final AssignedQuestionRepository assignedQuestionRepository;
     private final StreakRepository streakRepository;
 
-    public DailyQuestionResponse getTodayDailyQuestion(Long memberId) {
-        LocalDateTime startOfToday = LocalDate.now().atStartOfDay();
-        LocalDateTime endOfToday = startOfToday.plusDays(1).minusNanos(1);
+    public DailyQuestionResponse getTodayDailyQuestion() {
+        Long memberId = getMemberId();
 
-        int streakDays = streakRepository.findByMemberId(memberId)
-                .map(Streak::getTotalDays)
-                .orElse(0); // 존재하지 않을 경우 0으로 반환
+        LocalDateTime startOfToday = getStartOfToday();
+        LocalDateTime endOfToday = getEndOfToday();
 
-        AssignedQuestion question = assignedQuestionRepository
-                .findByMemberAndAssignedDate(memberId, startOfToday)
-                .orElseThrow(() -> new RuntimeException("오늘 할당된 질문이 없습니다."));
+        int streakDays = getStreakDays(memberId);
 
-        String answer = question.isAnswered()
-                ? getAnswerIfExists(memberId, startOfToday, endOfToday)
-                : null;
+        AssignedQuestion question = getAssignedQuestion(memberId, startOfToday);
+
+        String answer = question.isAnswered() ? getAnswerIfExists(memberId, startOfToday, endOfToday) : null;
 
         return DailyQuestionResponse.builder()
                 .streakDays(streakDays)
@@ -47,7 +46,26 @@ public class DailyService {
 
     }
 
+    private int getStreakDays(Long memberId) {
+        return streakRepository.findByMemberId(memberId)
+                .map(Streak::getTotalDays)
+                .orElse(0);
+    }
+
+    private AssignedQuestion getAssignedQuestion(Long memberId, LocalDateTime date) {
+        return assignedQuestionRepository.findByMemberAndAssignedDate(memberId, date)
+                .orElseThrow(() -> new DailyException(DailyErrorCode.DAILY_QUESTION_NOT_FOUND));
+    }
+
     private String getAnswerIfExists(Long memberId, LocalDateTime start, LocalDateTime end) {
         return answerRepository.findByMemberAndCreatedAtBetween(memberId, start, end).orElse(null);
+    }
+
+    private LocalDateTime getStartOfToday() {
+        return LocalDate.now().atStartOfDay();
+    }
+
+    private LocalDateTime getEndOfToday() {
+        return getStartOfToday().plusDays(1).minusNanos(1);
     }
 }
