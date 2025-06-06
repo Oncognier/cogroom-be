@@ -3,11 +3,10 @@ package oncog.cogroom.domain.member.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import oncog.cogroom.domain.member.dto.MemberRequestDTO;
-import oncog.cogroom.global.common.entity.BaseEntity;
-import oncog.cogroom.global.common.entity.BaseTimeEntity;
-import oncog.cogroom.domain.member.enums.Provider;
 import oncog.cogroom.domain.member.enums.MemberRole;
 import oncog.cogroom.domain.member.enums.MemberStatus;
+import oncog.cogroom.domain.member.enums.Provider;
+import oncog.cogroom.global.common.entity.BaseTimeEntity;
 
 @Entity
 @Getter
@@ -15,7 +14,7 @@ import oncog.cogroom.domain.member.enums.MemberStatus;
 @AllArgsConstructor // 모든 필드를 매개변수로 받는 생성자 자동 생성
 @Builder
 @Table(name = "MEMBER")
-public class Member extends BaseEntity {
+public class Member extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

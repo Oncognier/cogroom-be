@@ -9,12 +9,13 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum AuthErrorCode implements BaseErrorCode {
 
+    // 유효성 검사
+    INVALID_EMAIL_FORMAT("INVALID_EMAIL_FOTMAT", HttpStatus.BAD_REQUEST, "이메일 형식이 잘못되었습니다."),
+    INVALID_PHONE_NUMBER_PATTERN("INVALID_PATTERN", HttpStatus.BAD_REQUEST, "형식이 올바르지 않습니다."),
+    INVALID_PASSWORD_FORMAT("INVALID_PASSWORD_FORMAT", HttpStatus.BAD_REQUEST, "비밀번호 형식이 잘못되었습니다."),
+
     // 카카오 로그인
-    KAKAO_INVALID_KEY_TYPE("KAKAO_INVALID_KEY_TYPE", HttpStatus.BAD_REQUEST, "일치하는 공개키 타입이 없습니다."),
-    KAKAO_PUBLIC_KEY_NOT_FOUND("KAKAO_PUBLIC_KEY_NOT_FOUND", HttpStatus.BAD_REQUEST, "해당 KEY에 대한 공개키를 찾을 수 없습니다."),
-    KAKAO_UNSUPPORTED_KEY_TYPE("KAKAO_UNSUPPORTED_KEY_TYPE", HttpStatus.BAD_REQUEST, "지원하지 않는 KEY 형식입니다."),
     KAKAO_INVALID_AUTHORIZATION_CODE("KAKAO_INVALID_AUTHORIZATION_CODE", HttpStatus.BAD_REQUEST, "유효하지 않은 Authorization Code입니다."),
-    KAKAO_INVALID_CLIENT_SECRET("KAKAO_INVALID_CLIENT_SECRET", HttpStatus.UNAUTHORIZED, "클라이언트 시크릿 키가 올바르지 않습니다."),
     KAKAO_AUTH_FAILED("KAKAO_AUTH_FAILED", HttpStatus.UNAUTHORIZED, "카카오 인증 요청이 실패했습니다."),
 
     // JWT 토큰
@@ -25,7 +26,10 @@ public enum AuthErrorCode implements BaseErrorCode {
     // 이메일 전송
     ALREADY_EXIST_EMAIL("ALREADY_EXIST_EMAIL", HttpStatus.CONFLICT, "이미 존재하는 이메일입니다."),
     EXPIRED_LINK("EXPIRED_LINK", HttpStatus.BAD_REQUEST, "인증 링크 시간이 만료되었습니다."),
+
+
     ;
+
 
     private final String code;
     private final HttpStatus status;

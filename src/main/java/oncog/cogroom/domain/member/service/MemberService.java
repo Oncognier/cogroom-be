@@ -3,7 +3,7 @@ package oncog.cogroom.domain.member.service;
 import lombok.RequiredArgsConstructor;
 import oncog.cogroom.domain.member.dto.MemberRequestDTO;
 import oncog.cogroom.domain.member.entity.Member;
-import oncog.cogroom.domain.member.exception.MemberException;
+import oncog.cogroom.domain.member.exception.MemberErrorCode;
 import oncog.cogroom.domain.member.repository.MemberRepository;
 import oncog.cogroom.global.common.service.BaseService;
 import oncog.cogroom.global.exception.CustomException;
@@ -22,7 +22,7 @@ public class MemberService extends BaseService {
     public MemberInfoDTO findMemberInfo() {
         Long memberId = getMemberId();
 
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomException(MemberException.MEMBER_NOT_FOUND));
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         return MemberInfoDTO.builder()
                 .email(member.getEmail())
@@ -36,10 +36,10 @@ public class MemberService extends BaseService {
     public void updateMemberInfo(MemberRequestDTO.MemberInfoUpdateDTO request){
         Long memberId = getMemberId();
 
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomException(MemberException.MEMBER_NOT_FOUND));
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         if(!request.getPhoneNumber().matches("^01[016789]-\\d{3,4}-\\d{4}$")){
-            throw new CustomException(MemberException.INVALID_PHONE_NUMBER);
+            throw new CustomException(MemberErrorCode.INVALID_PHONE_NUMBER);
         }
 
         member.updateMemberInfo(request);
@@ -48,7 +48,7 @@ public class MemberService extends BaseService {
     public boolean existNickname(MemberRequestDTO.ExistNicknameDTO request) {
 
         if(memberRepository.existsByNickname(request.getNickname())){
-            throw new CustomException(MemberException.DUPLICATE_USER_NICKNAME);
+            throw new CustomException(MemberErrorCode.DUPLICATE_USER_NICKNAME);
         }
 
         return false;
