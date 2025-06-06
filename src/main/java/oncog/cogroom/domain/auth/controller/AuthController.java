@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.auth.dto.request.AuthRequestDTO;
+import oncog.cogroom.domain.auth.exception.AuthErrorCode;
 import oncog.cogroom.domain.auth.service.AuthServiceRouter;
 import oncog.cogroom.domain.auth.service.EmailService;
 import oncog.cogroom.global.common.response.ApiResponse;
@@ -37,9 +38,9 @@ public class AuthController {
     private final CookieUtil cookieUtil;
 
     @PostMapping("/login")
-    @ApiErrorCodeExamples(
-            value = {ApiErrorCode.class},
-            include = {"USER_NOT_FOUND", "DUPLICATE_USER_EMAIL", "DUPLICATE_USER_NICKNAME"})
+    @ApiErrorCodeExample(
+            value = AuthErrorCode.class,
+            include = {"KAKAO_AUTH_FAILED", "KAKAO_INVALID_AUTHORIZATION_CODE"})
     @Operation(summary = "소셜/로컬 통합 로그인", description = "소셜/로컬 통합 로그인 로직을 처리합니다. \n 응답 코드에 따른 자세한 결과는 Notion 명세서를 참고 부탁드립니다.")
     public ResponseEntity<ApiResponse<LoginResponseDTO>> socialLogin(@RequestBody @Valid LoginRequestDTO request, HttpServletResponse response) {
         LoginResponseDTO result = router.login(request);
@@ -55,10 +56,9 @@ public class AuthController {
 
 
     @PostMapping("/signup")
-    @ApiErrorCodeExample(
-            value = ApiErrorCode.class,
-            include = {"USER_NOT_FOUND", "DUPLICATE_USER_EMAIL"}
-    )
+    @ApiErrorCodeExamples(
+            value = {AuthErrorCode.class, ApiErrorCode.class},
+            include = {"EMPTY_FILED", "INVALID_EMAIL_FOTMAT"})
     @Operation(summary = "소셜/로컬 통합 회원가입", description = "소셜/로컬 통합 회원가입 로직을 처리합니다. \n 응답 코드에 따른 자세한 결과는 Notion 명세서를 참고 부탁드립니다.")
     public ResponseEntity<ApiResponse<SignupResponseDTO>> socialSignup(@RequestBody @Valid SignupRequestDTO request, HttpServletResponse response) {
         SignupResponseDTO result = router.signup(request);
@@ -73,6 +73,9 @@ public class AuthController {
     }
 
     @PostMapping("/email-verification")
+    @ApiErrorCodeExamples(
+            value = {AuthErrorCode.class, ApiErrorCode.class},
+            include = {"EMPTY_FILED", "INVALID_EMAIL_FOTMAT", "ALREADY_EXIST_EMAIL"})
     @Operation(summary = "인증 이메일 전송", description = "인증용 링크가 포함된 이메일을 전송합니다. \n 응답 코드에 따른 자세한 결과는 Notion 명세서를 참고 부탁드립니다.")
     public ResponseEntity<ApiResponse<String>> sendEmail(@RequestBody @Valid AuthRequestDTO.EmailRequestDTO request) throws MessagingException, IOException {
         emailService.existEmail(request.getEmail());
@@ -84,6 +87,9 @@ public class AuthController {
     }
 
     @GetMapping("/check-verification")
+    @ApiErrorCodeExamples(
+            value = {AuthErrorCode.class, ApiErrorCode.class},
+            include = {"EMPTY_FILED","EXPIRED_LINK"})
     @Operation(summary = "이메일 인증", description = "링크가 클릭되었을 때 이메일을 인증합니다. \n 응답 코드에 따른 자세한 결과는 Notion 명세서를 참고 부탁드립니다.")
     public ResponseEntity<ApiResponse<Void>> verifyEmail(@RequestParam String userEmail,
                                                          @RequestParam String verificationCode) {
