@@ -13,6 +13,7 @@ import oncog.cogroom.domain.auth.exception.AuthException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,21 +36,20 @@ public class EmailService {
     @Value("${spring.mail.email-link-url}")
     private String emailLinkUrl;
 
+    @Async
     public void sendEmail(AuthRequestDTO.EmailRequestDTO request) throws MessagingException {
         String toEmail = request.getEmail();
-        if (!existEmail(toEmail)) {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
 
-            helper.setTo(toEmail); // 목적지
-            helper.setSubject("Oncognier auth email"); // 타이틀
-            helper.setText(generateVerificationLink(toEmail));
-            helper.setFrom(fromEmail); // 발신 이메일
-            mailSender.send(message);
-        }else{
-            throw new AuthException(AuthErrorCode.ALREADY_EXIST_EMAIL);
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
+
+        helper.setTo(toEmail); // 목적지
+        helper.setSubject("Oncognier auth email"); // 타이틀
+        helper.setText(generateVerificationLink(toEmail));
+        helper.setFrom(fromEmail); // 발신 이메일
+        mailSender.send(message);
         }
-    }
+
 
     private void saveEmail(String toEmail, String verificationCode) {
         Optional<EmailVerification> emailVerificationOpt = emailRepository.findByEmail(toEmail);
@@ -72,9 +72,9 @@ public class EmailService {
         );
     }
 
-    // 사용중인 이메일인 경우 true 반환
-    public boolean existEmail(String toEmail) {
-        return memberRepository.existsByEmail(toEmail);
+    // 이메일 중복 검사
+    public void existEmail(String toEmail) {
+        if(memberRepository.existsByEmail(toEmail)) throw new AuthException(AuthErrorCode.ALREADY_EXIST_EMAIL);
     }
 
     // 이메일의 인증 상태 반환
