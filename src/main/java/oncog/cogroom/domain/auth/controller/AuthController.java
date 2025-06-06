@@ -5,18 +5,23 @@ import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import oncog.cogroom.domain.auth.service.EmailService;
 import oncog.cogroom.domain.auth.service.AuthServiceRouter;
+import oncog.cogroom.domain.auth.service.EmailService;
 import oncog.cogroom.global.common.response.ApiResponse;
+import oncog.cogroom.global.common.response.code.ApiErrorCode;
 import oncog.cogroom.global.common.response.code.ApiSuccessCode;
 import oncog.cogroom.global.common.util.CookieUtil;
+import oncog.cogroom.global.exception.swagger.ApiErrorCodeExample;
+import oncog.cogroom.global.exception.swagger.ApiErrorCodeExamples;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
-import static oncog.cogroom.domain.auth.dto.request.AuthRequestDTO.*;
-import static oncog.cogroom.domain.auth.dto.response.AuthResponseDTO.*;
+import static oncog.cogroom.domain.auth.dto.request.AuthRequestDTO.LoginRequestDTO;
+import static oncog.cogroom.domain.auth.dto.request.AuthRequestDTO.SignupRequestDTO;
+import static oncog.cogroom.domain.auth.dto.response.AuthResponseDTO.LoginResponseDTO;
+import static oncog.cogroom.domain.auth.dto.response.AuthResponseDTO.SignupResponseDTO;
 
 @RestController
 @Slf4j
@@ -29,6 +34,9 @@ public class AuthController {
     private final CookieUtil cookieUtil;
 
     @PostMapping("/login")
+    @ApiErrorCodeExamples(
+            value = {ApiErrorCode.class},
+            include = {"USER_NOT_FOUND", "DUPLICATE_USER_EMAIL", "DUPLICATE_USER_NICKNAME"})
     @Operation(summary = "소셜/로컬 통합 로그인", description = "소셜/로컬 통합 로그인 로직을 처리합니다. \n 응답 코드에 따른 자세한 결과는 Notion 명세서를 참고 부탁드립니다.")
     public ResponseEntity<ApiResponse<LoginResponseDTO>> socialLogin(@RequestBody LoginRequestDTO request, HttpServletResponse response) {
         LoginResponseDTO result = router.login(request);
@@ -42,6 +50,10 @@ public class AuthController {
 
 
     @PostMapping("/signup")
+    @ApiErrorCodeExample(
+            value = ApiErrorCode.class,
+            include = {"USER_NOT_FOUND", "DUPLICATE_USER_EMAIL"}
+    )
     @Operation(summary = "소셜/로컬 통합 회원가입", description = "소셜/로컬 통합 회원가입 로직을 처리합니다. \n 응답 코드에 따른 자세한 결과는 Notion 명세서를 참고 부탁드립니다.")
     public ResponseEntity<ApiResponse<SignupResponseDTO>> socialSignup(@RequestBody SignupRequestDTO request, HttpServletResponse response) {
         SignupResponseDTO result = router.signup(request);
