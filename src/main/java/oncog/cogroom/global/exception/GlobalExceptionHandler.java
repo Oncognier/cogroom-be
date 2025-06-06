@@ -66,6 +66,9 @@ public class GlobalExceptionHandler {
             if (field.equals("phoneNumber")) {
                 return AuthErrorCode.INVALID_PHONE_NUMBER_PATTERN;
             }
+            else{
+                return ApiErrorCode.INVALID_PATTERN;
+            }
         }
         if (code.equals("NotBlank") || code.equals("NotNull")) { // 값이 비어있는 경우
             return ApiErrorCode.EMPTY_FILED;
