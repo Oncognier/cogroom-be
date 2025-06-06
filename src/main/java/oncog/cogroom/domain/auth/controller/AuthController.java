@@ -13,6 +13,7 @@ import oncog.cogroom.global.common.response.code.ApiSuccessCode;
 import oncog.cogroom.global.common.util.CookieUtil;
 import oncog.cogroom.global.exception.swagger.ApiErrorCodeExample;
 import oncog.cogroom.global.exception.swagger.ApiErrorCodeExamples;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,11 +42,13 @@ public class AuthController {
     public ResponseEntity<ApiResponse<LoginResponseDTO>> socialLogin(@RequestBody LoginRequestDTO request, HttpServletResponse response) {
         LoginResponseDTO result = router.login(request);
 
-        // refreshToken 쿠키로 셋팅
-        cookieUtil.addRefreshToken(response, result.getTokens().getRefreshToken());
+        // Token 쿠키로 셋팅
+        cookieUtil.addTokenForCookie(response, result.getTokens());
 
-        LoginResponseDTO responseExcludedRefreshToken = result.excludeRefreshToken();
-        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, responseExcludedRefreshToken));
+        LoginResponseDTO responseExcludedToken = result.excludeTokens();
+
+        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, responseExcludedToken));
+
     }
 
 
@@ -58,11 +61,13 @@ public class AuthController {
     public ResponseEntity<ApiResponse<SignupResponseDTO>> socialSignup(@RequestBody SignupRequestDTO request, HttpServletResponse response) {
         SignupResponseDTO result = router.signup(request);
 
-        // refreshToken 쿠키로 셋팅
-        cookieUtil.addRefreshToken(response, result.getTokens().getRefreshToken());
+        // Token 쿠키로 셋팅
+        cookieUtil.addTokenForCookie(response, result.getTokens());
 
-        SignupResponseDTO responseExcludedRefreshToken = result.excludeRefreshToken();
-        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, responseExcludedRefreshToken));
+        SignupResponseDTO responseExcludedToken = result.excludeTokens();
+
+        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, responseExcludedToken));
+
     }
 
     @PostMapping("/email-verification")
@@ -71,6 +76,7 @@ public class AuthController {
         emailService.sendEmail(userEmail);
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
+
     }
 
     @GetMapping("/check-verification")
@@ -80,6 +86,7 @@ public class AuthController {
         emailService.verifyCode(userEmail,verificationCode);
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
+
     }
 
     @PostMapping("/email/{userEmail}/status")
@@ -88,6 +95,7 @@ public class AuthController {
         boolean result = emailService.verifiedEmail(userEmail);
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, result));
+
     }
 
     // 인가 코드 반환받을 테스트 컨트롤러

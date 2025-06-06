@@ -7,6 +7,7 @@ import oncog.cogroom.domain.auth.userInfo.KakaoUserInfo;
 import oncog.cogroom.domain.auth.userInfo.SocialUserInfo;
 import oncog.cogroom.domain.member.enums.Provider;
 import oncog.cogroom.domain.member.repository.MemberRepository;
+import oncog.cogroom.global.common.util.TokenUtil;
 import oncog.cogroom.global.security.jwt.JwtProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -26,8 +27,8 @@ public class KakaoAuthService extends AbstractSocialAuthService {
 
     private final RestTemplate restTemplate;
 
-    public KakaoAuthService(JwtProvider jwtProvider, MemberRepository memberRepository, RestTemplate restTemplate) {
-        super(jwtProvider, memberRepository);
+    public KakaoAuthService(MemberRepository memberRepository, TokenUtil tokenUtil, RestTemplate restTemplate) {
+        super( memberRepository,tokenUtil);
         this.restTemplate = restTemplate;
     }
 

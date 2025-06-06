@@ -16,15 +16,11 @@ public class AuthResponseDTO {
         ServiceTokenDTO tokens;
         boolean needSignup;
 
-        // accessToken만 반환하는 형식으로 변형
-        public LoginResponseDTO excludeRefreshToken() {
-            ServiceTokenDTO tokens = ServiceTokenDTO.builder()
-                    .refreshToken(null)
-                    .accessToken(this.getTokens().getAccessToken())
-                    .build();
+        // token null로 변경
+        public LoginResponseDTO excludeTokens() {
 
             return LoginResponseDTO.builder()
-                    .tokens(tokens)
+                    .tokens(null)
                     .needSignup(this.needSignup)
                     .socialUserInfo(this.getSocialUserInfo())
                     .build();
@@ -38,15 +34,11 @@ public class AuthResponseDTO {
 
         ServiceTokenDTO tokens;
 
-        // accessToken만 반환하는 형식으로 변형
-        public SignupResponseDTO excludeRefreshToken() {
-            ServiceTokenDTO tokens = ServiceTokenDTO.builder()
-                    .refreshToken(null)
-                    .accessToken(this.getTokens().getAccessToken())
-                    .build();
+        // token null로 변경
+        public SignupResponseDTO excludeTokens() {
 
             return SignupResponseDTO.builder()
-                    .tokens(tokens)
+                    .tokens(null)
                     .build();
         }
     }
