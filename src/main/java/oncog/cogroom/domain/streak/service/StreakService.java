@@ -2,7 +2,9 @@ package oncog.cogroom.domain.streak.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import oncog.cogroom.domain.member.entity.Member;
 import oncog.cogroom.domain.streak.entity.Streak;
+import oncog.cogroom.domain.streak.entity.StreakLog;
 import oncog.cogroom.domain.streak.repository.StreakLogRepository;
 import oncog.cogroom.domain.streak.repository.StreakRepository;
 import oncog.cogroom.domain.streak.dto.response.StreakCalenderResponseDTO;
@@ -26,8 +28,6 @@ public class StreakService extends BaseService {
     private final StreakLogRepository streakLogRepository;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-
-     // 특정 멤버들의 전날 기록이 없으면 스트릭 일수를 0으로 초기화
     @Transactional
     public void updateAllMemberStreaks() {
 
@@ -48,7 +48,6 @@ public class StreakService extends BaseService {
         });
     }
 
-    // 스트릭 날짜 리스트 조회
     public StreakCalenderResponseDTO getStreakDates() {
         Long memberId = getMemberId();
 
@@ -95,4 +94,22 @@ public class StreakService extends BaseService {
     private LocalDateTime getEndOfMonth() {
         return LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth()).atTime(23, 59, 59);
     }
+
+    public Streak getOrCreateStreak(Member member) {
+        return streakRepository.findByMemberId(member.getId())
+                .orElseGet(() -> streakRepository.save(
+                        Streak.builder().member(member).build()
+                ));
+    }
+
+    public void createStreakLog(Member member, Streak streak) {
+        streakLogRepository.save(StreakLog.builder().member(member).streak(streak).build());
+    }
+
+    public int getStreakDays(Long memberId) {
+        return streakRepository.findByMemberId(memberId)
+                .map(Streak::getTotalDays)
+                .orElse(0);
+    }
+
 }
