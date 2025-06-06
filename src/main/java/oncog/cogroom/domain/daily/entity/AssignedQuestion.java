@@ -3,7 +3,6 @@ package oncog.cogroom.domain.daily.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import oncog.cogroom.domain.member.entity.Member;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
@@ -32,9 +31,11 @@ public class AssignedQuestion {
     @Builder.Default
     private boolean isAnswered = false;
 
-    @CreatedDate
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(nullable = false, updatable = false)
     private LocalDateTime assignedDate;
 
+    public void setIsAnswered() {
+        this.isAnswered = true;
+    }
 }
