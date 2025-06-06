@@ -10,6 +10,7 @@ import oncog.cogroom.global.common.service.BaseService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -51,7 +52,7 @@ public class StreakService extends BaseService {
     public StreakCalenderResponseDTO getStreakDates() {
         Long memberId = getMemberId();
 
-        LocalDateTime startOfMonth = getStartOfMonth();
+        LocalDateTime startOfMonth = getStartOfCalenderMonth();
         LocalDateTime endOfMonth = getEndOfMonth();
 
         List<String> streakDates = streakLogRepository
@@ -78,8 +79,17 @@ public class StreakService extends BaseService {
         return getStartOfYesterday().plusDays(1).minusNanos(1);
     }
 
-    private LocalDateTime getStartOfMonth() {
-        return LocalDate.now().withDayOfMonth(1).atStartOfDay();
+    private LocalDateTime getStartOfCalenderMonth() {
+        LocalDate firstDayOfMonth =  LocalDate.now().withDayOfMonth(1);
+        DayOfWeek startDayOfWeek = firstDayOfMonth.getDayOfWeek();
+
+        // 이번 달 시작 일이 월요일이 아닐 경우, 그 주의 월요일로 변경
+        if (startDayOfWeek != DayOfWeek.MONDAY) {
+            int tmpSubtract = (startDayOfWeek.getValue() + 6) % 7;
+            firstDayOfMonth = firstDayOfMonth.minusDays(tmpSubtract);
+        }
+
+        return firstDayOfMonth.atStartOfDay();
     }
 
     private LocalDateTime getEndOfMonth() {
