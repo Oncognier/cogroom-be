@@ -3,6 +3,7 @@ package oncog.cogroom.domain.auth.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.auth.service.AuthServiceRouter;
@@ -13,6 +14,7 @@ import oncog.cogroom.global.common.response.code.ApiSuccessCode;
 import oncog.cogroom.global.common.util.CookieUtil;
 import oncog.cogroom.global.exception.swagger.ApiErrorCodeExample;
 import oncog.cogroom.global.exception.swagger.ApiErrorCodeExamples;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,14 +40,16 @@ public class AuthController {
             value = {ApiErrorCode.class},
             include = {"USER_NOT_FOUND", "DUPLICATE_USER_EMAIL", "DUPLICATE_USER_NICKNAME"})
     @Operation(summary = "소셜/로컬 통합 로그인", description = "소셜/로컬 통합 로그인 로직을 처리합니다. \n 응답 코드에 따른 자세한 결과는 Notion 명세서를 참고 부탁드립니다.")
-    public ResponseEntity<ApiResponse<LoginResponseDTO>> socialLogin(@RequestBody LoginRequestDTO request, HttpServletResponse response) {
+    public ResponseEntity<ApiResponse<LoginResponseDTO>> socialLogin(@RequestBody @Valid LoginRequestDTO request, HttpServletResponse response) {
         LoginResponseDTO result = router.login(request);
 
-        // refreshToken 쿠키로 셋팅
-        cookieUtil.addRefreshToken(response, result.getTokens().getRefreshToken());
+        // Token 쿠키로 셋팅
+        cookieUtil.addTokenForCookie(response, result.getTokens());
 
-        LoginResponseDTO responseExcludedRefreshToken = result.excludeRefreshToken();
-        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, responseExcludedRefreshToken));
+        LoginResponseDTO responseExcludedToken = result.excludeTokens();
+
+        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, responseExcludedToken));
+
     }
 
 
@@ -55,14 +59,16 @@ public class AuthController {
             include = {"USER_NOT_FOUND", "DUPLICATE_USER_EMAIL"}
     )
     @Operation(summary = "소셜/로컬 통합 회원가입", description = "소셜/로컬 통합 회원가입 로직을 처리합니다. \n 응답 코드에 따른 자세한 결과는 Notion 명세서를 참고 부탁드립니다.")
-    public ResponseEntity<ApiResponse<SignupResponseDTO>> socialSignup(@RequestBody SignupRequestDTO request, HttpServletResponse response) {
+    public ResponseEntity<ApiResponse<SignupResponseDTO>> socialSignup(@RequestBody @Valid SignupRequestDTO request, HttpServletResponse response) {
         SignupResponseDTO result = router.signup(request);
 
-        // refreshToken 쿠키로 셋팅
-        cookieUtil.addRefreshToken(response, result.getTokens().getRefreshToken());
+        // Token 쿠키로 셋팅
+        cookieUtil.addTokenForCookie(response, result.getTokens());
 
-        SignupResponseDTO responseExcludedRefreshToken = result.excludeRefreshToken();
-        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, responseExcludedRefreshToken));
+        SignupResponseDTO responseExcludedToken = result.excludeTokens();
+
+        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, responseExcludedToken));
+
     }
 
     @PostMapping("/email-verification")
@@ -71,6 +77,7 @@ public class AuthController {
         emailService.sendEmail(userEmail);
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
+
     }
 
     @GetMapping("/check-verification")
@@ -88,12 +95,6 @@ public class AuthController {
         boolean result = emailService.verifiedEmail(userEmail);
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, result));
-    }
 
-    // 인가 코드 반환받을 테스트 컨트롤러
-    @GetMapping("/login/code")
-    public ResponseEntity<String> test(@RequestParam String code) {
-        log.info("code = " + code);
-        return ResponseEntity.ok("good");
     }
 }

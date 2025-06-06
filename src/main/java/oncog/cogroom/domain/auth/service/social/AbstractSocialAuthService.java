@@ -2,24 +2,27 @@ package oncog.cogroom.domain.auth.service.social;
 
 
 import lombok.RequiredArgsConstructor;
-import static oncog.cogroom.domain.auth.dto.request.AuthRequestDTO.*;
-import static oncog.cogroom.domain.auth.dto.response.AuthResponseDTO.*;
+import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.auth.service.AuthService;
 import oncog.cogroom.domain.auth.userInfo.SocialUserInfo;
 import oncog.cogroom.domain.member.entity.Member;
 import oncog.cogroom.domain.member.enums.MemberRole;
 import oncog.cogroom.domain.member.enums.MemberStatus;
 import oncog.cogroom.domain.member.repository.MemberRepository;
-import oncog.cogroom.global.security.domain.CustomUserDetails;
-import oncog.cogroom.global.security.jwt.JwtProvider;
+import oncog.cogroom.global.common.util.TokenUtil;
 
 import java.util.Optional;
 
+import static oncog.cogroom.domain.auth.dto.request.AuthRequestDTO.LoginRequestDTO;
+import static oncog.cogroom.domain.auth.dto.request.AuthRequestDTO.SignupRequestDTO;
+import static oncog.cogroom.domain.auth.dto.response.AuthResponseDTO.*;
+
 @RequiredArgsConstructor
+@Slf4j
 public abstract class AbstractSocialAuthService implements AuthService {
 
-    private final JwtProvider jwtProvider;
     private final MemberRepository memberRepository;
+    private final TokenUtil tokenUtil;
 
     // 소셜 로그인 공통 로직
     public final LoginResponseDTO login(LoginRequestDTO request){
@@ -31,7 +34,7 @@ public abstract class AbstractSocialAuthService implements AuthService {
 
         // 사용자 유무에 따른 로직 분기
         if (memberOpt.isPresent()) {
-            ServiceTokenDTO tokenDTO = createTokens(memberOpt.get());
+            ServiceTokenDTO tokenDTO = tokenUtil.createTokens(memberOpt.get());
 
             return LoginResponseDTO.builder()
                     .socialUserInfo(null)
@@ -61,27 +64,11 @@ public abstract class AbstractSocialAuthService implements AuthService {
                 .status(MemberStatus.ACTIVE)
                 .build());
 
-        ServiceTokenDTO tokens = createTokens(savedMember);
+        ServiceTokenDTO tokens = tokenUtil.createTokens(savedMember);
 
         return SignupResponseDTO.builder()
                 .tokens(tokens)
                 .build();
-    }
-
-    // 토큰 생성
-    public final ServiceTokenDTO createTokens(Member member) {
-        CustomUserDetails userDetails = CustomUserDetails.builder()
-                        .provider(member.getProvider())
-                        .role(MemberRole.USER)
-                        .memberId(member.getId())
-                        .build();
-
-        String accessToken = jwtProvider.generateAccessToken(userDetails);
-        String refreshToken = jwtProvider.generateRefreshToken(String.valueOf(userDetails.getMemberId()));
-
-        return ServiceTokenDTO.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken).build();
     }
 
     // 각 구현체에서 오버라이드된 메소드들이 실행됨

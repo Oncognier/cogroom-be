@@ -5,12 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.daily.dto.response.DailyQuestionResponseDTO;
 import oncog.cogroom.domain.daily.entity.AssignedQuestion;
 import oncog.cogroom.domain.daily.exception.DailyErrorCode;
+import oncog.cogroom.domain.daily.exception.DailyException;
 import oncog.cogroom.domain.daily.respository.AnswerRepository;
 import oncog.cogroom.domain.daily.respository.AssignedQuestionRepository;
 import oncog.cogroom.domain.streak.entity.Streak;
 import oncog.cogroom.domain.streak.repository.StreakRepository;
 import oncog.cogroom.global.common.service.BaseService;
-import oncog.cogroom.global.exception.domain.DailyException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

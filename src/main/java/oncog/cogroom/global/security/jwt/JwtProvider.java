@@ -7,6 +7,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
+import oncog.cogroom.domain.auth.exception.AuthErrorCode;
+import oncog.cogroom.domain.auth.exception.AuthException;
 import oncog.cogroom.global.security.domain.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -54,10 +56,10 @@ public class JwtProvider {
             return true;
         }catch(ExpiredJwtException e){
             log.error("Expired JWT token: {}", e.getMessage());
-            return false;
+            throw new AuthException(AuthErrorCode.EXPIRED_TOKEN);
         } catch (JwtException | IllegalArgumentException e) {
             log.error("Invalid JWT token : {}", e.getMessage());
-            return false;
+            throw new AuthException(AuthErrorCode.INVALID_TOKEN);
         }
     }
 

@@ -5,8 +5,10 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.auth.entity.EmailVerification;
+import oncog.cogroom.domain.auth.exception.AuthErrorCode;
 import oncog.cogroom.domain.auth.repository.EmailRepository;
 import oncog.cogroom.domain.member.repository.MemberRepository;
+import oncog.cogroom.domain.auth.exception.AuthException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -43,7 +45,7 @@ public class EmailService {
             helper.setFrom(fromEmail); // 발신 이메일
             mailSender.send(message);
         }else{
-            throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
+            throw new AuthException(AuthErrorCode.ALREADY_EXIST_EMAIL);
         }
     }
 
@@ -85,7 +87,7 @@ public class EmailService {
         byEmailAndVerifyCode.ifPresent(emailVerification -> {
             // 링크 시간이 만료된 경우
             if(LocalDateTime.now().isAfter(emailVerification.getExpireDate())){
-                throw new IllegalArgumentException("링크 시간 만료");
+                throw new AuthException(AuthErrorCode.EXPIRED_LINK);
             }
 
             // 링크 시간이 만료되지 않았으면 인증
