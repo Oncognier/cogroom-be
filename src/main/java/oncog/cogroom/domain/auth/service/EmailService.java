@@ -4,6 +4,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import oncog.cogroom.domain.auth.dto.request.AuthRequestDTO;
 import oncog.cogroom.domain.auth.entity.EmailVerification;
 import oncog.cogroom.domain.auth.exception.AuthErrorCode;
 import oncog.cogroom.domain.auth.repository.EmailRepository;
@@ -34,7 +35,8 @@ public class EmailService {
     @Value("${spring.mail.email-link-url}")
     private String emailLinkUrl;
 
-    public void sendEmail(String toEmail) throws MessagingException {
+    public void sendEmail(AuthRequestDTO.EmailRequestDTO request) throws MessagingException {
+        String toEmail = request.getEmail();
         if (!existEmail(toEmail)) {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
@@ -76,7 +78,8 @@ public class EmailService {
     }
 
     // 이메일의 인증 상태 반환
-    public boolean verifiedEmail(String toEmail) {
+    public boolean verifiedEmail(AuthRequestDTO.EmailRequestDTO request) {
+        String toEmail = request.getEmail();
         return emailRepository.existsByEmailAndVerifyStatus(toEmail,true);
     }
 

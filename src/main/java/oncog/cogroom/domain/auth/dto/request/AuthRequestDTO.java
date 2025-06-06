@@ -53,4 +53,12 @@ public class AuthRequestDTO {
         // 소셜
         private String providerId;
     }
+
+    @Getter
+    public static class EmailRequestDTO{
+
+        @NotBlank
+        @Email
+        private String email;
+    }
 }

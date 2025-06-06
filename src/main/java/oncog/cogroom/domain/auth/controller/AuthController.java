@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import oncog.cogroom.domain.auth.dto.request.AuthRequestDTO;
 import oncog.cogroom.domain.auth.service.AuthServiceRouter;
 import oncog.cogroom.domain.auth.service.EmailService;
 import oncog.cogroom.global.common.response.ApiResponse;
@@ -73,8 +74,8 @@ public class AuthController {
 
     @PostMapping("/email-verification")
     @Operation(summary = "인증 이메일 전송", description = "인증용 링크가 포함된 이메일을 전송합니다. \n 응답 코드에 따른 자세한 결과는 Notion 명세서를 참고 부탁드립니다.")
-    public ResponseEntity<ApiResponse<String>> sendEmail(@RequestParam String userEmail) throws MessagingException, IOException {
-        emailService.sendEmail(userEmail);
+    public ResponseEntity<ApiResponse<String>> sendEmail(@RequestBody @Valid AuthRequestDTO.EmailRequestDTO request) throws MessagingException, IOException {
+        emailService.sendEmail(request);
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
 
@@ -89,10 +90,10 @@ public class AuthController {
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
     }
 
-    @PostMapping("/email/{userEmail}/status")
+    @PostMapping("/email/status")
     @Operation(summary = "이메일 인증 여부 반환", description = "이메일의 인증이 완료되었는지 여부를 반환합니다. \n 응답 코드에 따른 자세한 결과는 Notion 명세서를 참고 부탁드립니다.")
-    public ResponseEntity<ApiResponse<Boolean>> checkEmailVerificationStatus(@PathVariable String userEmail) {
-        boolean result = emailService.verifiedEmail(userEmail);
+    public ResponseEntity<ApiResponse<Boolean>> checkEmailVerificationStatus(@RequestBody @Valid AuthRequestDTO.EmailRequestDTO request) {
+        boolean result = emailService.verifiedEmail(request);
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, result));
 
