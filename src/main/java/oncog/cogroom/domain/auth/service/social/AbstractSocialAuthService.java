@@ -2,8 +2,7 @@ package oncog.cogroom.domain.auth.service.social;
 
 
 import lombok.RequiredArgsConstructor;
-import static oncog.cogroom.domain.auth.dto.request.AuthRequestDTO.*;
-import static oncog.cogroom.domain.auth.dto.response.AuthResponseDTO.*;
+import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.auth.service.AuthService;
 import oncog.cogroom.domain.auth.userInfo.SocialUserInfo;
 import oncog.cogroom.domain.member.entity.Member;
@@ -11,12 +10,15 @@ import oncog.cogroom.domain.member.enums.MemberRole;
 import oncog.cogroom.domain.member.enums.MemberStatus;
 import oncog.cogroom.domain.member.repository.MemberRepository;
 import oncog.cogroom.global.common.util.TokenUtil;
-import oncog.cogroom.global.security.domain.CustomUserDetails;
-import oncog.cogroom.global.security.jwt.JwtProvider;
 
 import java.util.Optional;
 
+import static oncog.cogroom.domain.auth.dto.request.AuthRequestDTO.LoginRequestDTO;
+import static oncog.cogroom.domain.auth.dto.request.AuthRequestDTO.SignupRequestDTO;
+import static oncog.cogroom.domain.auth.dto.response.AuthResponseDTO.*;
+
 @RequiredArgsConstructor
+@Slf4j
 public abstract class AbstractSocialAuthService implements AuthService {
 
     private final MemberRepository memberRepository;
@@ -68,7 +70,6 @@ public abstract class AbstractSocialAuthService implements AuthService {
                 .tokens(tokens)
                 .build();
     }
-
 
     // 각 구현체에서 오버라이드된 메소드들이 실행됨
     protected abstract String requestAccessToken(String code);

@@ -3,8 +3,10 @@ package oncog.cogroom.domain.member.service;
 import lombok.RequiredArgsConstructor;
 import oncog.cogroom.domain.member.dto.MemberRequestDTO;
 import oncog.cogroom.domain.member.entity.Member;
+import oncog.cogroom.domain.member.exception.MemberException;
 import oncog.cogroom.domain.member.repository.MemberRepository;
 import oncog.cogroom.global.common.service.BaseService;
+import oncog.cogroom.global.exception.CustomException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +22,7 @@ public class MemberService extends BaseService {
     public MemberInfoDTO findMemberInfo() {
         Long memberId = getMemberId();
 
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("member not found"));
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomException(MemberException.MEMBER_NOT_FOUND));
 
         return MemberInfoDTO.builder()
                 .email(member.getEmail())
@@ -34,10 +36,10 @@ public class MemberService extends BaseService {
     public void updateMemberInfo(MemberRequestDTO.MemberInfoUpdateDTO request){
         Long memberId = getMemberId();
 
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("member not found"));
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomException(MemberException.MEMBER_NOT_FOUND));
 
         if(!request.getPhoneNumber().matches("^01[016789]-\\d{3,4}-\\d{4}$")){
-            throw new IllegalArgumentException("전화번호 형식 오류");
+            throw new CustomException(MemberException.INVALID_PHONE_NUMBER);
         }
 
         member.updateMemberInfo(request);
@@ -46,7 +48,7 @@ public class MemberService extends BaseService {
     public boolean existNickname(MemberRequestDTO.ExistNicknameDTO request) {
 
         if(memberRepository.existsByNickname(request.getNickname())){
-            throw new IllegalArgumentException("이미 존재하는 닉네임");
+            throw new CustomException(MemberException.DUPLICATE_USER_NICKNAME);
         }
 
         return false;

@@ -2,6 +2,7 @@ package oncog.cogroom.domain.auth.service.social;
 
 import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.auth.dto.response.SocialTokenResponseDTO;
+import oncog.cogroom.domain.auth.exception.AuthErrorCode;
 import oncog.cogroom.domain.auth.userInfo.KakaoUserInfo;
 import oncog.cogroom.domain.auth.userInfo.SocialUserInfo;
 import oncog.cogroom.domain.member.enums.Provider;
@@ -51,7 +52,7 @@ public class KakaoAuthService extends AbstractSocialAuthService {
             return response.getBody().getAccessToken();
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             log.error("카카오 액세스 토큰 요청 실패 : {}", e.getResponseBodyAsString());
-            throw new AuthException(ApiErrorCode.KAKAO_AUTH_FAILED);
+            throw new AuthException(AuthErrorCode.KAKAO_AUTH_FAILED);
         }
     }
 
@@ -72,7 +73,7 @@ public class KakaoAuthService extends AbstractSocialAuthService {
 
         } catch (HttpClientErrorException e) {
             log.error("Kakao 사용자 정보 조회 API 호출 실패: 상태 코드 {}, 응답 본문 {}", e.getStatusCode(), e.getResponseBodyAsString());
-            throw new AuthException(ApiErrorCode.KAKAO_AUTH_FAILED);
+            throw new AuthException(AuthErrorCode.KAKAO_AUTH_FAILED);
         }
     }
 
