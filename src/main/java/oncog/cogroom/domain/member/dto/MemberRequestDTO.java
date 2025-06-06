@@ -3,6 +3,7 @@ package oncog.cogroom.domain.member.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -25,6 +26,9 @@ public class MemberRequestDTO {
 
         @NotBlank
         private String phoneNumber;
+
+        @Pattern(regexp = "^(?=.*[A-Z])(?=.*[@$!%*?&]).{8,16}$")
+        private String password;
     }
 
     @Getter

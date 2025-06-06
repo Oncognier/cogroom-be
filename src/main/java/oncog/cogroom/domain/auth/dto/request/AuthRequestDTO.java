@@ -17,9 +17,6 @@ public class AuthRequestDTO {
         @NotNull
         private Provider provider;
 
-        @NotBlank
-        private String nickname;
-
         @Email
         @Size(max = 30)
         private String email;
