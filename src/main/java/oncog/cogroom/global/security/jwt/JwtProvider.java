@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.Optional;
 
 @Component
 @Slf4j
@@ -68,14 +69,24 @@ public class JwtProvider {
                 .getPayload();
     }
 
-    // Spring Security Context에서 memberId 추출
-    public Long extractMemberId() {
-        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getPrincipal();
+    public Optional<Long> extractMemberId() {
+        try {
+            var authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication == null || !authentication.isAuthenticated()) {
+                return Optional.empty();
+            }
 
-        return userDetails.getMemberId();  // userId를 Long 타입으로 변환
+            Object principal = authentication.getPrincipal();
+            if (principal instanceof CustomUserDetails userDetails) {
+                return Optional.of(userDetails.getMemberId());
+            }
+
+            return Optional.empty();
+
+        } catch (Exception e) {
+            log.error("extractMemberId 실패: {}", e.getMessage());
+            return Optional.empty();
+        }
     }
 
     private SecretKey generateSecretKey(){
