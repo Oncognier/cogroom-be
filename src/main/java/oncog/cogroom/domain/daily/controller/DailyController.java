@@ -36,5 +36,13 @@ public class DailyController implements DailyControllerDocs {
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
     }
 
+    @PatchMapping("/answers")
+    public ResponseEntity<ApiResponse<String>> updateDailyAnswer(@RequestBody @Valid DailyAnswerRequestDTO request) {
+
+        dailyService.updateDailyAnswer(request);
+
+        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
+    }
+
 
 }

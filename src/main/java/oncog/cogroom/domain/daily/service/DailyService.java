@@ -11,7 +11,6 @@ import oncog.cogroom.domain.daily.exception.DailyErrorCode;
 import oncog.cogroom.domain.daily.exception.DailyException;
 import oncog.cogroom.domain.daily.respository.AnswerRepository;
 import oncog.cogroom.domain.daily.respository.AssignedQuestionRepository;
-import oncog.cogroom.domain.daily.respository.QuestionRepository;
 import oncog.cogroom.domain.member.entity.Member;
 import oncog.cogroom.domain.member.exception.MemberErrorCode;
 import oncog.cogroom.domain.member.exception.MemberException;
@@ -33,20 +32,23 @@ public class DailyService extends BaseService {
     private final AnswerRepository answerRepository;
     private final AssignedQuestionRepository assignedQuestionRepository;
     private final MemberRepository memberRepository;
-    private final QuestionRepository questionRepository;
     private final StreakService streakService;
 
+
+
     public DailyQuestionResponseDTO getTodayDailyQuestion() {
-        Long memberId = getMemberId();
+        Member member = getMember();
 
         LocalDateTime startOfToday = getStartOfToday();
         LocalDateTime endOfToday = getEndOfToday();
 
-        int streakDays = streakService.getStreakDays(memberId);
+        int streakDays = streakService.getStreakDays(member);
 
-        AssignedQuestion question = getAssignedQuestion(memberId, startOfToday);
+        AssignedQuestion question = getAssignedQuestion(member, startOfToday);
 
-        String answer = question.isAnswered() ? getAnswerIfExists(memberId, startOfToday, endOfToday) : null;
+        String answer = question.isAnswered()
+                ? getAnswer(member, startOfToday, endOfToday).getAnswer()
+                : null;
 
         return DailyQuestionResponseDTO.builder()
                 .streakDays(streakDays)
@@ -59,27 +61,34 @@ public class DailyService extends BaseService {
 
     @Transactional
     public void createDailyAnswer(DailyAnswerRequestDTO request) {
-        Long memberId = getMemberId();
-        Member member = findMember(memberId);
-        Question question = findQuestion(request.getQuestionId());
+        Member member = getMember();
+
+        LocalDateTime startOfToday = getStartOfToday();
+        Question question = getAssignedQuestion(member, startOfToday).getQuestion();
 
         checkDuplicateAnswer(member, question); // 중복 답변 확인
 
-        checkIsAssignedQuestion(member, question);
-
         saveAnswer(member, question, request.getAnswer());
-        updateAssignedQuestionStatus(member);
+        markAssignedQuestionAsAnswered(member);
 
         updateStreakInfo(member);
     }
 
-    private AssignedQuestion getAssignedQuestion(Long memberId, LocalDateTime date) {
-        return assignedQuestionRepository.findByMemberAndAssignedDate(memberId, date)
+    @Transactional
+    public void updateDailyAnswer(DailyAnswerRequestDTO request) {
+        Member member = getMember();
+
+        updateAnswer(member, request.getAnswer());
+    }
+
+    private AssignedQuestion getAssignedQuestion(Member member, LocalDateTime date) {
+        return assignedQuestionRepository.findByMemberAndAssignedDate(member, date)
                 .orElseThrow(() -> new DailyException(DailyErrorCode.DAILY_QUESTION_NOT_FOUND));
     }
 
-    private String getAnswerIfExists(Long memberId, LocalDateTime start, LocalDateTime end) {
-        return answerRepository.findByMemberAndCreatedAtBetween(memberId, start, end).orElse(null);
+    private Answer getAnswer(Member member, LocalDateTime start, LocalDateTime end) {
+        return answerRepository.findByMemberAndCreatedAtBetween(member, start, end)
+                .orElseThrow(() -> new DailyException(DailyErrorCode.ANSWER_NOT_FOUND));
     }
 
     private LocalDateTime getStartOfToday() {
@@ -90,14 +99,9 @@ public class DailyService extends BaseService {
         return getStartOfToday().plusDays(1).minusNanos(1);
     }
 
-    private Member findMember(Long memberId) {
-        return memberRepository.findById(memberId)
+    private Member getMember() {
+        return memberRepository.findById(getMemberId())
                 .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
-    }
-
-    private Question findQuestion(Long questionId) {
-        return questionRepository.findById(questionId)
-                .orElseThrow(() -> new DailyException(DailyErrorCode.QUESTION_NOT_FOUND));
     }
 
     private void saveAnswer(Member member, Question question, String content) {
@@ -109,9 +113,9 @@ public class DailyService extends BaseService {
         answerRepository.save(answer);
     }
 
-    private void updateAssignedQuestionStatus(Member member) {
+    private void markAssignedQuestionAsAnswered(Member member) {
         LocalDateTime startOfToday = getStartOfToday();
-        AssignedQuestion assignedQuestion = getAssignedQuestion(member.getId(), startOfToday);
+        AssignedQuestion assignedQuestion = getAssignedQuestion(member, startOfToday);
         assignedQuestion.setIsAnswered();
     }
 
@@ -121,17 +125,18 @@ public class DailyService extends BaseService {
         }
     }
 
-    private void checkIsAssignedQuestion(Member member, Question question) {
-        LocalDateTime startOfToday = getStartOfToday();
-        AssignedQuestion assignedQuestion = getAssignedQuestion(member.getId(), startOfToday);
-        if (!assignedQuestion.getQuestion().getId().equals(question.getId())) {
-            throw new DailyException(DailyErrorCode.INVALID_QUESTION);
-        }
-    }
-
     private void updateStreakInfo(Member member) {
         Streak streak = streakService.getOrCreateStreak(member);
         streak.updateTotalDays(); // 스트릭 날짜 + 1
         streakService.createStreakLog(member, streak); // streak 로그 생성
     }
+
+    private void updateAnswer(Member member, String newAnswer) {
+        LocalDateTime startOfToday = getStartOfToday();
+        LocalDateTime endOfToday = getEndOfToday();
+
+        Answer answer = getAnswer(member, startOfToday, endOfToday);
+        answer.updateAnswer(newAnswer);
+    }
+
 }
