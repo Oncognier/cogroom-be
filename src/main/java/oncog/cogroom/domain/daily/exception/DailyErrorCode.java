@@ -10,9 +10,8 @@ import org.springframework.http.HttpStatus;
 public enum DailyErrorCode implements BaseErrorCode {
 
     DAILY_QUESTION_NOT_FOUND("DAILY_QUESTION_NOT_FOUND", HttpStatus.NOT_FOUND, "데일리 질문을 찾을 수 없습니다."),
-    QUESTION_NOT_FOUND("QUESTION_NOT_FOUND", HttpStatus.NOT_FOUND, "해당 질문을 찾을 수 없습니다."),
-    INVALID_QUESTION("INVALID_QUESTION", HttpStatus.BAD_REQUEST, "오늘 할당된 데일리 질문이 아닙니다."),
-    ALREADY_ANSWERED("ALREADY_ANSWERED", HttpStatus.CONFLICT, "이미 답변이 존재합니다.");
+    ALREADY_ANSWERED("ALREADY_ANSWERED", HttpStatus.CONFLICT, "이미 답변이 존재합니다."),
+    ANSWER_NOT_FOUND("ANSWER_NOT_FOUND", HttpStatus.NOT_FOUND, "데일리 답변을 찾을 수 없습니다.");
 
     private final String code;
     private final HttpStatus status;
