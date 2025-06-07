@@ -96,7 +96,7 @@ public class StreakService extends BaseService {
     }
 
     public Streak getOrCreateStreak(Member member) {
-        return streakRepository.findByMemberId(member.getId())
+        return streakRepository.findByMember(member)
                 .orElseGet(() -> streakRepository.save(
                         Streak.builder().member(member).build()
                 ));
@@ -106,8 +106,8 @@ public class StreakService extends BaseService {
         streakLogRepository.save(StreakLog.builder().member(member).streak(streak).build());
     }
 
-    public int getStreakDays(Long memberId) {
-        return streakRepository.findByMemberId(memberId)
+    public int getStreakDays(Member member) {
+        return streakRepository.findByMember(member)
                 .map(Streak::getTotalDays)
                 .orElse(0);
     }
