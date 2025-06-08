@@ -1,21 +1,22 @@
 package oncog.cogroom.domain.daily.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import oncog.cogroom.domain.daily.controller.docs.DailyControllerDocs;
+import oncog.cogroom.domain.daily.dto.request.DailyAnswerRequestDTO;
 import oncog.cogroom.domain.daily.dto.response.DailyQuestionResponseDTO;
 import oncog.cogroom.domain.daily.service.DailyService;
 import oncog.cogroom.global.common.response.ApiResponse;
 import oncog.cogroom.global.common.response.code.ApiSuccessCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/daily")
-public class DailyController {
+public class DailyController implements DailyControllerDocs {
 
     private final DailyService dailyService;
 
@@ -24,9 +25,23 @@ public class DailyController {
 
         DailyQuestionResponseDTO response = dailyService.getTodayDailyQuestion();
 
-        return ResponseEntity
-                .status(ApiSuccessCode.SUCCESS.getStatus())
-                .body(ApiResponse.of(ApiSuccessCode.SUCCESS, response));
+        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, response));
+    }
+
+    @PostMapping("/answers")
+    public ResponseEntity<ApiResponse<String>> createDailyAnswer(@RequestBody @Valid DailyAnswerRequestDTO request) {
+
+        dailyService.createDailyAnswer(request);
+
+        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
+    }
+
+    @PatchMapping("/answers")
+    public ResponseEntity<ApiResponse<String>> updateDailyAnswer(@RequestBody @Valid DailyAnswerRequestDTO request) {
+
+        dailyService.updateDailyAnswer(request);
+
+        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
     }
 
 

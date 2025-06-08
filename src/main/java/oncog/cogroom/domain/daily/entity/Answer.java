@@ -27,4 +27,8 @@ public class Answer extends BaseTimeEntity {
 
     @Column(nullable = false)
     private String answer;
+
+    public void updateAnswer(String newAnswer) {
+        this.answer = newAnswer;
+    }
 }

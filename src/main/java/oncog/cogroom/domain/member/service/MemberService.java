@@ -7,7 +7,6 @@ import oncog.cogroom.domain.member.exception.MemberErrorCode;
 import oncog.cogroom.domain.member.exception.MemberException;
 import oncog.cogroom.domain.member.repository.MemberRepository;
 import oncog.cogroom.global.common.service.BaseService;
-import oncog.cogroom.global.exception.CustomException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,9 +20,7 @@ public class MemberService extends BaseService {
     private final MemberRepository memberRepository;
 
     public MemberInfoDTO findMemberInfo() {
-        Long memberId = getMemberId();
-
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomException(MemberErrorCode.MEMBER_NOT_FOUND));
+        Member member = getMember();
 
         return MemberInfoDTO.builder()
                 .email(member.getEmail())
@@ -35,9 +32,7 @@ public class MemberService extends BaseService {
     }
 
     public void updateMemberInfo(MemberRequestDTO.MemberInfoUpdateDTO request){
-        Long memberId = getMemberId();
-
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomException(MemberErrorCode.MEMBER_NOT_FOUND));
+        Member member = getMember();
 
         member.updateMemberInfo(request);
     }
