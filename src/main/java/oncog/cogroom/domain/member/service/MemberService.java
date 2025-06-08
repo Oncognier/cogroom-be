@@ -7,6 +7,7 @@ import oncog.cogroom.domain.member.exception.MemberErrorCode;
 import oncog.cogroom.domain.member.exception.MemberException;
 import oncog.cogroom.domain.member.repository.MemberRepository;
 import oncog.cogroom.global.common.service.BaseService;
+import oncog.cogroom.global.exception.CustomException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,9 +26,18 @@ public class MemberService extends BaseService {
         return MemberInfoDTO.builder()
                 .email(member.getEmail())
                 .description(member.getDescription())
-                .imgUrl(member.getProfileImageUrl()) // preSignedUrl 방식 적용 필요
+                .imageUrl(member.getProfileImageUrl())
                 .nickname(member.getNickname())
                 .phoneNumber(member.getPhoneNumber())
+                .build();
+    }
+
+    public MemberSummaryDTO findMemberSummary() {
+        Member member = getMember();
+
+        return MemberSummaryDTO.builder()
+                .imageUrl(member.getProfileImageUrl())
+                .nickname(member.getNickname())
                 .build();
     }
 
