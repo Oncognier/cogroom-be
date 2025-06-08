@@ -20,7 +20,7 @@ public class StreakController implements StreakControllerDocs {
 
     private final StreakService streakService;
 
-    @GetMapping("/calender")
+    @GetMapping("/calendar")
     public ResponseEntity<ApiResponse<StreakCalenderResponseDTO>> getStreakCalender() {
         StreakCalenderResponseDTO response = streakService.getStreakDates();
 
