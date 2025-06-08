@@ -3,7 +3,8 @@ package oncog.cogroom.global.security.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.member.entity.Member;
-import oncog.cogroom.domain.member.enums.Provider;
+import oncog.cogroom.domain.member.exception.MemberErrorCode;
+import oncog.cogroom.domain.member.exception.MemberException;
 import oncog.cogroom.domain.member.repository.MemberRepository;
 import oncog.cogroom.global.security.domain.CustomUserDetails;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,7 +22,7 @@ public class CustomUserDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
         Member member = memberRepository.findById(Long.valueOf(userId))
-                .orElseThrow(() -> new UsernameNotFoundException("사용자가 존재하지 않습니다."));
+                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         log.info("사용자 조회 완료");
 

@@ -12,9 +12,6 @@ import oncog.cogroom.domain.daily.exception.DailyException;
 import oncog.cogroom.domain.daily.respository.AnswerRepository;
 import oncog.cogroom.domain.daily.respository.AssignedQuestionRepository;
 import oncog.cogroom.domain.member.entity.Member;
-import oncog.cogroom.domain.member.exception.MemberErrorCode;
-import oncog.cogroom.domain.member.exception.MemberException;
-import oncog.cogroom.domain.member.repository.MemberRepository;
 import oncog.cogroom.domain.streak.entity.Streak;
 import oncog.cogroom.domain.streak.service.StreakService;
 import oncog.cogroom.global.common.service.BaseService;
@@ -31,10 +28,7 @@ public class DailyService extends BaseService {
 
     private final AnswerRepository answerRepository;
     private final AssignedQuestionRepository assignedQuestionRepository;
-    private final MemberRepository memberRepository;
     private final StreakService streakService;
-
-
 
     public DailyQuestionResponseDTO getTodayDailyQuestion() {
         Member member = getMember();
@@ -97,11 +91,6 @@ public class DailyService extends BaseService {
 
     private LocalDateTime getEndOfToday() {
         return getStartOfToday().plusDays(1).minusNanos(1);
-    }
-
-    private Member getMember() {
-        return memberRepository.findById(getMemberId())
-                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
     }
 
     private void saveAnswer(Member member, Question question, String content) {

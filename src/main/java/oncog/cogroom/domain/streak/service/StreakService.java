@@ -37,9 +37,9 @@ public class StreakService extends BaseService {
         List<Streak> streaks = streakRepository.findAll();
 
         streaks.forEach(streak -> { // 추후 배치 적용 필요
-            Long memberId = streak.getMember().getId();
+            Member member = streak.getMember();
 
-           boolean hasYesterdayLog = hasLogForYesterday(memberId, startOfYesterday, endOfYesterday);
+           boolean hasYesterdayLog = hasLogForYesterday(member, startOfYesterday, endOfYesterday);
 
            // 해당 멤버가 전날에 작성한 log 정보가 없는 경우 누적 스트릭 일수를 0으로 초기화
            if (!hasYesterdayLog && streak.getTotalDays() > 0) { // 기존에 0이 아닐 때만 0으로 초기화 (불필요한 업데이트 방지)
@@ -49,13 +49,13 @@ public class StreakService extends BaseService {
     }
 
     public StreakCalenderResponseDTO getStreakDates() {
-        Long memberId = getMemberId();
+        Member member = getMember();
 
         LocalDateTime startOfMonth = getStartOfCalenderMonth();
         LocalDateTime endOfMonth = getEndOfMonth();
 
         List<String> streakDates = streakLogRepository
-                .findAllByMemberIdAndCreatedAtBetween(memberId, startOfMonth, endOfMonth).stream()
+                .findAllByMemberAndCreatedAtBetween(member, startOfMonth, endOfMonth).stream()
                 .map(log -> log.getCreatedAt().toLocalDate().format(formatter))
                 .distinct()
                 .sorted()
@@ -66,8 +66,8 @@ public class StreakService extends BaseService {
                 .build();
     }
 
-    private boolean hasLogForYesterday(Long memberId, LocalDateTime start, LocalDateTime end) {
-        return streakLogRepository.existsByMemberIdAndCreatedAtBetween(memberId, start, end);
+    private boolean hasLogForYesterday(Member member, LocalDateTime start, LocalDateTime end) {
+        return streakLogRepository.existsByMemberAndCreatedAtBetween(member, start, end);
     }
 
     private LocalDateTime getStartOfYesterday() {
