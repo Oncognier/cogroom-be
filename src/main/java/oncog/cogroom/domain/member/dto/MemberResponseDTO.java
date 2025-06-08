@@ -10,8 +10,23 @@ public class MemberResponseDTO {
     public static class MemberInfoDTO {
         private String email;
         private String nickname;
-        private String imgUrl;
+        private String imageUrl;
         private String description;
         private String phoneNumber;
+    }
+
+    @Builder
+    @Getter
+    public static class MemberSummaryDTO {
+        private String nickname;
+        private String imageUrl;
+    }
+
+    @Builder
+    @Getter
+    public static class MemberMyPageInfoDTO {
+        private String nickname;
+        private Long signupDays;
+        private Integer streakDays;
     }
 }

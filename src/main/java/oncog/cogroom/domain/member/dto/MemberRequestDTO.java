@@ -19,7 +19,7 @@ public class MemberRequestDTO {
         @NotBlank
         private String nickname;
 
-        private String imgUrl;
+        private String imageUrl;
 
         @NotBlank
         private String description;

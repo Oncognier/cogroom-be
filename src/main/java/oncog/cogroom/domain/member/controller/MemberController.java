@@ -5,18 +5,21 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.member.docs.MemberControllerDocs;
 import oncog.cogroom.domain.member.dto.MemberRequestDTO;
+import oncog.cogroom.domain.member.dto.MemberResponseDTO;
+import oncog.cogroom.domain.member.entity.Member;
 import oncog.cogroom.domain.member.service.MemberService;
 import oncog.cogroom.global.common.response.ApiResponse;
 import oncog.cogroom.global.common.response.code.ApiSuccessCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static oncog.cogroom.domain.member.dto.MemberResponseDTO.*;
 import static oncog.cogroom.domain.member.dto.MemberResponseDTO.MemberInfoDTO;
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/api/v1/members")
+@RequestMapping("/api/v1/members/me")
 public class MemberController implements MemberControllerDocs {
 
     private final MemberService memberService;
@@ -27,14 +30,28 @@ public class MemberController implements MemberControllerDocs {
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS,memberInfo));
     }
 
-    @PatchMapping("/me")
+    @GetMapping("/summary")
+    public ResponseEntity<ApiResponse<MemberSummaryDTO>> getMemberSummary() {
+        MemberSummaryDTO memberSummary = memberService.findMemberSummary();
+
+        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS,memberSummary));
+    }
+
+    @GetMapping("/mypage")
+    public ResponseEntity<ApiResponse<MemberMyPageInfoDTO>> getMemberInfoForMyPage() {
+        MemberMyPageInfoDTO memberForMyPage = memberService.findMemberForMyPage();
+
+        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS,memberForMyPage));
+    }
+
+    @PatchMapping("")
     public ResponseEntity<ApiResponse<Void>> updateMemberInfo(@RequestBody @Valid MemberRequestDTO.MemberInfoUpdateDTO request) {
         memberService.updateMemberInfo(request);
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
     }
 
-    @PostMapping("/me/nickname")
+    @PostMapping("/nickname")
     public ResponseEntity<ApiResponse<Boolean>> existNickname(@RequestBody @Valid MemberRequestDTO.ExistNicknameDTO request) {
         boolean isExist = memberService.existNickname(request);
 

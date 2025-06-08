@@ -57,7 +57,7 @@ public class Member extends BaseTimeEntity {
         this.email = request.getEmail();
         this.description = request.getDescription();
         this.phoneNumber = request.getPhoneNumber();
-        this.profileImageUrl = request.getImgUrl();
+        this.profileImageUrl = request.getImageUrl();
         this.nickname = request.getNickname();
     }
 }
