@@ -1,0 +1,37 @@
+package oncog.cogroom.domain.member.docs;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import oncog.cogroom.domain.auth.exception.AuthErrorCode;
+import oncog.cogroom.domain.member.dto.MemberRequestDTO;
+import oncog.cogroom.domain.member.dto.MemberResponseDTO;
+import oncog.cogroom.domain.member.exception.MemberErrorCode;
+import oncog.cogroom.global.common.response.ApiResponse;
+import oncog.cogroom.global.common.response.code.ApiErrorCode;
+import oncog.cogroom.global.exception.swagger.ApiErrorCodeExamples;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
+
+@Tag(name = "Member", description = "Member 관련 API")
+public interface MemberControllerDocs {
+
+    @ApiErrorCodeExamples(
+            value = {MemberErrorCode.class, AuthErrorCode.class},
+            include = {"INVALID_TOKEN","EXPIRED_TOKEN", "MEMBER_NOT_FOUND"})
+    @Operation(summary = "사용자 정보 조회 API", description = "사용자 정보 수정을 위해 사용자 정보를 조회합니다. ")
+    public ResponseEntity<ApiResponse<MemberResponseDTO.MemberInfoDTO>> getMemberInfo();
+
+    @ApiErrorCodeExamples(
+            value = {MemberErrorCode.class, AuthErrorCode.class},
+            include = {"INVALID_TOKEN","EXPIRED_TOKEN", "MEMBER_NOT_FOUND",
+                    "INVALID_PHONE_NUMBER", "INVALID_PASSWORD_FORMAT", "DUPLICATE_USER_NICKNAME"})
+    @Operation(summary = "사용자 정보 수정 API", description = "사용자 정보를 수정합니다. ")
+    public ResponseEntity<ApiResponse<Void>> updateMemberInfo(@RequestBody @Valid MemberRequestDTO.MemberInfoUpdateDTO request);
+
+    @ApiErrorCodeExamples(
+            value = {ApiErrorCode.class, MemberErrorCode.class},
+            include = {"EMPTY_FILED", "DUPLICATE_USER_NICKNAME"})
+    @Operation(summary = "닉네임 중복검사 API", description = "닉네임 중복 검사를 진행합니다.")
+    public ResponseEntity<ApiResponse<Boolean>> existNickname(@RequestBody @Valid MemberRequestDTO.ExistNicknameDTO request);
+}
