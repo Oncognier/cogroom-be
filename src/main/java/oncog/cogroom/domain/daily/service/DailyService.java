@@ -32,13 +32,18 @@ public class DailyService extends BaseService {
 
     public DailyQuestionResponseDTO getTodayDailyQuestion() {
         Member member = getMember();
+        log.info("멤버 아이디: {}", member.getId());
 
         LocalDateTime startOfToday = getStartOfToday();
         LocalDateTime endOfToday = getEndOfToday();
 
+        log.info("startOfToday: {}", startOfToday);
+        log.info("endOfToday: {}", endOfToday);
+
         int streakDays = streakService.getStreakDays(member);
 
-        AssignedQuestion question = getAssignedQuestion(member, startOfToday);
+        AssignedQuestion question = getAssignedQuestion(member, startOfToday, endOfToday);
+        log.info("질문 할당 시간: {}", question.getAssignedDate());
 
         String answer = question.isAnswered()
                 ? getAnswer(member, startOfToday, endOfToday).getAnswer()
@@ -58,7 +63,8 @@ public class DailyService extends BaseService {
         Member member = getMember();
 
         LocalDateTime startOfToday = getStartOfToday();
-        Question question = getAssignedQuestion(member, startOfToday).getQuestion();
+        LocalDateTime endOfToday = getEndOfToday();
+        Question question = getAssignedQuestion(member, startOfToday, endOfToday).getQuestion();
 
         checkDuplicateAnswer(member, question); // 중복 답변 확인
 
@@ -75,8 +81,8 @@ public class DailyService extends BaseService {
         updateAnswer(member, request.getAnswer());
     }
 
-    private AssignedQuestion getAssignedQuestion(Member member, LocalDateTime date) {
-        return assignedQuestionRepository.findByMemberAndAssignedDate(member, date)
+    private AssignedQuestion getAssignedQuestion(Member member, LocalDateTime startOfToday, LocalDateTime endOfToday) {
+        return assignedQuestionRepository.findByMemberAndAssignedDateBetween(member, startOfToday, endOfToday)
                 .orElseThrow(() -> new DailyException(DailyErrorCode.DAILY_QUESTION_NOT_FOUND));
     }
 
@@ -104,7 +110,8 @@ public class DailyService extends BaseService {
 
     private void markAssignedQuestionAsAnswered(Member member) {
         LocalDateTime startOfToday = getStartOfToday();
-        AssignedQuestion assignedQuestion = getAssignedQuestion(member, startOfToday);
+        LocalDateTime endOfToday = getEndOfToday();
+        AssignedQuestion assignedQuestion = getAssignedQuestion(member, startOfToday, endOfToday);
         assignedQuestion.setIsAnswered();
     }
 

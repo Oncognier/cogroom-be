@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface AssignedQuestionRepository extends JpaRepository<AssignedQuestion, Long> {
     boolean existsByMemberAndAssignedDateAfter(Member member, LocalDateTime assignedDateAfter);
 
-    Optional<AssignedQuestion> findByMemberAndAssignedDate(Member member, LocalDateTime assignedDate);
+    Optional<AssignedQuestion> findByMemberAndAssignedDateBetween(Member member, LocalDateTime start, LocalDateTime end);
 }
