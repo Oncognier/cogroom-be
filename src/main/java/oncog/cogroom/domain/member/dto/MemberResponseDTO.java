@@ -22,5 +22,11 @@ public class MemberResponseDTO {
         private String imageUrl;
     }
 
-
+    @Builder
+    @Getter
+    public static class MemberMyPageInfoDTO {
+        private String nickname;
+        private Long signupDays;
+        private Integer streakDays;
+    }
 }

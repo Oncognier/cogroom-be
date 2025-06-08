@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.member.docs.MemberControllerDocs;
 import oncog.cogroom.domain.member.dto.MemberRequestDTO;
 import oncog.cogroom.domain.member.dto.MemberResponseDTO;
+import oncog.cogroom.domain.member.entity.Member;
 import oncog.cogroom.domain.member.service.MemberService;
 import oncog.cogroom.global.common.response.ApiResponse;
 import oncog.cogroom.global.common.response.code.ApiSuccessCode;
@@ -34,6 +35,13 @@ public class MemberController implements MemberControllerDocs {
         MemberSummaryDTO memberSummary = memberService.findMemberSummary();
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS,memberSummary));
+    }
+
+    @GetMapping("/mypage")
+    public ResponseEntity<ApiResponse<MemberMyPageInfoDTO>> getMemberInfoForMyPage() {
+        MemberMyPageInfoDTO memberForMyPage = memberService.findMemberForMyPage();
+
+        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS,memberForMyPage));
     }
 
     @PatchMapping("")

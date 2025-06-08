@@ -6,10 +6,13 @@ import oncog.cogroom.domain.member.entity.Member;
 import oncog.cogroom.domain.member.exception.MemberErrorCode;
 import oncog.cogroom.domain.member.exception.MemberException;
 import oncog.cogroom.domain.member.repository.MemberRepository;
+import oncog.cogroom.domain.streak.service.StreakService;
 import oncog.cogroom.global.common.service.BaseService;
-import oncog.cogroom.global.exception.CustomException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 import static oncog.cogroom.domain.member.dto.MemberResponseDTO.*;
 
@@ -19,6 +22,7 @@ import static oncog.cogroom.domain.member.dto.MemberResponseDTO.*;
 public class MemberService extends BaseService {
 
     private final MemberRepository memberRepository;
+    private final StreakService streakService;
 
     public MemberInfoDTO findMemberInfo() {
         Member member = getMember();
@@ -41,6 +45,23 @@ public class MemberService extends BaseService {
                 .build();
     }
 
+    public MemberMyPageInfoDTO findMemberForMyPage() {
+        Member member = getMember();
+
+        // 가입 일과 오늘 날짜 사이의 일 수 차이 계산
+        long days = ChronoUnit.DAYS.between(member.getCreatedAt().toLocalDate(), LocalDate.now()) + 1;
+
+        // 스트릭 누적 일 수 계산
+        int streakDays = streakService.getStreakDays(member);
+
+        return MemberMyPageInfoDTO.builder()
+                .nickname(member.getNickname())
+                .signupDays(days)
+                .streakDays(streakDays)
+                .build();
+    }
+
+
     public void updateMemberInfo(MemberRequestDTO.MemberInfoUpdateDTO request){
         Member member = getMember();
 
@@ -49,16 +70,10 @@ public class MemberService extends BaseService {
 
     public boolean existNickname(MemberRequestDTO.ExistNicknameDTO request) {
 
-        if(memberRepository.existsByNickname(request.getNickname())){
+        if(Boolean.TRUE.equals(memberRepository.existsByNickname(request.getNickname()))){
             throw new MemberException(MemberErrorCode.DUPLICATE_USER_NICKNAME);
         }
 
         return false;
     }
-
-    public boolean isExist(String memberId) {
-        return memberRepository.existsById(Long.valueOf(memberId));
-    }
-
-
-    }
+}
