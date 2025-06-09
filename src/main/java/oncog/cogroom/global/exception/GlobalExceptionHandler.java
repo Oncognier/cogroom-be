@@ -2,6 +2,7 @@ package oncog.cogroom.global.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.auth.exception.AuthErrorCode;
+import oncog.cogroom.domain.daily.exception.DailyErrorCode;
 import oncog.cogroom.global.common.response.ApiErrorResponse;
 import oncog.cogroom.global.common.response.code.ApiErrorCode;
 import oncog.cogroom.global.common.response.code.BaseErrorCode;
@@ -55,26 +56,37 @@ public class GlobalExceptionHandler {
     private BaseErrorCode mapFieldErrorToErrorCode(FieldError error) {
         String field = error.getField();
         String code = error.getCode();
+        String message = error.getDefaultMessage();
 
-        if (code.equals("Email")) { // 이메일 형식에 맞지 않는 경우
+        // 형식 관련 오류
+        if ("Email".equals(code)) {
             return AuthErrorCode.INVALID_EMAIL_FORMAT;
         }
-        if (code.equals("Pattern")) { // 비밀번호 포맷이 맞지 않는 경우
-            if (field.equals("password")) {
-                return AuthErrorCode.INVALID_PASSWORD_FORMAT;
-            }
-            if (field.equals("phoneNumber")) {
-                return AuthErrorCode.INVALID_PHONE_NUMBER_PATTERN;
-            }
-            else{
-                return ApiErrorCode.INVALID_PATTERN;
+
+        if ("Pattern".equals(code)) {
+            switch (field) {
+                case "password":
+                    return AuthErrorCode.INVALID_PASSWORD_FORMAT;
+                case "phoneNumber":
+                    return AuthErrorCode.INVALID_PHONE_NUMBER_PATTERN;
+                default:
+                    return ApiErrorCode.INVALID_PATTERN;
             }
         }
-        if (code.equals("NotBlank") || code.equals("NotNull")) { // 값이 비어있는 경우
+
+        // 필수 값 누락
+        if ("NotBlank".equals(code) || "NotNull".equals(code)) {
             return ApiErrorCode.EMPTY_FILED;
         }
 
+        // 글자 수 제한 초과
+        if ("Size".equals(code) && "answer".equals(field) && "answerSizeExceeded".equals(message)) {
+            return DailyErrorCode.ANSWER_LENGTH_EXCEEDED;
+        }
+
+        // 기타 처리되지 않은 예외
         return ApiErrorCode.BAD_REQUEST;
     }
+
 
 }

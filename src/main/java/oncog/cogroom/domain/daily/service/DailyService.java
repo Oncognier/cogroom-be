@@ -42,16 +42,16 @@ public class DailyService extends BaseService {
 
         int streakDays = streakService.getStreakDays(member);
 
-        AssignedQuestion question = getAssignedQuestion(member, startOfToday, endOfToday);
-        log.info("질문 할당 시간: {}", question.getAssignedDate());
+        AssignedQuestion question = getTodayAssignedQuestion(member);
 
         String answer = question.isAnswered()
-                ? getAnswer(member, startOfToday, endOfToday).getAnswer()
+                ? getDailyAnswer(member, startOfToday, endOfToday).getAnswer()
                 : null;
 
         return DailyQuestionResponseDTO.builder()
                 .streakDays(streakDays)
                 .questionId(question.getQuestion().getId())
+                .assignedQuestionId(question.getId())
                 .question(question.getQuestion().getQuestion())
                 .answer(answer)
                 .build();
@@ -62,13 +62,14 @@ public class DailyService extends BaseService {
     public void createDailyAnswer(DailyAnswerRequestDTO request) {
         Member member = getMember();
 
-        LocalDateTime startOfToday = getStartOfToday();
-        LocalDateTime endOfToday = getEndOfToday();
-        Question question = getAssignedQuestion(member, startOfToday, endOfToday).getQuestion();
+        Question question = getTodayAssignedQuestion(member).getQuestion();
 
         checkDuplicateAnswer(member, question); // 중복 답변 확인
 
-        saveAnswer(member, question, request.getAnswer());
+        AssignedQuestion assignedQuestion = getAssignedQuestion(member, request.getAssignedQuestionId());
+        checkIsSameDay(LocalDateTime.now(), assignedQuestion.getAssignedDate()); // 오늘 할당된 데일리 질문이 맞는지 확인
+
+        saveDailyAnswer(member, question, request.getAnswer());
         markAssignedQuestionAsAnswered(member);
 
         updateStreakInfo(member);
@@ -78,28 +79,42 @@ public class DailyService extends BaseService {
     public void updateDailyAnswer(DailyAnswerRequestDTO request) {
         Member member = getMember();
 
-        updateAnswer(member, request.getAnswer());
+        LocalDateTime startOfToday = getStartOfToday();
+        LocalDateTime endOfToday = getEndOfToday();
+
+        AssignedQuestion assignedQuestion = getAssignedQuestion(member, request.getAssignedQuestionId());
+        checkIsSameDay(LocalDateTime.now(), assignedQuestion.getAssignedDate());
+
+        Answer answer = getDailyAnswer(member, startOfToday, endOfToday);
+        answer.updateAnswer(request.getAnswer());
     }
 
-    private AssignedQuestion getAssignedQuestion(Member member, LocalDateTime startOfToday, LocalDateTime endOfToday) {
+    private AssignedQuestion getTodayAssignedQuestion(Member member) {
+        LocalDateTime startOfToday = getStartOfToday();
+        LocalDateTime endOfToday = getEndOfToday();
         return assignedQuestionRepository.findByMemberAndAssignedDateBetween(member, startOfToday, endOfToday)
                 .orElseThrow(() -> new DailyException(DailyErrorCode.DAILY_QUESTION_NOT_FOUND));
     }
 
-    private Answer getAnswer(Member member, LocalDateTime start, LocalDateTime end) {
+    private AssignedQuestion getAssignedQuestion(Member member, Long assignedQuestionId) {
+        return assignedQuestionRepository.findByMemberAndId(member, assignedQuestionId)
+                .orElseThrow(() -> new DailyException(DailyErrorCode.ASSIGNED_QUESTION_NOT_FOUND));
+    }
+
+    private Answer getDailyAnswer(Member member, LocalDateTime start, LocalDateTime end) {
         return answerRepository.findByMemberAndCreatedAtBetween(member, start, end)
                 .orElseThrow(() -> new DailyException(DailyErrorCode.ANSWER_NOT_FOUND));
     }
 
-    private LocalDateTime getStartOfToday() {
+    public LocalDateTime getStartOfToday() {
         return LocalDate.now().atStartOfDay();
     }
 
-    private LocalDateTime getEndOfToday() {
+    public LocalDateTime getEndOfToday() {
         return getStartOfToday().plusDays(1).minusNanos(1);
     }
 
-    private void saveAnswer(Member member, Question question, String content) {
+    private void saveDailyAnswer(Member member, Question question, String content) {
         Answer answer = Answer.builder()
                 .member(member)
                 .question(question)
@@ -109,9 +124,7 @@ public class DailyService extends BaseService {
     }
 
     private void markAssignedQuestionAsAnswered(Member member) {
-        LocalDateTime startOfToday = getStartOfToday();
-        LocalDateTime endOfToday = getEndOfToday();
-        AssignedQuestion assignedQuestion = getAssignedQuestion(member, startOfToday, endOfToday);
+        AssignedQuestion assignedQuestion = getTodayAssignedQuestion(member);
         assignedQuestion.setIsAnswered();
     }
 
@@ -127,12 +140,12 @@ public class DailyService extends BaseService {
         streakService.createStreakLog(member, streak); // streak 로그 생성
     }
 
-    private void updateAnswer(Member member, String newAnswer) {
-        LocalDateTime startOfToday = getStartOfToday();
-        LocalDateTime endOfToday = getEndOfToday();
-
-        Answer answer = getAnswer(member, startOfToday, endOfToday);
-        answer.updateAnswer(newAnswer);
+    private void checkIsSameDay(LocalDateTime now, LocalDateTime target) {
+        log.info("now: {}, target: {}", now, target);
+        if (!now.toLocalDate().isEqual(target.toLocalDate())) {
+            log.info("날짜가 일치하지 않습니다.");
+            throw new DailyException(DailyErrorCode.ANSWER_TIME_EXPIRED);
+        };
     }
 
 }
