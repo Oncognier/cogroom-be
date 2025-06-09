@@ -1,4 +1,4 @@
-package oncog.cogroom.global.s3.controller;
+package oncog.cogroom.global.security.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
