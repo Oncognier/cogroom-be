@@ -22,6 +22,7 @@ public class CookieUtil {
                     .httpOnly(true)
                     .sameSite("None")
                     .path("/")
+                    .secure(true)
                     .maxAge(Integer.parseInt(refreshExpiration))
                     .build();
 
@@ -34,6 +35,9 @@ public class CookieUtil {
 
             response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
             response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
+
+            // 테스트용 토큰 헤더 설정 (추후 삭제 예정)
+            response.addHeader(HttpHeaders.AUTHORIZATION, tokens.getAccessToken());
         }
     }
 }
