@@ -1,6 +1,5 @@
 package oncog.cogroom.domain.auth.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -8,15 +7,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.auth.docs.AuthControllerDocs;
 import oncog.cogroom.domain.auth.dto.request.AuthRequestDTO;
-import oncog.cogroom.domain.auth.exception.AuthErrorCode;
 import oncog.cogroom.domain.auth.service.AuthServiceRouter;
 import oncog.cogroom.domain.auth.service.EmailService;
+import oncog.cogroom.domain.daily.service.DailyQuestionAssignService;
 import oncog.cogroom.global.common.response.ApiResponse;
-import oncog.cogroom.global.common.response.code.ApiErrorCode;
 import oncog.cogroom.global.common.response.code.ApiSuccessCode;
 import oncog.cogroom.global.common.util.CookieUtil;
-import oncog.cogroom.global.exception.swagger.ApiErrorCodeExample;
-import oncog.cogroom.global.exception.swagger.ApiErrorCodeExamples;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +33,7 @@ public class AuthController implements AuthControllerDocs {
     private final AuthServiceRouter router;
     private final EmailService emailService;
     private final CookieUtil cookieUtil;
+    private final DailyQuestionAssignService dailyQuestionAssignService;
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginResponseDTO>> socialLogin(@RequestBody @Valid LoginRequestDTO request, HttpServletResponse response) {
@@ -60,6 +57,8 @@ public class AuthController implements AuthControllerDocs {
         cookieUtil.addTokenForCookie(response, result.getTokens());
 
         SignupResponseDTO responseExcludedToken = result.excludeTokens();
+
+        dailyQuestionAssignService.assignDailyQuestionAtSignup(request.getProvider(), request.getProviderId());
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, responseExcludedToken));
 
