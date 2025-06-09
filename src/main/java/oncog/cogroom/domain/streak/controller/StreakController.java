@@ -3,7 +3,7 @@ package oncog.cogroom.domain.streak.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.streak.docs.StreakControllerDocs;
-import oncog.cogroom.domain.streak.dto.response.StreakCalenderResponseDTO;
+import oncog.cogroom.domain.streak.dto.response.StreakCalendarResponseDTO;
 import oncog.cogroom.domain.streak.service.StreakService;
 import oncog.cogroom.global.common.response.ApiResponse;
 import oncog.cogroom.global.common.response.code.ApiSuccessCode;
@@ -21,8 +21,8 @@ public class StreakController implements StreakControllerDocs {
     private final StreakService streakService;
 
     @GetMapping("/calendar")
-    public ResponseEntity<ApiResponse<StreakCalenderResponseDTO>> getStreakCalender() {
-        StreakCalenderResponseDTO response = streakService.getStreakDates();
+    public ResponseEntity<ApiResponse<StreakCalendarResponseDTO>> getStreakCalendar() {
+        StreakCalendarResponseDTO response = streakService.getStreakDates();
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, response));
     }
