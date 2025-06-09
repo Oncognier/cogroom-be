@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.time.Instant;
 import java.util.Date;
 
 @Component
@@ -33,8 +34,8 @@ public class JwtProvider {
         return Jwts.builder()
                 .subject(String.valueOf(userDetails.getMemberId()))
                 .claim("role", userDetails.getRole())
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + accessExpiration))
+                .issuedAt(Date.from(Instant.now()))
+                .expiration(Date.from(Instant.now().plusSeconds(accessExpiration)))
                 .signWith(generateSecretKey())
                 .compact();
     }
@@ -42,8 +43,8 @@ public class JwtProvider {
     public String generateRefreshToken(String memberId) {
         return Jwts.builder()
                 .subject(memberId)
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + refreshExpiration))
+                .issuedAt(Date.from(Instant.now()))
+                .expiration(Date.from(Instant.now().plusSeconds(refreshExpiration)))
                 .signWith(generateSecretKey())
                 .compact();
     }
