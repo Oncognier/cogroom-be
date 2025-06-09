@@ -92,7 +92,7 @@ public class DailyService extends BaseService {
     private AssignedQuestion getTodayAssignedQuestion(Member member) {
         LocalDateTime startOfToday = getStartOfToday();
         LocalDateTime endOfToday = getEndOfToday();
-        return assignedQuestionRepository.findByMemberAndAssignedDateBetween(member, startOfToday, endOfToday)
+        return assignedQuestionRepository.findByMemberAndAssignedDateGreaterThanEqualAndAssignedDateLessThan(member, startOfToday, endOfToday)
                 .orElseThrow(() -> new DailyException(DailyErrorCode.DAILY_QUESTION_NOT_FOUND));
     }
 
@@ -111,7 +111,7 @@ public class DailyService extends BaseService {
     }
 
     public LocalDateTime getEndOfToday() {
-        return getStartOfToday().plusDays(1).minusNanos(1);
+        return getStartOfToday().plusDays(1);
     }
 
     private void saveDailyAnswer(Member member, Question question, String content) {
@@ -145,7 +145,7 @@ public class DailyService extends BaseService {
         if (!now.toLocalDate().isEqual(target.toLocalDate())) {
             log.info("날짜가 일치하지 않습니다.");
             throw new DailyException(DailyErrorCode.ANSWER_TIME_EXPIRED);
-        };
+        }
     }
 
 }
