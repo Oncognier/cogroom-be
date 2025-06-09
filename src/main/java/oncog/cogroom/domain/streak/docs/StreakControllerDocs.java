@@ -3,7 +3,7 @@ package oncog.cogroom.domain.streak.docs;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import oncog.cogroom.domain.member.exception.MemberErrorCode;
-import oncog.cogroom.domain.streak.dto.response.StreakCalenderResponseDTO;
+import oncog.cogroom.domain.streak.dto.response.StreakCalendarResponseDTO;
 import oncog.cogroom.global.common.response.ApiResponse;
 import oncog.cogroom.global.common.response.code.ApiErrorCode;
 import oncog.cogroom.global.exception.swagger.ApiErrorCodeExamples;
@@ -16,5 +16,5 @@ public interface StreakControllerDocs {
     @ApiErrorCodeExamples(
             value = {MemberErrorCode.class, ApiErrorCode.class},
             include = {"MEMBER_NOT_FOUND", "INTERNAL_SERVER_ERROR"})
-    ResponseEntity<ApiResponse<StreakCalenderResponseDTO>> getStreakCalender();
+    ResponseEntity<ApiResponse<StreakCalendarResponseDTO>> getStreakCalendar();
 }

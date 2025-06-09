@@ -8,6 +8,9 @@ import oncog.cogroom.domain.daily.enums.QuestionLevel;
 import oncog.cogroom.domain.daily.respository.AssignedQuestionRepository;
 import oncog.cogroom.domain.daily.respository.QuestionRepository;
 import oncog.cogroom.domain.member.entity.Member;
+import oncog.cogroom.domain.member.enums.Provider;
+import oncog.cogroom.domain.member.exception.MemberErrorCode;
+import oncog.cogroom.domain.member.exception.MemberException;
 import oncog.cogroom.domain.member.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +28,7 @@ public class DailyQuestionAssignService {
     private final AssignedQuestionRepository assignedQuestionRepository;
     private final QuestionRepository questionRepository;
     private final MemberRepository memberRepository;
+    private final DailyService dailyService;
     private final Random random = new Random();
 
     @Transactional
@@ -35,7 +39,10 @@ public class DailyQuestionAssignService {
 
     // 질문을 아직 할당받지 않은 멤버에게 랜덤 질문 할당
     private void assignDailyQuestion(Member member) {
-        if (alreadyAssignedQuestionToday(member)) return;
+        if (alreadyAssignedQuestionToday(member)) {
+            log.info("멤버: {} 에게 이미 질문이 할당되었습니다.", member.getId());
+            return;
+        }
 
         QuestionLevel level = getNextQuestionLevel(member);
         log.info("Assigned {} questions to {}", level, member.getId());
@@ -45,7 +52,7 @@ public class DailyQuestionAssignService {
                 : questionRepository.findAll();
 
         if (candidates.isEmpty()) {
-            log.warn("할당 가능한 질문이 없습니다. memberId={}, level={}", member.getId(), level);
+            log.info("할당 가능한 질문이 없습니다. memberId={}, level={}", member.getId(), level);
             return;
         }
 
@@ -54,11 +61,19 @@ public class DailyQuestionAssignService {
         saveAssignedQuestion(member, question);
     }
 
-//     오늘 이미 질문이 할당됐는지 확인 (오류로 인한 스케쥴러 중복 실행 방지)
+    // 회원가입 시 질문 할당
+    @Transactional
+    public void assignDailyQuestionAtSignup(Provider provider, String providerId) {
+        Member member = memberRepository.findByProviderAndProviderId(provider, providerId)
+                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
+        assignDailyQuestion(member);
+    }
+
+//     오늘 이미 질문이 할당됐는지 확인 (질문 중복 할당 방지)
     private boolean alreadyAssignedQuestionToday(Member member) {
-        return assignedQuestionRepository.existsByMemberAndAssignedDateAfter(
-                member, LocalDate.now().atStartOfDay()
-        );
+        LocalDateTime startOfToday = dailyService.getStartOfToday();
+        LocalDateTime endOfToday = dailyService.getEndOfToday();
+        return assignedQuestionRepository.existsByMemberAndAssignedDateBetween(member, startOfToday, endOfToday);
     }
 
     // 멤버에게 할당할 질문 레벨 찾기

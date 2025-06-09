@@ -9,6 +9,6 @@ import java.util.List;
 @Getter
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class StreakCalenderResponseDTO {
+public class StreakCalendarResponseDTO {
     private List<String> streakDateList;
 }

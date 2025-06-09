@@ -7,7 +7,7 @@ import oncog.cogroom.domain.streak.entity.Streak;
 import oncog.cogroom.domain.streak.entity.StreakLog;
 import oncog.cogroom.domain.streak.repository.StreakLogRepository;
 import oncog.cogroom.domain.streak.repository.StreakRepository;
-import oncog.cogroom.domain.streak.dto.response.StreakCalenderResponseDTO;
+import oncog.cogroom.domain.streak.dto.response.StreakCalendarResponseDTO;
 import oncog.cogroom.global.common.service.BaseService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,10 +48,10 @@ public class StreakService extends BaseService {
         });
     }
 
-    public StreakCalenderResponseDTO getStreakDates() {
+    public StreakCalendarResponseDTO getStreakDates() {
         Member member = getMember();
 
-        LocalDateTime startOfMonth = getStartOfCalenderMonth();
+        LocalDateTime startOfMonth = getStartOfCalendarMonth();
         LocalDateTime endOfMonth = getEndOfMonth();
 
         List<String> streakDates = streakLogRepository
@@ -61,7 +61,7 @@ public class StreakService extends BaseService {
                 .sorted()
                 .toList();
 
-        return StreakCalenderResponseDTO.builder()
+        return StreakCalendarResponseDTO.builder()
                 .streakDateList(streakDates)
                 .build();
     }
@@ -78,7 +78,7 @@ public class StreakService extends BaseService {
         return getStartOfYesterday().plusDays(1).minusNanos(1);
     }
 
-    private LocalDateTime getStartOfCalenderMonth() {
+    private LocalDateTime getStartOfCalendarMonth() {
         LocalDate firstDayOfMonth =  LocalDate.now().withDayOfMonth(1);
         DayOfWeek startDayOfWeek = firstDayOfMonth.getDayOfWeek();
 
