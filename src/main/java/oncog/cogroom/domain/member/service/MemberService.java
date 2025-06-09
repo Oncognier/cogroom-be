@@ -1,6 +1,7 @@
 package oncog.cogroom.domain.member.service;
 
 import lombok.RequiredArgsConstructor;
+import oncog.cogroom.domain.auth.service.EmailService;
 import oncog.cogroom.domain.member.dto.MemberRequestDTO;
 import oncog.cogroom.domain.member.entity.Member;
 import oncog.cogroom.domain.member.exception.MemberErrorCode;
@@ -23,6 +24,7 @@ public class MemberService extends BaseService {
 
     private final MemberRepository memberRepository;
     private final StreakService streakService;
+    private final EmailService emailService;
 
     public MemberInfoDTO findMemberInfo() {
         Member member = getMember();
@@ -64,6 +66,8 @@ public class MemberService extends BaseService {
 
     public void updateMemberInfo(MemberRequestDTO.MemberInfoUpdateDTO request){
         Member member = getMember();
+
+        emailService.isVerified(request.getEmail());
 
         member.updateMemberInfo(request);
     }

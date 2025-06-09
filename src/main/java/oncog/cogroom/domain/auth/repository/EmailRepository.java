@@ -11,4 +11,6 @@ public interface EmailRepository extends JpaRepository<EmailVerification, Long> 
     Optional<EmailVerification> findByEmail(String email);
 
     Boolean existsByEmailAndVerifyStatus(String email, boolean status);
+
+
 }

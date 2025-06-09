@@ -25,18 +25,18 @@ public interface AuthControllerDocs {
             value = AuthErrorCode.class,
             include = {"KAKAO_AUTH_FAILED", "KAKAO_INVALID_AUTHORIZATION_CODE"})
     @Operation(summary = "소셜/로컬 통합 로그인", description = "소셜/로컬 통합 로그인 로직을 처리합니다.")
-    public ResponseEntity<ApiResponse<AuthResponseDTO.LoginResponseDTO>> socialLogin(@RequestBody @Valid AuthRequestDTO.LoginRequestDTO request, HttpServletResponse response);
+    public ResponseEntity<ApiResponse<AuthResponseDTO.LoginResponseDTO>> login(@RequestBody @Valid AuthRequestDTO.LoginRequestDTO request, HttpServletResponse response);
 
 
     @ApiErrorCodeExamples(
             value = {AuthErrorCode.class, ApiErrorCode.class},
-            include = {"EMPTY_FILED", "INVALID_EMAIL_FOTMAT"})
+            include = {"EMPTY_FILED", "INVALID_EMAIL_FORMAT"})
     @Operation(summary = "소셜/로컬 통합 회원가입", description = "소셜/로컬 통합 회원가입 로직을 처리합니다. ")
-    public ResponseEntity<ApiResponse<AuthResponseDTO.SignupResponseDTO>> socialSignup(@RequestBody @Valid AuthRequestDTO.SignupRequestDTO request, HttpServletResponse response);
+    public ResponseEntity<ApiResponse<AuthResponseDTO.SignupResponseDTO>> signup(@RequestBody @Valid AuthRequestDTO.SignupRequestDTO request, HttpServletResponse response);
 
     @ApiErrorCodeExamples(
             value = {AuthErrorCode.class, ApiErrorCode.class},
-            include = {"EMPTY_FILED", "INVALID_EMAIL_FOTMAT", "ALREADY_EXIST_EMAIL"})
+            include = {"EMPTY_FILED", "INVALID_EMAIL_FORMAT", "ALREADY_EXIST_EMAIL"})
     @Operation(summary = "인증 이메일 전송", description = "인증용 링크가 포함된 이메일을 전송합니다. ")
     public ResponseEntity<ApiResponse<String>> sendEmail(@RequestBody @Valid AuthRequestDTO.EmailRequestDTO request) throws MessagingException, IOException;
 

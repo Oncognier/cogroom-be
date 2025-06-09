@@ -16,6 +16,7 @@ import java.util.List;
 
 @Slf4j
 @RestControllerAdvice
+
 public class GlobalExceptionHandler {
 
     // 커스텀 exception
@@ -65,12 +66,15 @@ public class GlobalExceptionHandler {
 
         if ("Pattern".equals(code)) {
             switch (field) {
-                case "password":
-                    return AuthErrorCode.INVALID_PASSWORD_FORMAT;
-                case "phoneNumber":
+                case "password" -> {
+                    return  AuthErrorCode.INVALID_PASSWORD_FORMAT;
+                }
+                case "phoneNumber" -> {
                     return AuthErrorCode.INVALID_PHONE_NUMBER_PATTERN;
-                default:
+                }
+                default -> {
                     return ApiErrorCode.INVALID_PATTERN;
+                }
             }
         }
 

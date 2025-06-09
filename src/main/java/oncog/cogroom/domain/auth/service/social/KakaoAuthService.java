@@ -3,6 +3,7 @@ package oncog.cogroom.domain.auth.service.social;
 import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.auth.dto.response.SocialTokenResponseDTO;
 import oncog.cogroom.domain.auth.exception.AuthErrorCode;
+import oncog.cogroom.domain.auth.service.EmailService;
 import oncog.cogroom.domain.auth.userInfo.KakaoUserInfo;
 import oncog.cogroom.domain.auth.userInfo.SocialUserInfo;
 import oncog.cogroom.domain.member.enums.Provider;
@@ -22,14 +23,14 @@ import static oncog.cogroom.domain.auth.dto.response.SocialUserInfoDTO.KakaoUser
 
 @Service
 @Slf4j
-public class KakaoAuthService extends AbstractSocialAuthService {
+public class KakaoAuthService extends AbstractAuthService {
     @Value("${oauth.kakao.client-id}")
     private String clientId;
 
     private final RestTemplate restTemplate;
 
-    public KakaoAuthService(MemberRepository memberRepository, TokenUtil tokenUtil, RestTemplate restTemplate) {
-        super( memberRepository,tokenUtil);
+    public KakaoAuthService(MemberRepository memberRepository, TokenUtil tokenUtil, EmailService emailService, RestTemplate restTemplate) {
+        super( memberRepository, emailService ,tokenUtil);
         this.restTemplate = restTemplate;
     }
 

@@ -36,12 +36,13 @@ public class AuthController implements AuthControllerDocs {
     private final DailyQuestionAssignService dailyQuestionAssignService;
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<LoginResponseDTO>> socialLogin(@RequestBody @Valid LoginRequestDTO request, HttpServletResponse response) {
+    public ResponseEntity<ApiResponse<LoginResponseDTO>> login(@RequestBody @Valid LoginRequestDTO request, HttpServletResponse response) {
         LoginResponseDTO result = router.login(request);
 
         // Token 쿠키로 셋팅
         cookieUtil.addTokenForCookie(response, result.getTokens());
 
+        // response body 토큰 제거
         LoginResponseDTO responseExcludedToken = result.excludeTokens();
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, responseExcludedToken));
@@ -50,15 +51,19 @@ public class AuthController implements AuthControllerDocs {
 
 
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponse<SignupResponseDTO>> socialSignup(@RequestBody @Valid SignupRequestDTO request, HttpServletResponse response) {
+    public ResponseEntity<ApiResponse<SignupResponseDTO>> signup(@RequestBody @Valid SignupRequestDTO request, HttpServletResponse response) {
         SignupResponseDTO result = router.signup(request);
 
         // Token 쿠키로 셋팅
         cookieUtil.addTokenForCookie(response, result.getTokens());
 
+        // response body 토큰 제거
         SignupResponseDTO responseExcludedToken = result.excludeTokens();
 
+
+        // 가입 후 질문 할당
         dailyQuestionAssignService.assignDailyQuestionAtSignup(request.getProvider(), request.getProviderId());
+
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, responseExcludedToken));
 

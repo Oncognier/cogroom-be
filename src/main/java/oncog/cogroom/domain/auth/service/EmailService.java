@@ -44,7 +44,7 @@ public class EmailService {
         MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
 
         helper.setTo(toEmail); // 목적지
-        helper.setSubject("Oncognier auth email"); // 타이틀
+        helper.setSubject("[코그룸/회원가입] 인증 링크"); // 타이틀
         helper.setText(generateVerificationLink(toEmail));
         helper.setFrom(fromEmail); // 발신 이메일
         mailSender.send(message);
@@ -74,13 +74,20 @@ public class EmailService {
 
     // 이메일 중복 검사
     public void existEmail(String toEmail) {
-        if(memberRepository.existsByEmail(toEmail)) throw new AuthException(AuthErrorCode.ALREADY_EXIST_EMAIL);
+        if(Boolean.TRUE.equals(memberRepository.existsByEmail(toEmail))) throw new AuthException(AuthErrorCode.ALREADY_EXIST_EMAIL);
     }
 
     // 이메일의 인증 상태 반환
     public boolean verifiedEmail(AuthRequestDTO.EmailRequestDTO request) {
         String toEmail = request.getEmail();
         return emailRepository.existsByEmailAndVerifyStatus(toEmail,true);
+    }
+
+    // 이메일 인증 유무 검사
+    public void isVerified(String email) {
+        Boolean isVerified = emailRepository.existsByEmailAndVerifyStatus(email, true);
+
+        if(Boolean.FALSE.equals(isVerified)) throw new AuthException(AuthErrorCode.NOT_VERIFIED_EMAIL);
     }
 
     // 이메일 인증 (boolean 형으로 변경 예정)
