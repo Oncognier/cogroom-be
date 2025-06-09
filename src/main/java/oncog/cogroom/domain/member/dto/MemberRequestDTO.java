@@ -21,10 +21,9 @@ public class MemberRequestDTO {
 
         private String imageUrl;
 
-        @NotBlank
         private String description;
 
-        @NotBlank
+        @Pattern(regexp = "^01[0-9]-\\d{3,4}-\\d{4}$\n")
         private String phoneNumber;
 
         @Pattern(regexp = "^(?=.*[A-Z])(?=.*[@$!%*?&]).{8,16}$")
