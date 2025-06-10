@@ -1,9 +1,19 @@
-FROM openjdk:17-jdk
+#FROM openjdk:17-jdk
+#
+#WORKDIR /app
+#
+#ARG JAR_FILE=build/libs/cogroom-0.0.1-SNAPSHOT.jar
+#
+#COPY ${JAR_FILE} app.jar
+#
+#ENTRYPOINT ["java", "-jar", "/app.jar"]
 
-WORKDIR /app
+FROM jenkins/jenkins:lts-jdk17
 
-ARG JAR_FILE=build/libs/cogroom-0.0.1-SNAPSHOT.jar
+USER root
 
-COPY ${JAR_FILE} app.jar
+RUN apt-get update && \
+    apt-get install -y docker.io && \
+    usermod -aG docker jenkins
 
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+USER jenkins
