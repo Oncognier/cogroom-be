@@ -11,6 +11,7 @@ import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
 import oncog.cogroom.global.common.response.ApiErrorResponse;
 import oncog.cogroom.global.common.response.code.BaseErrorCode;
 import oncog.cogroom.global.exception.swagger.ApiErrorCodeExample;
@@ -39,6 +40,8 @@ public class SwaggerConfig {
                 .description("JWT 인증 토큰 사용 (Bearer {Token})");
 
         SecurityRequirement securityRequirement = new SecurityRequirement().addList("JWT TOKEN");
+        Server server = new Server();
+        server.setUrl("https://api.cogroom.com");
 
         return new OpenAPI()
                 .components(new Components().addSecuritySchemes("JWT TOKEN", securityScheme))
@@ -46,7 +49,8 @@ public class SwaggerConfig {
                 .info(new Info()
                         .title("Cogroom API")
                         .version("1.0")
-                        .description("온코그니어 코그룸 API 명세서입니다."));
+                        .description("온코그니어 코그룸 API 명세서입니다."))
+                .servers(List.of(server));
     }
 
     // 커스텀 어노테이션 정보 가져오기
