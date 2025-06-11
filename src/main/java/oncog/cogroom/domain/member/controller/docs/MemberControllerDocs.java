@@ -1,4 +1,4 @@
-package oncog.cogroom.domain.member.docs;
+package oncog.cogroom.domain.member.controller.docs;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -9,10 +9,8 @@ import oncog.cogroom.domain.member.dto.MemberResponseDTO;
 import oncog.cogroom.domain.member.exception.MemberErrorCode;
 import oncog.cogroom.global.common.response.ApiResponse;
 import oncog.cogroom.global.common.response.code.ApiErrorCode;
-import oncog.cogroom.global.common.response.code.ApiSuccessCode;
 import oncog.cogroom.global.exception.swagger.ApiErrorCodeExamples;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(name = "Member", description = "Member 관련 API")

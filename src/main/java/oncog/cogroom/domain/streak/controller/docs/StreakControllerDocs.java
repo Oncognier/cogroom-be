@@ -1,4 +1,4 @@
-package oncog.cogroom.domain.streak.docs;
+package oncog.cogroom.domain.streak.controller.docs;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

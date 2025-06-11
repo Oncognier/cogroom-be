@@ -5,7 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import oncog.cogroom.domain.auth.docs.AuthControllerDocs;
+import oncog.cogroom.domain.auth.controller.docs.AuthControllerDocs;
 import oncog.cogroom.domain.auth.dto.request.AuthRequestDTO;
 import oncog.cogroom.domain.auth.service.AuthServiceRouter;
 import oncog.cogroom.domain.auth.service.EmailService;

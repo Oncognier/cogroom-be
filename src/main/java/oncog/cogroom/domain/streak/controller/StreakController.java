@@ -2,7 +2,7 @@ package oncog.cogroom.domain.streak.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import oncog.cogroom.domain.streak.docs.StreakControllerDocs;
+import oncog.cogroom.domain.streak.controller.docs.StreakControllerDocs;
 import oncog.cogroom.domain.streak.dto.response.StreakCalendarResponseDTO;
 import oncog.cogroom.domain.streak.service.StreakService;
 import oncog.cogroom.global.common.response.ApiResponse;
