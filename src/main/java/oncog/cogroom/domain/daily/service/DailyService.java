@@ -37,9 +37,6 @@ public class DailyService extends BaseService {
         LocalDateTime startOfToday = getStartOfToday();
         LocalDateTime endOfToday = getEndOfToday();
 
-        log.info("startOfToday: {}", startOfToday);
-        log.info("endOfToday: {}", endOfToday);
-
         int streakDays = streakService.getStreakDays(member);
 
         AssignedQuestion question = getTodayAssignedQuestion(member);
