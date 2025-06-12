@@ -8,8 +8,8 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@Table(name = "CONTENT_THUMBNAIL")
-public class ContentThumbnail {
+@Table(name = "CONTENT_IMAGE")
+public class ContentImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
