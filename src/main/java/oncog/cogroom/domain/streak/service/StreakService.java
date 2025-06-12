@@ -61,7 +61,10 @@ public class StreakService extends BaseService {
                 .sorted()
                 .toList();
 
+        int streakDays = getStreakDays(member);
+
         return StreakCalendarResponseDTO.builder()
+                .streakDays(streakDays)
                 .streakDateList(streakDates)
                 .build();
     }

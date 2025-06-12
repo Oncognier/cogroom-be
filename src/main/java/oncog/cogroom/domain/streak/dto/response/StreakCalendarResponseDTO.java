@@ -10,5 +10,6 @@ import java.util.List;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class StreakCalendarResponseDTO {
+    private int streakDays;
     private List<String> streakDateList;
 }
