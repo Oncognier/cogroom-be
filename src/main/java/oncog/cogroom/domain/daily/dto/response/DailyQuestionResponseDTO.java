@@ -8,7 +8,6 @@ import lombok.Getter;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DailyQuestionResponseDTO {
-    private int streakDays;
     private Long questionId;
     private Long assignedQuestionId;
     private String question;
