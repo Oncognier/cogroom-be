@@ -37,8 +37,6 @@ public class DailyService extends BaseService {
         LocalDateTime startOfToday = getStartOfToday();
         LocalDateTime endOfToday = getEndOfToday();
 
-        int streakDays = streakService.getStreakDays(member);
-
         AssignedQuestion question = getTodayAssignedQuestion(member);
 
         String answer = question.isAnswered()
@@ -46,7 +44,6 @@ public class DailyService extends BaseService {
                 : null;
 
         return DailyQuestionResponseDTO.builder()
-                .streakDays(streakDays)
                 .questionId(question.getQuestion().getId())
                 .assignedQuestionId(question.getId())
                 .question(question.getQuestion().getQuestion())
