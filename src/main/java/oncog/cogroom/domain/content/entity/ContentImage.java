@@ -2,16 +2,14 @@ package oncog.cogroom.domain.content.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@EntityListeners(value = {AuditingEntityListener.class})
-@Table(name = "CONTENT_BENEFIT")
-public class ContentBenefit {
+@Table(name = "CONTENT_IMAGE")
+public class ContentImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,9 +25,4 @@ public class ContentBenefit {
     @Column(nullable = false)
     private Integer displayOrder;
 
-    @Column(nullable = false)
-    private String title;
-
-    @Column(nullable = false)
-    private String description;
 }
