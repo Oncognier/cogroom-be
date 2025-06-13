@@ -22,7 +22,6 @@ public class DailyController implements DailyControllerDocs {
 
     @GetMapping("/questions")
     public ResponseEntity<ApiResponse<DailyQuestionResponseDTO>> getDailyQuestion() {
-
         DailyQuestionResponseDTO response = dailyService.getTodayDailyQuestion();
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, response));
@@ -30,7 +29,6 @@ public class DailyController implements DailyControllerDocs {
 
     @PostMapping("/answers")
     public ResponseEntity<ApiResponse<String>> createDailyAnswer(@RequestBody @Valid DailyAnswerRequestDTO request) {
-
         dailyService.createDailyAnswer(request);
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
@@ -38,7 +36,6 @@ public class DailyController implements DailyControllerDocs {
 
     @PatchMapping("/answers")
     public ResponseEntity<ApiResponse<String>> updateDailyAnswer(@RequestBody @Valid DailyAnswerRequestDTO request) {
-
         dailyService.updateDailyAnswer(request);
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));

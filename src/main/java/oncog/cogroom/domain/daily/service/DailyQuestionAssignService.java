@@ -15,7 +15,6 @@ import oncog.cogroom.domain.member.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
@@ -76,7 +75,7 @@ public class DailyQuestionAssignService {
         return assignedQuestionRepository.existsByMemberAndAssignedDateBetween(member, startOfToday, endOfToday);
     }
 
-    // 멤버에게 할당할 질문 레벨 찾기
+    // 멤버에게 할당할 질문 레벨 조회
     private QuestionLevel getNextQuestionLevel(Member member) {
         for (QuestionLevel level : QuestionLevel.values()) {
             int count = questionRepository.countUnansweredByMemberAndLevel(member.getId(), level);
@@ -88,7 +87,6 @@ public class DailyQuestionAssignService {
         return null; // 모든 질문을 다 답한 경우
     }
 
-    // 랜덤으로 할당된 질문을 테이블에 저장
     private void saveAssignedQuestion(Member member, Question question) {
         AssignedQuestion assignedQuestion = AssignedQuestion.builder()
                 .member(member)
