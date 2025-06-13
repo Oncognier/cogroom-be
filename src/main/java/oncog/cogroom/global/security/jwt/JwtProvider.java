@@ -80,6 +80,10 @@ public class JwtProvider {
         return userDetails.getMemberId();
     }
 
+    public Long extractMemberId(String refreshToken) {
+        return Long.valueOf(getClaims(refreshToken).getSubject());
+    }
+
     private SecretKey generateSecretKey(){
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecretKey));
     }
