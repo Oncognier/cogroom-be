@@ -47,7 +47,7 @@ public class Content extends BaseEntity {
     private ContentType type; // 강의(LECTURE), PDF
 
     @Column(nullable = false)
-    private Integer learningPeriod; // 0이면 무기한
+    private Integer learningPeriod = 0; // 0이면 무기한
 
     @Column(nullable = false)
     private String instructorImageUrl;

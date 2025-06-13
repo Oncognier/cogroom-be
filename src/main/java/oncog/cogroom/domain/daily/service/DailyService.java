@@ -64,7 +64,7 @@ public class DailyService extends BaseService {
         checkIsSameDay(LocalDateTime.now(), assignedQuestion.getAssignedDate()); // 오늘 할당된 데일리 질문이 맞는지 확인
 
         saveDailyAnswer(member, question, request.getAnswer());
-        markAssignedQuestionAsAnswered(member);
+        markAssignedQuestionAsAnswered(member); // 할당 질문의 isAnswered 상태 변경
 
         updateStreakInfo(member);
     }
@@ -100,10 +100,12 @@ public class DailyService extends BaseService {
                 .orElseThrow(() -> new DailyException(DailyErrorCode.ANSWER_NOT_FOUND));
     }
 
+    // 금일 시작 시간 조회 (00:00:00)
     public LocalDateTime getStartOfToday() {
         return LocalDate.now().atStartOfDay();
     }
 
+    // 금일 마지막 시간 조회 (23:59:59)
     public LocalDateTime getEndOfToday() {
         return getStartOfToday().plusDays(1);
     }
@@ -134,6 +136,7 @@ public class DailyService extends BaseService {
         streakService.createStreakLog(member, streak); // streak 로그 생성
     }
 
+    // now, target이 같은 날짜, 시간인지 확인
     private void checkIsSameDay(LocalDateTime now, LocalDateTime target) {
         log.info("now: {}, target: {}", now, target);
         if (!now.toLocalDate().isEqual(target.toLocalDate())) {

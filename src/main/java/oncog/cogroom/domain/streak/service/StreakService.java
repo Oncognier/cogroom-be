@@ -10,7 +10,6 @@ import oncog.cogroom.domain.streak.repository.StreakRepository;
 import oncog.cogroom.domain.streak.dto.response.StreakCalendarResponseDTO;
 import oncog.cogroom.global.common.service.BaseService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;

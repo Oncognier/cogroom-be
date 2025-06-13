@@ -2,7 +2,6 @@ package oncog.cogroom.domain.streak.scheduler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import oncog.cogroom.domain.streak.service.StreakService;
 import oncog.cogroom.domain.streak.service.StreakUpdateService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
