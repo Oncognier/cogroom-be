@@ -95,15 +95,15 @@ public class SecurityConfig {
                 .headers(headers -> headers
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)
                 )
-                .cors(Customizer.withDefaults()) // ✅ CORS 설정 추가
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .cors(Customizer.withDefaults()) // CORS 설정 추가
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // 세션 미사용 옵션 설정
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("http://localhost:3000", "https://api.cogroom.com"));
+        config.setAllowedOrigins(List.of("http://localhost:3000", "https://api.cogroom.com", "https://preview.cogroom.com", "https://cogroom-preview/**"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("Authorization")); // Authorization 헤더 노출되도록 설정
