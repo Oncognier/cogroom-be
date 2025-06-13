@@ -10,9 +10,12 @@ import oncog.cogroom.domain.auth.dto.response.AuthResponseDTO;
 import oncog.cogroom.domain.auth.exception.AuthErrorCode;
 import oncog.cogroom.global.common.response.ApiResponse;
 import oncog.cogroom.global.common.response.code.ApiErrorCode;
+import oncog.cogroom.global.common.response.code.ApiSuccessCode;
 import oncog.cogroom.global.exception.swagger.ApiErrorCodeExample;
 import oncog.cogroom.global.exception.swagger.ApiErrorCodeExamples;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -49,4 +52,8 @@ public interface AuthControllerDocs {
 
     @Operation(summary = "이메일 인증 여부 반환", description = "이메일의 인증이 완료되었는지 여부를 반환합니다.")
     public ResponseEntity<ApiResponse<Boolean>> checkEmailVerificationStatus(@RequestBody @Valid AuthRequestDTO.EmailRequestDTO request);
+
+    @Operation(summary = "토큰 갱신 API", description = "토큰 재발급 API 입니다.")
+    public ResponseEntity<ApiResponse<Void>> reIssue(@CookieValue String refreshToken,
+                                                     HttpServletResponse response);
 }

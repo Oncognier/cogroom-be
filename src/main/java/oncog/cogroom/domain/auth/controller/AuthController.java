@@ -7,8 +7,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.auth.controller.docs.AuthControllerDocs;
 import oncog.cogroom.domain.auth.dto.request.AuthRequestDTO;
+import oncog.cogroom.domain.auth.dto.response.AuthResponseDTO;
+import oncog.cogroom.domain.auth.service.AuthService;
 import oncog.cogroom.domain.auth.service.AuthServiceRouter;
 import oncog.cogroom.domain.auth.service.EmailService;
+import oncog.cogroom.domain.auth.service.session.AuthSessionService;
 import oncog.cogroom.domain.daily.service.DailyQuestionAssignService;
 import oncog.cogroom.global.common.response.ApiResponse;
 import oncog.cogroom.global.common.response.code.ApiSuccessCode;
@@ -31,6 +34,7 @@ import static oncog.cogroom.domain.auth.dto.response.AuthResponseDTO.SignupRespo
 public class AuthController implements AuthControllerDocs {
 
     private final AuthServiceRouter router;
+    private final AuthSessionService authSessionService;
     private final EmailService emailService;
     private final CookieUtil cookieUtil;
     private final DailyQuestionAssignService dailyQuestionAssignService;
@@ -60,13 +64,31 @@ public class AuthController implements AuthControllerDocs {
         // response body 토큰 제거
         SignupResponseDTO responseExcludedToken = result.excludeTokens();
 
-
         // 가입 후 질문 할당
         dailyQuestionAssignService.assignDailyQuestionAtSignup(request.getProvider(), request.getProviderId());
 
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, responseExcludedToken));
 
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<Void>> logout(@CookieValue String refreshToken) {
+//        authSessionService.reIssue(refreshToken);
+        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
+
+    }
+
+    @PostMapping("/reissue")
+    public ResponseEntity<ApiResponse<Void>> reIssue(@CookieValue String refreshToken,
+                                                     HttpServletResponse response) {
+        // 토큰 재발급
+        AuthResponseDTO.ServiceTokenDTO tokenDTO = authSessionService.reIssue(refreshToken);
+
+        // 토큰 쿠키 & 헤더 셋팅
+        cookieUtil.addTokenForCookie(response, tokenDTO);
+
+        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
     }
 
     @PostMapping("/email-verification")

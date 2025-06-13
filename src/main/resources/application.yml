@@ -26,6 +26,12 @@ spring:
           auth: true
           starttls:
             enable: true
+  data:
+    redis:
+      port: ${REDIS_PORT}
+      host: ${REDIS_HOST}
+      password: ${REDIS_PASSWORD}
+      connect-timeout: 2s
 oauth:
   kakao:
     client-id: ${KAKAO_REST_API_KEY}
