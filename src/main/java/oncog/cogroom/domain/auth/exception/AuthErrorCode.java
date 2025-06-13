@@ -20,7 +20,7 @@ public enum AuthErrorCode implements BaseErrorCode {
 
     // JWT 토큰
     INVALID_TOKEN("INVALID_TOKEN", HttpStatus.UNAUTHORIZED, "유효하지 않는 토큰입니다."),
-    ALREADY_BLACK_LIST("ALREADY_BLACK_LIST", HttpStatus.UNAUTHORIZED, "이미 블랙리스트에 포함된 토큰입니다."),
+    IN_BLACK_LIST("IN_BLACK_LIST", HttpStatus.UNAUTHORIZED, "블랙리스트에 포함된 토큰입니다."),
     EXPIRED_TOKEN("EXPIRED_TOKEN", HttpStatus.UNAUTHORIZED, "만료된 토큰입니다."),
 
     // 이메일
