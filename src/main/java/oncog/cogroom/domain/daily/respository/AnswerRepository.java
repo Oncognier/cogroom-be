@@ -13,4 +13,6 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
     Optional<Answer> findByMemberAndCreatedAtBetween(Member member, LocalDateTime start, LocalDateTime end);
 
     boolean existsByMemberAndQuestion(Member member, Question question);
+
+    boolean existsByMember(Member member);
 }

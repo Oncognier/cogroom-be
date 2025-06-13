@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.daily.dto.request.DailyAnswerRequestDTO;
 import oncog.cogroom.domain.daily.dto.response.DailyQuestionResponseDTO;
+import oncog.cogroom.domain.daily.dto.response.HasAnsweredResponseDTO;
 import oncog.cogroom.domain.daily.entity.Answer;
 import oncog.cogroom.domain.daily.entity.AssignedQuestion;
 import oncog.cogroom.domain.daily.entity.Question;
@@ -81,6 +82,17 @@ public class DailyService extends BaseService {
 
         Answer answer = getDailyAnswer(member, startOfToday, endOfToday);
         answer.updateAnswer(request.getAnswer());
+    }
+
+    // 데일리 최초 답변 여부 조회
+    public HasAnsweredResponseDTO getHasAnswered() {
+        Member member = getMember();
+
+        boolean hasAnswered = answerRepository.existsByMember(member);
+
+        return HasAnsweredResponseDTO.builder()
+                .hasAnswered(hasAnswered)
+                .build();
     }
 
     private AssignedQuestion getTodayAssignedQuestion(Member member) {

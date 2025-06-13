@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.daily.controller.docs.DailyControllerDocs;
 import oncog.cogroom.domain.daily.dto.request.DailyAnswerRequestDTO;
 import oncog.cogroom.domain.daily.dto.response.DailyQuestionResponseDTO;
+import oncog.cogroom.domain.daily.dto.response.HasAnsweredResponseDTO;
 import oncog.cogroom.domain.daily.service.DailyService;
 import oncog.cogroom.global.common.response.ApiResponse;
 import oncog.cogroom.global.common.response.code.ApiSuccessCode;
@@ -41,5 +42,11 @@ public class DailyController implements DailyControllerDocs {
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
     }
 
+    @GetMapping("/has-answered")
+    public ResponseEntity<ApiResponse<HasAnsweredResponseDTO>> getHasAnswered() {
+        HasAnsweredResponseDTO response = dailyService.getHasAnswered();
+
+        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, response));
+    }
 
 }
