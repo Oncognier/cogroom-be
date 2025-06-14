@@ -48,7 +48,7 @@ public class MemberController implements MemberControllerDocs {
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS,memberForMyPage));
     }
 
-    @PostMapping("/daily")
+    @GetMapping("/daily")
     public ResponseEntity<ApiResponse<List<DailyQuestionResponseDTO.AssignedQuestionWithAnswerDTO>>> getDailyQuestionAndAnswer() {
         List<DailyQuestionResponseDTO.AssignedQuestionWithAnswerDTO> response = dailyService.getAssignedAndAnsweredQuestion();
 
