@@ -27,7 +27,7 @@ public class MemberRequestDTO {
 
         private String description;
 
-        @Pattern(regexp = "^01\\d-\\d{3,4}-\\d{4}$\n", message = "전화번호 형식이 잘못되었습니다.")
+        @Pattern(regexp = "^01[0-9]-\\d{3,4}-\\d{4}$", message = "전화번호 형식이 잘못되었습니다.")
         private String phoneNumber;
 
         @Pattern(regexp = "^(?=.*[A-Z])(?=.*[@$!%*?&]).{8,16}$", message = "비밀번호는 영문 소문자, 대문자, 특수 문자로 구성되어야 합니다.")

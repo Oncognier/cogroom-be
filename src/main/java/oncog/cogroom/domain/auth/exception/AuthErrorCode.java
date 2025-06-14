@@ -27,8 +27,7 @@ public enum AuthErrorCode implements BaseErrorCode {
     ALREADY_EXIST_EMAIL("ALREADY_EXIST_EMAIL", HttpStatus.CONFLICT, "이미 존재하는 이메일입니다."),
     NOT_VERIFIED_EMAIL("NOT_VERIFIED_EMAIL", HttpStatus.BAD_REQUEST, "인증된 이메일이 아닙니다."),
     EXPIRED_LINK("EXPIRED_LINK", HttpStatus.BAD_REQUEST, "인증 링크 시간이 만료되었습니다."),
-
-
+    EMAIL_PATTERN_ERROR("EMAIL_PATTERN_ERROR", HttpStatus.BAD_REQUEST, "이메일 형식이 올바르지 않습니다."),
     ;
 
 

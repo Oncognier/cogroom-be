@@ -12,12 +12,10 @@ import oncog.cogroom.domain.auth.exception.AuthErrorCode;
 import oncog.cogroom.domain.member.exception.MemberErrorCode;
 import oncog.cogroom.global.common.response.ApiResponse;
 import oncog.cogroom.global.common.response.code.ApiErrorCode;
-import oncog.cogroom.global.common.response.code.ApiSuccessCode;
 import oncog.cogroom.global.exception.swagger.ApiErrorCodeExample;
 import oncog.cogroom.global.exception.swagger.ApiErrorCodeExamples;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -34,20 +32,20 @@ public interface AuthControllerDocs {
 
 
     @ApiErrorCodeExamples(
-            value = {AuthErrorCode.class, ApiErrorCode.class},
-            include = {"EMPTY_FILED", "INVALID_EMAIL_FORMAT"})
+            value = {AuthErrorCode.class,MemberErrorCode.class},
+            include = {"EMAIL_PATTERN_ERROR", "PHONENUMBER_PATTERN_ERROR", "PASSWORD_PATTERN_ERROR", "NICKNAME_INVALID_PATTERN"})
     @Operation(summary = "소셜/로컬 통합 회원가입", description = "소셜/로컬 통합 회원가입 로직을 처리합니다. ")
     public ResponseEntity<ApiResponse<AuthResponseDTO.SignupResponseDTO>> signup(@RequestBody @Valid AuthRequestDTO.SignupRequestDTO request, HttpServletResponse response);
 
     @ApiErrorCodeExamples(
             value = {AuthErrorCode.class, ApiErrorCode.class},
-            include = {"EMPTY_FILED", "INVALID_EMAIL_FORMAT", "ALREADY_EXIST_EMAIL"})
+            include = {"EMAIL_PATTERN_ERROR", "ALREADY_EXIST_EMAIL"})
     @Operation(summary = "인증 이메일 전송", description = "인증용 링크가 포함된 이메일을 전송합니다. ")
     public ResponseEntity<ApiResponse<String>> sendEmail(@RequestBody @Valid AuthRequestDTO.EmailRequestDTO request) throws MessagingException, IOException;
 
     @ApiErrorCodeExamples(
             value = {AuthErrorCode.class, ApiErrorCode.class},
-            include = {"EMPTY_FILED", "EXPIRED_LINK"})
+            include = {"EMAIL_PATTERN_ERROR", "EXPIRED_LINK"})
     @Operation(summary = "이메일 인증", description = "링크가 클릭되었을 때 이메일을 인증합니다.")
     public ResponseEntity<ApiResponse<Void>> verifyEmail(@RequestParam String userEmail,
                                                          @RequestParam String verificationCode);
