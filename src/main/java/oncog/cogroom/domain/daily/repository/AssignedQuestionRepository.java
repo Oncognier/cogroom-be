@@ -26,7 +26,7 @@ public interface AssignedQuestionRepository extends JpaRepository<AssignedQuesti
         JOIN Question q ON aq.question.id = q.id
         LEFT JOIN Answer a ON a.member.id = :id AND a.question.id = q.id
         WHERE aq.member.id = :id
-        ORDER BY a.updatedAt
+        ORDER BY aq.assignedDate DESC
     """)
     Optional<List<DailyQuestionResponseDTO.AssignedQuestionWithAnswerDTO>> findAssignedQuestionsWithAnswerByMember(Long id);
 }
