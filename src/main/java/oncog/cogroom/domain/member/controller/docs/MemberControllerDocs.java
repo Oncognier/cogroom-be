@@ -4,14 +4,20 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import oncog.cogroom.domain.auth.exception.AuthErrorCode;
+import oncog.cogroom.domain.daily.dto.response.DailyQuestionResponseDTO;
+import oncog.cogroom.domain.daily.exception.DailyErrorCode;
 import oncog.cogroom.domain.member.dto.MemberRequestDTO;
 import oncog.cogroom.domain.member.dto.MemberResponseDTO;
 import oncog.cogroom.domain.member.exception.MemberErrorCode;
 import oncog.cogroom.global.common.response.ApiResponse;
 import oncog.cogroom.global.common.response.code.ApiErrorCode;
+import oncog.cogroom.global.common.response.code.ApiSuccessCode;
 import oncog.cogroom.global.exception.swagger.ApiErrorCodeExamples;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.List;
 
 @Tag(name = "Member", description = "Member 관련 API")
 public interface MemberControllerDocs {
@@ -50,4 +56,11 @@ public interface MemberControllerDocs {
     @Operation(summary = "사용자 정보 조회 API(마이페이지)", description = "마이페이지 홈에서 필요한 사용자의 정보 조회를 진행합니다.")
     ResponseEntity<ApiResponse<MemberResponseDTO.MemberMyPageInfoDTO>> getMemberInfoForMyPage();
 
+    @ApiErrorCodeExamples(
+            value = {AuthErrorCode.class, MemberErrorCode.class, DailyErrorCode.class},
+            include = {"INVALID_TOKEN","EXPIRED_TOKEN", "MEMBER_NOT_FOUND",
+             "INVALID_QNA_CONSTRUCTION"}
+    )
+    @Operation(summary = "데일리 질문 및 답변 조회", description = "마이페이지 내에서 사용자에게 할당된 데일리 질문과 그에 대한 답변을 조회합니다.")
+    public ResponseEntity<ApiResponse<List<DailyQuestionResponseDTO.AssignedQuestionWithAnswerDTO>>> getDailyQuestionAndAnswer();
 }
