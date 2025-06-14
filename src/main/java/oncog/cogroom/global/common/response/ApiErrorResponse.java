@@ -15,4 +15,8 @@ public class ApiErrorResponse {
     public static ApiErrorResponse of(BaseErrorCode errorCode) {
         return new ApiErrorResponse(errorCode.getCode(), errorCode.getMessage());
     }
+
+    public static ApiErrorResponse of(String code, String message) {
+        return new ApiErrorResponse(code, message);
+    }
 }
