@@ -23,20 +23,11 @@ public class CookieUtil {
                     .sameSite("None")
                     .path("/")
                     .secure(true)
+                    .domain("cogroom.com")
                     .maxAge(Integer.parseInt(refreshExpiration))
                     .build();
 
-            ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken",tokens.getAccessToken())
-                    .httpOnly(false)
-                    .sameSite("None")
-                    .path("/")
-                    .maxAge(Integer.parseInt(accessExpiration))
-                    .build();
-
             response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
-            response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
-
-            // 테스트용 토큰 헤더 설정 (추후 삭제 예정)
             response.addHeader(HttpHeaders.AUTHORIZATION, tokens.getAccessToken());
         }
     }
