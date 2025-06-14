@@ -45,6 +45,7 @@ public class AuthRequestDTO {
         private String nickname;
 
         @Email(message = "이메일 형식이 올바르지 않습니다.")
+        @NotBlank(message = "이메일은 필수입니다.")
         @Size(max = 30, message = "이메일은 30자 이내여야 합니다.")
         private String email;
 
