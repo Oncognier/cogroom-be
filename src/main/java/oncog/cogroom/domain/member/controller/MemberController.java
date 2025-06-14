@@ -3,6 +3,8 @@ package oncog.cogroom.domain.member.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import oncog.cogroom.domain.daily.dto.response.DailyQuestionResponseDTO;
+import oncog.cogroom.domain.daily.service.DailyService;
 import oncog.cogroom.domain.member.controller.docs.MemberControllerDocs;
 import oncog.cogroom.domain.member.dto.MemberRequestDTO;
 import oncog.cogroom.domain.member.service.MemberService;
@@ -10,6 +12,8 @@ import oncog.cogroom.global.common.response.ApiResponse;
 import oncog.cogroom.global.common.response.code.ApiSuccessCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static oncog.cogroom.domain.member.dto.MemberResponseDTO.*;
 import static oncog.cogroom.domain.member.dto.MemberResponseDTO.MemberInfoDTO;
@@ -21,6 +25,8 @@ import static oncog.cogroom.domain.member.dto.MemberResponseDTO.MemberInfoDTO;
 public class MemberController implements MemberControllerDocs {
 
     private final MemberService memberService;
+    private final DailyService dailyService;
+
     @GetMapping("")
     public ResponseEntity<ApiResponse<MemberInfoDTO>> getMemberInfo() {
         MemberInfoDTO memberInfo = memberService.findMemberInfo();
@@ -40,6 +46,13 @@ public class MemberController implements MemberControllerDocs {
         MemberMyPageInfoDTO memberForMyPage = memberService.findMemberForMyPage();
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS,memberForMyPage));
+    }
+
+    @PostMapping("/daily")
+    public ResponseEntity<ApiResponse<List<DailyQuestionResponseDTO.AssignedQuestionWithAnswerDTO>>> getDaily() {
+        List<DailyQuestionResponseDTO.AssignedQuestionWithAnswerDTO> response = dailyService.getAssignedAndAnsweredQuestion();
+
+        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, response));
     }
 
     @PatchMapping("")

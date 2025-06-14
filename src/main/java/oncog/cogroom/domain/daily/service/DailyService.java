@@ -10,8 +10,8 @@ import oncog.cogroom.domain.daily.entity.AssignedQuestion;
 import oncog.cogroom.domain.daily.entity.Question;
 import oncog.cogroom.domain.daily.exception.DailyErrorCode;
 import oncog.cogroom.domain.daily.exception.DailyException;
-import oncog.cogroom.domain.daily.respository.AnswerRepository;
-import oncog.cogroom.domain.daily.respository.AssignedQuestionRepository;
+import oncog.cogroom.domain.daily.repository.AnswerRepository;
+import oncog.cogroom.domain.daily.repository.AssignedQuestionRepository;
 import oncog.cogroom.domain.member.entity.Member;
 import oncog.cogroom.domain.streak.entity.Streak;
 import oncog.cogroom.domain.streak.service.StreakService;
@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -84,6 +85,15 @@ public class DailyService extends BaseService {
         answer.updateAnswer(request.getAnswer());
     }
 
+    // 마이 페이지에서 데일리 질문 & 답변 조회
+    @Transactional(readOnly = true)
+    public List<DailyQuestionResponseDTO.AssignedQuestionWithAnswerDTO> getAssignedAndAnsweredQuestion() {
+
+        return assignedQuestionRepository.findAssignedQuestionsWithAnswerByMember(jwtProvider.extractMemberId())
+                .orElseThrow(() ->
+                        new DailyException(DailyErrorCode.ANSWER_NOT_FOUND)
+        );
+    }
     // 데일리 최초 답변 여부 조회
     public HasAnsweredResponseDTO getHasAnswered() {
         Member member = getMember();
