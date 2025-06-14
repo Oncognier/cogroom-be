@@ -28,7 +28,7 @@ spring:
             enable: true
   data:
     redis:
-      port: ${REDIS_PORT}
+      port: ${REDIS_PORT:6379}
       host: ${REDIS_HOST}
       password: ${REDIS_PASSWORD}
       connect-timeout: 2s

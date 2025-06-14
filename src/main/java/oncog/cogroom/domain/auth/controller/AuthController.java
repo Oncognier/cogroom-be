@@ -1,6 +1,7 @@
 package oncog.cogroom.domain.auth.controller;
 
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,6 @@ import oncog.cogroom.domain.daily.service.DailyQuestionAssignService;
 import oncog.cogroom.global.common.response.ApiResponse;
 import oncog.cogroom.global.common.response.code.ApiSuccessCode;
 import oncog.cogroom.global.common.util.CookieUtil;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -73,8 +73,9 @@ public class AuthController implements AuthControllerDocs {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<ApiResponse<Void>> logout(@CookieValue String refreshToken) {
-//        authSessionService.reIssue(refreshToken);
+    public ResponseEntity<ApiResponse<Void>> logout(HttpServletRequest request) {
+        authSessionService.logout(request);
+
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
 
     }
@@ -90,6 +91,7 @@ public class AuthController implements AuthControllerDocs {
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
     }
+
 
     @PostMapping("/email-verification")
     public ResponseEntity<ApiResponse<String>> sendEmail(@RequestBody @Valid AuthRequestDTO.EmailRequestDTO request) throws MessagingException, IOException {

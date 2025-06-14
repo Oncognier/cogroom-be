@@ -1,5 +1,4 @@
 package oncog.cogroom.domain.auth.service.social;
-
 import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.auth.dto.response.SocialTokenResponseDTO;
 import oncog.cogroom.domain.auth.exception.AuthErrorCode;
@@ -11,6 +10,7 @@ import oncog.cogroom.domain.member.repository.MemberRepository;
 import oncog.cogroom.global.common.util.TokenUtil;
 import oncog.cogroom.domain.auth.exception.AuthException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -18,9 +18,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
-
 import static oncog.cogroom.domain.auth.dto.response.SocialUserInfoDTO.KakaoUserInfoDTO;
-
 @Service
 @Slf4j
 public class KakaoAuthService extends AbstractAuthService {
@@ -29,11 +27,14 @@ public class KakaoAuthService extends AbstractAuthService {
 
     private final RestTemplate restTemplate;
 
-    public KakaoAuthService(MemberRepository memberRepository, TokenUtil tokenUtil, EmailService emailService, RestTemplate restTemplate) {
-        super( memberRepository, emailService ,tokenUtil);
+    public KakaoAuthService(MemberRepository memberRepository,
+                            TokenUtil tokenUtil,
+                            EmailService emailService,
+                            RestTemplate restTemplate,
+                            RedisTemplate<String, String> redisTemplate) {
+        super( memberRepository, emailService ,tokenUtil, redisTemplate);
         this.restTemplate = restTemplate;
     }
-
     // 카카오 액세스 토큰 조회
     @Override
     protected String requestAccessToken(String code) {
