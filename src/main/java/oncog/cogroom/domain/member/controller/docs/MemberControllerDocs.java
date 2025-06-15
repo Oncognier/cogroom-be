@@ -47,7 +47,7 @@ public interface MemberControllerDocs {
             include = {"INVALID_TOKEN","EXPIRED_TOKEN", "MEMBER_NOT_FOUND"}
     )
     @Operation(summary = "사용자 정보 조회 API(닉네임,사진)", description = "사용자의 닉네임과 이미지 조회를 진행합니다.")
-    ResponseEntity<ApiResponse<MemberResponseDTO.MemberSummaryDTO>> getMemberSummary(HttpServletRequest request);
+    ResponseEntity<ApiResponse<MemberResponseDTO.MemberSummaryDTO>> getMemberSummary();
 
 
     @ApiErrorCodeExamples(

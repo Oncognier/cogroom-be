@@ -45,12 +45,9 @@ public class MemberService extends BaseService {
                 .build();
     }
 
-    public MemberSummaryDTO findMemberSummary(HttpServletRequest request) {
+    public MemberSummaryDTO findMemberSummary() {
         Member member = getMember();
 
-        // 테스트용 다음 이슈에서 삭제 예정
-        String accessToken = jwtProvider.resolveToken(request);
-        log.info("now accessToken = {}", accessToken);
 
         return MemberSummaryDTO.builder()
                 .imageUrl(member.getProfileImageUrl())
