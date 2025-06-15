@@ -1,4 +1,4 @@
-package oncog.cogroom.domain.daily.respository;
+package oncog.cogroom.domain.daily.repository;
 
 import oncog.cogroom.domain.daily.entity.Answer;
 import oncog.cogroom.domain.daily.entity.Question;

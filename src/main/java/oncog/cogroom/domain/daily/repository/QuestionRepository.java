@@ -1,4 +1,4 @@
-package oncog.cogroom.domain.daily.respository;
+package oncog.cogroom.domain.daily.repository;
 
 import oncog.cogroom.domain.daily.entity.Question;
 import oncog.cogroom.domain.daily.enums.QuestionLevel;

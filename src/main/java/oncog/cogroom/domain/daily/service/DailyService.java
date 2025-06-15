@@ -10,8 +10,8 @@ import oncog.cogroom.domain.daily.entity.AssignedQuestion;
 import oncog.cogroom.domain.daily.entity.Question;
 import oncog.cogroom.domain.daily.exception.DailyErrorCode;
 import oncog.cogroom.domain.daily.exception.DailyException;
-import oncog.cogroom.domain.daily.respository.AnswerRepository;
-import oncog.cogroom.domain.daily.respository.AssignedQuestionRepository;
+import oncog.cogroom.domain.daily.repository.AnswerRepository;
+import oncog.cogroom.domain.daily.repository.AssignedQuestionRepository;
 import oncog.cogroom.domain.member.entity.Member;
 import oncog.cogroom.domain.streak.entity.Streak;
 import oncog.cogroom.domain.streak.service.StreakService;
@@ -21,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -83,6 +85,26 @@ public class DailyService extends BaseService {
         Answer answer = getDailyAnswer(member, startOfToday, endOfToday);
         answer.updateAnswer(request.getAnswer());
     }
+
+    // 마이 페이지에서 데일리 질문 & 답변 조회
+    @Transactional(readOnly = true)
+    public List<DailyQuestionResponseDTO.AssignedQuestionWithAnswerDTO> getAssignedAndAnsweredQuestion() {
+
+        List<DailyQuestionResponseDTO.AssignedQuestionWithAnswerDTO> response =
+                assignedQuestionRepository.findAssignedQuestionsWithAnswerByMember(jwtProvider.extractMemberId())
+                .orElseThrow(() -> new DailyException(DailyErrorCode.ANSWER_NOT_FOUND));
+
+        // 데일리 질문이 할당된 시간이 00:00:00 ~ 23:59:59 내로 할당되었는지 검사
+        response.forEach(res -> {
+            LocalDateTime assignedDate = res.getAssignedDate();
+            if (getStartOfToday().isBefore(assignedDate) && getEndOfToday().isAfter(assignedDate)) {
+                res.setUpdatable(true);
+            }
+        });
+
+        return response;
+    }
+
 
     // 데일리 최초 답변 여부 조회
     public HasAnsweredResponseDTO getHasAnswered() {

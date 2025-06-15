@@ -51,6 +51,8 @@ public class AuthSessionService extends BaseService {
         // 토큰 갱신
         tokenRotation(tokenDTO.getRefreshToken(), memberId);
 
+        log.info("토큰 재발급 호출");
+
         return tokenDTO;
     }
 
