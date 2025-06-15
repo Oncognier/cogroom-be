@@ -1,6 +1,8 @@
 package oncog.cogroom.domain.member.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.auth.service.EmailService;
 import oncog.cogroom.domain.member.dto.MemberRequestDTO;
 import oncog.cogroom.domain.member.entity.Member;
@@ -9,6 +11,7 @@ import oncog.cogroom.domain.member.exception.MemberException;
 import oncog.cogroom.domain.member.repository.MemberRepository;
 import oncog.cogroom.domain.streak.service.StreakService;
 import oncog.cogroom.global.common.service.BaseService;
+import oncog.cogroom.global.security.jwt.JwtProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,11 +23,15 @@ import static oncog.cogroom.domain.member.dto.MemberResponseDTO.*;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class MemberService extends BaseService {
 
     private final MemberRepository memberRepository;
     private final StreakService streakService;
     private final EmailService emailService;
+
+    // 테스트용 다음 이슈에서 삭제 예정
+    private final JwtProvider jwtProvider;
 
     public MemberInfoDTO findMemberInfo() {
         Member member = getMember();
@@ -38,8 +45,12 @@ public class MemberService extends BaseService {
                 .build();
     }
 
-    public MemberSummaryDTO findMemberSummary() {
+    public MemberSummaryDTO findMemberSummary(HttpServletRequest request) {
         Member member = getMember();
+
+        // 테스트용 다음 이슈에서 삭제 예정
+        String accessToken = jwtProvider.resolveToken(request);
+        log.info("now accessToken = {}", accessToken);
 
         return MemberSummaryDTO.builder()
                 .imageUrl(member.getProfileImageUrl())

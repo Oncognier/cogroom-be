@@ -1,5 +1,6 @@
 package oncog.cogroom.domain.member.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,8 +36,8 @@ public class MemberController implements MemberControllerDocs {
     }
 
     @GetMapping("/summary")
-    public ResponseEntity<ApiResponse<MemberSummaryDTO>> getMemberSummary() {
-        MemberSummaryDTO memberSummary = memberService.findMemberSummary();
+    public ResponseEntity<ApiResponse<MemberSummaryDTO>> getMemberSummary(HttpServletRequest request) {
+        MemberSummaryDTO memberSummary = memberService.findMemberSummary(request);
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS,memberSummary));
     }
