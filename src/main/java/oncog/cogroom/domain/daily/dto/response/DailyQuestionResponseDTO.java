@@ -19,6 +19,7 @@ public class DailyQuestionResponseDTO {
 
     @Getter
     @Builder
+    @AllArgsConstructor
     public static class AssignedQuestionWithAnswerDTO{
         private String question;
         private String answer;
