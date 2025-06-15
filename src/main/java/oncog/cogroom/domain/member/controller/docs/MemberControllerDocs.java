@@ -25,7 +25,7 @@ public interface MemberControllerDocs {
     @ApiErrorCodeExamples(
             value = {MemberErrorCode.class, AuthErrorCode.class},
             include = {"INVALID_TOKEN","EXPIRED_TOKEN", "MEMBER_NOT_FOUND",
-                    "INVALID_PHONE_NUMBER", "INVALID_PASSWORD_FORMAT", "DUPLICATE_USER_NICKNAME"})
+                    "PHONENUMBER_PATTERN_ERROR", "PASSWORD_PATTERN_ERROR", "NICKNAME_INVALID_PATTERN" ,"DUPLICATE_USER_NICKNAME"})
     @Operation(summary = "사용자 정보 수정 API", description = "사용자 정보를 수정합니다. ")
     ResponseEntity<ApiResponse<Void>> updateMemberInfo(@RequestBody @Valid MemberRequestDTO.MemberInfoUpdateDTO request);
 

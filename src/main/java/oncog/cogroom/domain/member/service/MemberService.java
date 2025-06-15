@@ -67,6 +67,9 @@ public class MemberService extends BaseService {
     public void updateMemberInfo(MemberRequestDTO.MemberInfoUpdateDTO request){
         Member member = getMember();
 
+        // 닉네임 숫자로만 구성되어있는지 검사
+        if(request.getNickname().matches("^\\d+$")) throw new MemberException(MemberErrorCode.NICKNAME_INVALID_PATTERN);
+
         emailService.isVerified(request.getEmail());
 
         member.updateMemberInfo(request);
