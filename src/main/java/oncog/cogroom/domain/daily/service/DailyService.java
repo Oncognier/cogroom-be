@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -89,11 +90,22 @@ public class DailyService extends BaseService {
     @Transactional(readOnly = true)
     public List<DailyQuestionResponseDTO.AssignedQuestionWithAnswerDTO> getAssignedAndAnsweredQuestion() {
 
-        return assignedQuestionRepository.findAssignedQuestionsWithAnswerByMember(jwtProvider.extractMemberId())
-                .orElseThrow(() ->
-                        new DailyException(DailyErrorCode.ANSWER_NOT_FOUND)
-        );
+        List<DailyQuestionResponseDTO.AssignedQuestionWithAnswerDTO> response =
+                assignedQuestionRepository.findAssignedQuestionsWithAnswerByMember(jwtProvider.extractMemberId())
+                .orElseThrow(() -> new DailyException(DailyErrorCode.ANSWER_NOT_FOUND));
+
+        // 데일리 질문이 할당된 시간이 00:00:00 ~ 23:59:59 내로 할당되었는지 검사
+        response.forEach(res -> {
+            LocalDateTime assignedDate = res.getAssignedDate();
+            if (getStartOfToday().isBefore(assignedDate) && getEndOfToday().isAfter(assignedDate)) {
+                res.setUpdatable(true);
+            }
+        });
+
+        return response;
     }
+
+
     // 데일리 최초 답변 여부 조회
     public HasAnsweredResponseDTO getHasAnswered() {
         Member member = getMember();
