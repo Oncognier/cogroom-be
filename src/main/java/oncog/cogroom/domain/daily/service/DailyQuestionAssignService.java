@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.daily.entity.AssignedQuestion;
 import oncog.cogroom.domain.daily.entity.Question;
 import oncog.cogroom.domain.daily.enums.QuestionLevel;
+import oncog.cogroom.domain.daily.exception.DailyErrorCode;
+import oncog.cogroom.domain.daily.exception.DailyException;
 import oncog.cogroom.domain.daily.repository.AssignedQuestionRepository;
 import oncog.cogroom.domain.daily.repository.QuestionRepository;
 import oncog.cogroom.domain.member.entity.Member;
@@ -29,6 +31,8 @@ public class DailyQuestionAssignService {
     private final MemberRepository memberRepository;
     private final DailyService dailyService;
     private final Random random = new Random();
+
+    private static final long FIRST_QUESTION_ID = 1; // 회원가입 시 할당받는 최초 질문 id
 
     @Transactional
     public void assignDailyQuestions() {
@@ -65,7 +69,8 @@ public class DailyQuestionAssignService {
     public void assignDailyQuestionAtSignup(Provider provider, String providerId) {
         Member member = memberRepository.findByProviderAndProviderId(provider, providerId)
                 .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND_ERROR));
-        assignDailyQuestion(member);
+
+        assignFirstDailyQuestion(member);
     }
 
 //     오늘 이미 질문이 할당됐는지 확인 (질문 중복 할당 방지)
@@ -98,4 +103,15 @@ public class DailyQuestionAssignService {
         assignedQuestionRepository.save(assignedQuestion);
     }
 
+    private void assignFirstDailyQuestion(Member member) {
+        if (alreadyAssignedQuestionToday(member)) {
+            log.info("멤버: {} 에게 이미 질문이 할당되었습니다.", member.getId());
+            return;
+        }
+
+        Question question = questionRepository.findById(FIRST_QUESTION_ID)
+                .orElseThrow(() -> new DailyException(DailyErrorCode.FIRST_QUESTION_NOT_FOUND_ERROR));
+
+        saveAssignedQuestion(member, question);
+    }
 }
