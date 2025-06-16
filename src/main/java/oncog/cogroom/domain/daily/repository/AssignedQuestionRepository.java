@@ -24,7 +24,7 @@ public interface AssignedQuestionRepository extends JpaRepository<AssignedQuesti
             a.answer,
             aq.assignedDate
         ) FROM AssignedQuestion aq
-        JOIN Question q ON aq.question.id = q.id
+        JOIN Question q ON aq.question.id = q.id AND aq.isAnswered = true
         JOIN Answer a ON a.member.id = :id AND a.question.id = q.id
         WHERE aq.member.id = :id
         ORDER BY aq.assignedDate DESC
