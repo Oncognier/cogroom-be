@@ -10,7 +10,6 @@ import oncog.cogroom.domain.member.exception.MemberException;
 import oncog.cogroom.domain.member.repository.MemberRepository;
 import oncog.cogroom.domain.streak.service.StreakService;
 import oncog.cogroom.global.common.service.BaseService;
-import oncog.cogroom.global.security.jwt.JwtProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,9 +28,6 @@ public class MemberService extends BaseService {
     private final StreakService streakService;
     private final EmailService emailService;
 
-    // 테스트용 다음 이슈에서 삭제 예정
-    private final JwtProvider jwtProvider;
-
     public MemberInfoDTO findMemberInfo() {
         Member member = getMember();
 
@@ -46,7 +42,6 @@ public class MemberService extends BaseService {
 
     public MemberSummaryDTO findMemberSummary() {
         Member member = getMember();
-
 
         return MemberSummaryDTO.builder()
                 .imageUrl(member.getProfileImageUrl())
@@ -73,9 +68,6 @@ public class MemberService extends BaseService {
 
     public void updateMemberInfo(MemberRequestDTO.MemberInfoUpdateDTO request){
         Member member = getMember();
-
-        // 닉네임 숫자로만 구성되어있는지 검사
-        if(request.getNickname().matches("^\\d+$")) throw new MemberException(MemberErrorCode.NICKNAME_INVALID_PATTERN);
 
         emailService.isVerified(request.getEmail());
 
