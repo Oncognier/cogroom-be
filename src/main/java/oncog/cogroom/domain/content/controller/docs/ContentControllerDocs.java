@@ -16,7 +16,7 @@ public interface ContentControllerDocs {
 
     @ApiErrorCodeExamples(
             value = {ContentErrorCode.class, ApiErrorCode.class},
-            include = {"IMAGE_NOT_FOUND", "CONTENTS_NOT_FOUND"})
+            include = {"IMAGE_NOT_FOUND_ERROR", "CONTENTS_NOT_FOUND_ERROR", "INTERNAL_SERVER_ERROR"})
     @Operation(summary = "콘텐츠 목록 조회(홈)", description = "홈 화면에서의 콘텐츠 목록을 조회합니다.")
     ResponseEntity<ApiResponse<List<ContentResponseDTO>>> getHomeContents();
 }
