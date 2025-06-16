@@ -26,7 +26,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         BaseErrorCode errorCode = (BaseErrorCode) (request.getAttribute("errorCode"));
 
         if (errorCode == null) {
-            errorCode = AuthErrorCode.TOKEN_INVALID_ERROR;
+            errorCode = AuthErrorCode.TOKEN_EMPTY_ERROR;
         }
 
         ApiErrorResponse errorResponse = ApiErrorResponse.of(errorCode);

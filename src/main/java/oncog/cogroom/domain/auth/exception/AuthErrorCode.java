@@ -21,6 +21,7 @@ public enum AuthErrorCode implements BaseErrorCode {
     TOKEN_INVALID_ERROR("TOKEN_INVALID_ERROR", HttpStatus.UNAUTHORIZED, "유효하지 않는 토큰입니다."),
     TOKEN_BLACK_LIST_ERROR("TOKEN_BLACK_LIST_ERROR", HttpStatus.UNAUTHORIZED, "블랙리스트에 포함된 토큰입니다."),
     TOKEN_EXPIRED_ERROR("TOKEN_EXPIRED_ERROR", HttpStatus.UNAUTHORIZED, "만료된 토큰입니다."),
+    TOKEN_EMPTY_ERROR("TOKEN_EMPTY_ERROR", HttpStatus.UNAUTHORIZED, "토큰이 헤더에 존재하지 않습니다"),
 
     // 이메일
     EMAIL_DUPLICATE_ERROR("EMAIL_DUPLICATE_ERROR", HttpStatus.CONFLICT, "이미 존재하는 이메일입니다."),
