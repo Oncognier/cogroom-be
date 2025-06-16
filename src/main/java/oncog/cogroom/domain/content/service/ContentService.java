@@ -41,7 +41,7 @@ public class ContentService {
     // 썸네일 이미지만 조회 (display_order = 1)
     private ContentImage getContentImage(Content content) {
         return contentImageRepository.findByContentAndDisplayOrderIs(content, THUMBNAIL_IMAGE_DISPLAY_ORDER)
-                .orElseThrow(() -> new ContentException(ContentErrorCode.IMAGE_NOT_FOUND));
+                .orElseThrow(() -> new ContentException(ContentErrorCode.IMAGE_NOT_FOUND_ERROR));
     }
 
 }
