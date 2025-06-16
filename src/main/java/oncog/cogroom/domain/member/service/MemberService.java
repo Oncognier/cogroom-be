@@ -1,6 +1,5 @@
 package oncog.cogroom.domain.member.service;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.auth.service.EmailService;
@@ -86,7 +85,7 @@ public class MemberService extends BaseService {
     public boolean existNickname(MemberRequestDTO.ExistNicknameDTO request) {
 
         if(Boolean.TRUE.equals(memberRepository.existsByNickname(request.getNickname()))){
-            throw new MemberException(MemberErrorCode.DUPLICATE_USER_NICKNAME);
+            throw new MemberException(MemberErrorCode.NICKNAME_DUPLICATE_ERROR);
         }
 
         return false;

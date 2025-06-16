@@ -92,7 +92,7 @@ public class DailyService extends BaseService {
 
         List<DailyQuestionResponseDTO.AssignedQuestionWithAnswerDTO> response =
                 assignedQuestionRepository.findAssignedQuestionsWithAnswerByMember(jwtProvider.extractMemberId())
-                .orElseThrow(() -> new DailyException(DailyErrorCode.ANSWER_NOT_FOUND));
+                .orElseThrow(() -> new DailyException(DailyErrorCode.ANSWER_NOT_FOUND_ERROR));
 
         // 데일리 질문이 할당된 시간이 00:00:00 ~ 23:59:59 내로 할당되었는지 검사
         response.forEach(res -> {
@@ -121,17 +121,17 @@ public class DailyService extends BaseService {
         LocalDateTime startOfToday = getStartOfToday();
         LocalDateTime endOfToday = getEndOfToday();
         return assignedQuestionRepository.findByMemberAndAssignedDateGreaterThanEqualAndAssignedDateLessThan(member, startOfToday, endOfToday)
-                .orElseThrow(() -> new DailyException(DailyErrorCode.DAILY_QUESTION_NOT_FOUND));
+                .orElseThrow(() -> new DailyException(DailyErrorCode.QUESTION_NOT_FOUND_ERROR));
     }
 
     private AssignedQuestion getAssignedQuestion(Member member, Long assignedQuestionId) {
         return assignedQuestionRepository.findByMemberAndId(member, assignedQuestionId)
-                .orElseThrow(() -> new DailyException(DailyErrorCode.ASSIGNED_QUESTION_NOT_FOUND));
+                .orElseThrow(() -> new DailyException(DailyErrorCode.ASSIGNED_QUESTION_NOT_FOUND_ERROR));
     }
 
     private Answer getDailyAnswer(Member member, LocalDateTime start, LocalDateTime end) {
         return answerRepository.findByMemberAndCreatedAtBetween(member, start, end)
-                .orElseThrow(() -> new DailyException(DailyErrorCode.ANSWER_NOT_FOUND));
+                .orElseThrow(() -> new DailyException(DailyErrorCode.ANSWER_NOT_FOUND_ERROR));
     }
 
     // 금일 시작 시간 조회 (00:00:00)
@@ -160,7 +160,7 @@ public class DailyService extends BaseService {
 
     private void checkDuplicateAnswer(Member member, Question question) {
         if (answerRepository.existsByMemberAndQuestion(member, question)) {
-            throw new DailyException(DailyErrorCode.ALREADY_ANSWERED);
+            throw new DailyException(DailyErrorCode.ANSWER_ALREADY_EXIST_ERROR);
         }
     }
 
@@ -175,7 +175,7 @@ public class DailyService extends BaseService {
         log.info("now: {}, target: {}", now, target);
         if (!now.toLocalDate().isEqual(target.toLocalDate())) {
             log.info("날짜가 일치하지 않습니다.");
-            throw new DailyException(DailyErrorCode.ANSWER_TIME_EXPIRED);
+            throw new DailyException(DailyErrorCode.ANSWER_TIME_EXPIRED_ERROR);
         }
     }
 

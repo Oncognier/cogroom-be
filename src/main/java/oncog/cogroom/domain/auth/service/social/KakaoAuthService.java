@@ -53,7 +53,7 @@ public class KakaoAuthService extends AbstractAuthService {
             return response.getBody().getAccessToken();
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             log.error("카카오 액세스 토큰 요청 실패 : {}", e.getResponseBodyAsString());
-            throw new AuthException(AuthErrorCode.KAKAO_AUTH_FAILED);
+            throw new AuthException(AuthErrorCode.KAKAO_REQUEST_ERROR);
         }
     }
 
@@ -74,7 +74,7 @@ public class KakaoAuthService extends AbstractAuthService {
 
         } catch (HttpClientErrorException e) {
             log.error("Kakao 사용자 정보 조회 API 호출 실패: 상태 코드 {}, 응답 본문 {}", e.getStatusCode(), e.getResponseBodyAsString());
-            throw new AuthException(AuthErrorCode.KAKAO_AUTH_FAILED);
+            throw new AuthException(AuthErrorCode.KAKAO_REQUEST_ERROR);
         }
     }
 

@@ -19,20 +19,20 @@ public interface DailyControllerDocs {
     @Operation(summary = "데일리 질문 조회", description = "멤버가 할당받은 데일리 질문을 조회합니다.")
     @ApiErrorCodeExamples(
             value = {MemberErrorCode.class, DailyErrorCode.class, ApiErrorCode.class},
-            include = {"MEMBER_NOT_FOUND", "DAILY_QUESTION_NOT_FOUND", "INTERNAL_SERVER_ERROR"})
+            include = {"MEMBER_NOT_FOUND_ERROR", "QUESTION_NOT_FOUND_ERROR", "INTERNAL_SERVER_ERROR"})
     ResponseEntity<ApiResponse<DailyQuestionResponseDTO>> getDailyQuestion();
 
     @Operation(summary = "데일리 답변 등록", description = "데일리 질문에 대한 답변을 등록합니다.")
     @ApiErrorCodeExamples(
             value = {MemberErrorCode.class, DailyErrorCode.class, ApiErrorCode.class},
-            include = {"MEMBER_NOT_FOUND", "DAILY_QUESTION_NOT_FOUND", "ALREADY_ANSWERED", "EMPTY_FILED",
-                    "ASSIGNED_QUESTION_NOT_FOUND", "ANSWER_LENGTH_EXCEEDED", "ANSWER_TIME_EXPIRED", "INTERNAL_SERVER_ERROR"})
+            include = {"MEMBER_NOT_FOUND_ERROR", "QUESTION_NOT_FOUND_ERROR", "ANSWER_ALREADY_EXIST_ERROR", "EMPTY_FILED_ERROR",
+                    "ASSIGNED_QUESTION_NOT_FOUND_ERROR", "ANSWER_LENGTH_EXCEEDED_ERROR", "ANSWER_TIME_EXPIRED_ERROR", "INTERNAL_SERVER_ERROR"})
     ResponseEntity<ApiResponse<String>> createDailyAnswer(@RequestBody @Valid DailyAnswerRequestDTO request);
 
     @Operation(summary = "데일리 답변 수정", description = "데일리 질문에 대한 답변을 수정합니다.")
     @ApiErrorCodeExamples(
             value = {MemberErrorCode.class, DailyErrorCode.class, ApiErrorCode.class},
-            include = {"MEMBER_NOT_FOUND", "DAILY_QUESTION_NOT_FOUND", "ALREADY_ANSWERED", "EMPTY_FILED",
-                    "ASSIGNED_QUESTION_NOT_FOUND", "ANSWER_LENGTH_EXCEEDED", "ANSWER_TIME_EXPIRED", "INTERNAL_SERVER_ERROR"})
+            include = {"MEMBER_NOT_FOUND_ERROR", "QUESTION_NOT_FOUND_ERROR", "ANSWER_ALREADY_EXIST_ERROR", "EMPTY_FILED_ERROR",
+                    "ASSIGNED_QUESTION_NOT_FOUND_ERROR", "ANSWER_LENGTH_EXCEEDED_ERROR", "ANSWER_TIME_EXPIRED_ERROR", "INTERNAL_SERVER_ERROR"})
     ResponseEntity<ApiResponse<String>> updateDailyAnswer(@RequestBody @Valid DailyAnswerRequestDTO request);
 }

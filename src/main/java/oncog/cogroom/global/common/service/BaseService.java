@@ -17,6 +17,6 @@ public abstract class BaseService {
 
     protected Member getMember() {
         return memberRepository.findById(jwtProvider.extractMemberId())
-                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND_ERROR));
     }
 }
