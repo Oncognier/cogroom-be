@@ -15,6 +15,6 @@ public interface StreakControllerDocs {
     @Operation(summary = "물방울(스트릭) 기록 조회", description = "물방울 기록을 리스트로 반환합니다.")
     @ApiErrorCodeExamples(
             value = {MemberErrorCode.class, ApiErrorCode.class},
-            include = {"MEMBER_NOT_FOUND", "INTERNAL_SERVER_ERROR"})
+            include = {"MEMBER_NOT_FOUND_ERROR", "INTERNAL_SERVER_ERROR"})
     ResponseEntity<ApiResponse<StreakCalendarResponseDTO>> getStreakCalendar();
 }

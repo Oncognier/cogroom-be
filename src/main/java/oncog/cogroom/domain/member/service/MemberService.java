@@ -1,6 +1,5 @@
 package oncog.cogroom.domain.member.service;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.auth.service.EmailService;
@@ -11,7 +10,6 @@ import oncog.cogroom.domain.member.exception.MemberException;
 import oncog.cogroom.domain.member.repository.MemberRepository;
 import oncog.cogroom.domain.streak.service.StreakService;
 import oncog.cogroom.global.common.service.BaseService;
-import oncog.cogroom.global.security.jwt.JwtProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,9 +28,6 @@ public class MemberService extends BaseService {
     private final StreakService streakService;
     private final EmailService emailService;
 
-    // 테스트용 다음 이슈에서 삭제 예정
-    private final JwtProvider jwtProvider;
-
     public MemberInfoDTO findMemberInfo() {
         Member member = getMember();
 
@@ -45,12 +40,8 @@ public class MemberService extends BaseService {
                 .build();
     }
 
-    public MemberSummaryDTO findMemberSummary(HttpServletRequest request) {
+    public MemberSummaryDTO findMemberSummary() {
         Member member = getMember();
-
-        // 테스트용 다음 이슈에서 삭제 예정
-        String accessToken = jwtProvider.resolveToken(request);
-        log.info("now accessToken = {}", accessToken);
 
         return MemberSummaryDTO.builder()
                 .imageUrl(member.getProfileImageUrl())
@@ -78,9 +69,6 @@ public class MemberService extends BaseService {
     public void updateMemberInfo(MemberRequestDTO.MemberInfoUpdateDTO request){
         Member member = getMember();
 
-        // 닉네임 숫자로만 구성되어있는지 검사
-        if(request.getNickname().matches("^\\d+$")) throw new MemberException(MemberErrorCode.NICKNAME_INVALID_PATTERN);
-
         emailService.isVerified(request.getEmail());
 
         member.updateMemberInfo(request);
@@ -89,7 +77,7 @@ public class MemberService extends BaseService {
     public boolean existNickname(MemberRequestDTO.ExistNicknameDTO request) {
 
         if(Boolean.TRUE.equals(memberRepository.existsByNickname(request.getNickname()))){
-            throw new MemberException(MemberErrorCode.DUPLICATE_USER_NICKNAME);
+            throw new MemberException(MemberErrorCode.NICKNAME_DUPLICATE_ERROR);
         }
 
         return false;

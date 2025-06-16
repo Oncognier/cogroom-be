@@ -36,8 +36,8 @@ public class MemberController implements MemberControllerDocs {
     }
 
     @GetMapping("/summary")
-    public ResponseEntity<ApiResponse<MemberSummaryDTO>> getMemberSummary(HttpServletRequest request) {
-        MemberSummaryDTO memberSummary = memberService.findMemberSummary(request);
+    public ResponseEntity<ApiResponse<MemberSummaryDTO>> getMemberSummary() {
+        MemberSummaryDTO memberSummary = memberService.findMemberSummary();
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS,memberSummary));
     }

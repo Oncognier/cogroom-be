@@ -74,7 +74,7 @@ public class EmailService {
 
     // 이메일 중복 검사
     public void existEmail(String toEmail) {
-        if(Boolean.TRUE.equals(memberRepository.existsByEmail(toEmail))) throw new AuthException(AuthErrorCode.ALREADY_EXIST_EMAIL);
+        if(Boolean.TRUE.equals(memberRepository.existsByEmail(toEmail))) throw new AuthException(AuthErrorCode.EMAIL_DUPLICATE_ERROR);
     }
 
     // 이메일의 인증 상태 반환
@@ -87,7 +87,7 @@ public class EmailService {
     public void isVerified(String email) {
         Boolean isVerified = emailRepository.existsByEmailAndVerifyStatus(email, true);
 
-        if(Boolean.FALSE.equals(isVerified)) throw new AuthException(AuthErrorCode.NOT_VERIFIED_EMAIL);
+        if(Boolean.FALSE.equals(isVerified)) throw new AuthException(AuthErrorCode.EMAIL_VERIFICATION_ERROR);
     }
 
     // 이메일 인증 (boolean 형으로 변경 예정)
@@ -97,7 +97,7 @@ public class EmailService {
         byEmailAndVerifyCode.ifPresent(emailVerification -> {
             // 링크 시간이 만료된 경우
             if(LocalDateTime.now().isAfter(emailVerification.getExpireDate())){
-                throw new AuthException(AuthErrorCode.EXPIRED_LINK);
+                throw new AuthException(AuthErrorCode.LINK_EXPIRED_ERROR);
             }
 
             // 링크 시간이 만료되지 않았으면 인증

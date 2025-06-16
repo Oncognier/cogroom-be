@@ -9,13 +9,13 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum DailyErrorCode implements BaseErrorCode {
 
-    DAILY_QUESTION_NOT_FOUND("DAILY_QUESTION_NOT_FOUND", HttpStatus.NOT_FOUND, "데일리 질문을 찾을 수 없습니다."),
-    ASSIGNED_QUESTION_NOT_FOUND("ASSIGNED_QUESTION_NOT_FOUND", HttpStatus.NOT_FOUND, "해당 id를 가진 할당된 데일리 질문을 찾을 수 없습니다."),
-    ALREADY_ANSWERED("ALREADY_ANSWERED", HttpStatus.CONFLICT, "이미 답변이 존재합니다."),
-    ANSWER_LENGTH_EXCEEDED("ANSWER_LENGTH_EXCEEDED", HttpStatus.BAD_REQUEST, "답변은 100자 이하여야 합니다."),
-    ANSWER_TIME_EXPIRED("ANSWER_TIME_EXPIRED", HttpStatus.FORBIDDEN, "오늘 할당된 질문에만 답변을 작성 및 수정할 수 있습니다."),
-    ANSWER_NOT_FOUND("ANSWER_NOT_FOUND", HttpStatus.NOT_FOUND, "데일리 답변을 찾을 수 없습니다."),
-    INVALID_QNA_CONSTRUCTION("INVALID_QNA_CONSTRUCTION", HttpStatus.INTERNAL_SERVER_ERROR, "질문 - 답변 데이터를 구성하는 중 문제가 발생했습니다.");
+    QUESTION_NOT_FOUND_ERROR("QUESTION_NOT_FOUND_ERROR", HttpStatus.NOT_FOUND, "데일리 질문을 찾을 수 없습니다."),
+    ASSIGNED_QUESTION_NOT_FOUND_ERROR("ASSIGNED_QUESTION_NOT_FOUND_ERROR", HttpStatus.NOT_FOUND, "해당 id를 가진 할당된 데일리 질문을 찾을 수 없습니다."),
+    ANSWER_ALREADY_EXIST_ERROR("ANSWER_ALREADY_EXIST_ERROR", HttpStatus.CONFLICT, "이미 답변이 존재합니다."),
+    ANSWER_LENGTH_EXCEEDED_ERROR("ANSWER_LENGTH_EXCEEDED_ERROR", HttpStatus.BAD_REQUEST, "답변은 100자 이하여야 합니다."),
+    ANSWER_TIME_EXPIRED_ERROR("ANSWER_TIME_EXPIRED_ERROR", HttpStatus.FORBIDDEN, "오늘 할당된 질문에만 답변을 작성 및 수정할 수 있습니다."),
+    ANSWER_NOT_FOUND_ERROR("ANSWER_NOT_FOUND_ERROR", HttpStatus.NOT_FOUND, "데일리 답변을 찾을 수 없습니다."),
+    QNA_NOT_FOUND_ERROR("QNA_NOT_FOUND_ERROR", HttpStatus.INTERNAL_SERVER_ERROR, "질문 - 답변 데이터를 구성하는 중 문제가 발생했습니다.");
 
     private final String code;
     private final HttpStatus status;

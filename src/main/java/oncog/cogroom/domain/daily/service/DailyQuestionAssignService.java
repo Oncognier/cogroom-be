@@ -64,7 +64,7 @@ public class DailyQuestionAssignService {
     @Transactional
     public void assignDailyQuestionAtSignup(Provider provider, String providerId) {
         Member member = memberRepository.findByProviderAndProviderId(provider, providerId)
-                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND_ERROR));
         assignDailyQuestion(member);
     }
 

@@ -43,7 +43,7 @@ public class AuthSessionService extends BaseService {
 
         Long memberId = jwtProvider.extractMemberId(refreshToken);
 
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND_ERROR));
 
         // 토큰 생성
         AuthResponseDTO.ServiceTokenDTO tokenDTO = tokenUtil.createTokens(member);

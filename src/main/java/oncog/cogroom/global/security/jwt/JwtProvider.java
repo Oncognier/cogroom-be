@@ -62,16 +62,16 @@ public class JwtProvider {
             String key = "BL:" + DigestUtils.sha256Hex(token);
             if (Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
                 log.warn("JWT Token is blackListed: {}", token);
-                throw new AuthException(AuthErrorCode.IN_BLACK_LIST);
+                throw new AuthException(AuthErrorCode.TOKEN_BLACK_LIST_ERROR);
             }
 
             return true;
         }catch(ExpiredJwtException e){
             log.error("Expired JWT token: {}", e.getMessage());
-            throw new AuthException(AuthErrorCode.EXPIRED_TOKEN);
+            throw new AuthException(AuthErrorCode.TOKEN_EXPIRED_ERROR);
         } catch (JwtException | IllegalArgumentException e) {
             log.error("Invalid JWT token : {}", e.getMessage());
-            throw new AuthException(AuthErrorCode.INVALID_TOKEN);
+            throw new AuthException(AuthErrorCode.TOKEN_INVALID_ERROR);
         }
     }
     public Claims getClaims(String token) {
