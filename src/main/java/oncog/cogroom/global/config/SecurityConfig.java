@@ -63,7 +63,8 @@ public class SecurityConfig {
                 antMatcher("/api/v1/auth/logout"),
                 antMatcher("/api/v1/members/**"),
                 antMatcher("/api/v1/streaks/**"),
-                antMatcher("/api/v1/daily/**")
+                antMatcher("/api/v1/daily/**"),
+                antMatcher("/api/v1/files/**")
         );
         return requestMatchers.toArray(RequestMatcher[]::new);
     }
