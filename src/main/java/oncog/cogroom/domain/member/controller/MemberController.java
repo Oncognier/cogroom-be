@@ -42,7 +42,7 @@ public class MemberController implements MemberControllerDocs {
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS,memberSummary));
     }
 
-    @GetMapping("/mypage")
+    @GetMapping("/dashboard")
     public ResponseEntity<ApiResponse<MemberMyPageInfoDTO>> getMemberInfoForMyPage() {
         MemberMyPageInfoDTO memberForMyPage = memberService.findMemberForMyPage();
 
