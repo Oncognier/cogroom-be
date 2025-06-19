@@ -4,6 +4,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.auth.dto.response.AuthResponseDTO;
+import oncog.cogroom.domain.auth.exception.AuthErrorCode;
+import oncog.cogroom.domain.auth.exception.AuthException;
 import oncog.cogroom.domain.member.entity.Member;
 import oncog.cogroom.domain.member.exception.MemberErrorCode;
 import oncog.cogroom.domain.member.exception.MemberException;
@@ -43,6 +45,8 @@ public class AuthSessionService extends BaseService {
 
         Long memberId = jwtProvider.extractMemberId(refreshToken);
 
+        checkTokenInRedis(memberId);
+
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND_ERROR));
 
         // 토큰 생성
@@ -79,6 +83,11 @@ public class AuthSessionService extends BaseService {
 
         // refreshToken 삭제
         redisTemplate.delete("RT:" + memberId);
+    }
+
+    // refresh Token이 redis에 존재하는지 검사
+    private void checkTokenInRedis(Long memberId) {
+        if(Boolean.FALSE.equals(redisTemplate.hasKey("RT:" + memberId))) throw new AuthException(AuthErrorCode.TOKEN_INVALID_ERROR);
     }
 
     // RefreshToken 갱신
