@@ -27,6 +27,6 @@ public class MemberResponseDTO {
     public static class MemberMyPageInfoDTO {
         private String nickname;
         private Long signupDays;
-        private Integer streakDays;
+        private Integer dailyStreak;
     }
 }

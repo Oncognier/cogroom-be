@@ -56,12 +56,12 @@ public class MemberService extends BaseService {
         long days = ChronoUnit.DAYS.between(member.getCreatedAt().toLocalDate(), LocalDate.now()) + 1;
 
         // 스트릭 누적 일 수 계산
-        int streakDays = streakService.getStreakDays(member);
+        int dailyStreak = streakService.getDailyStreak(member);
 
         return MemberMyPageInfoDTO.builder()
                 .nickname(member.getNickname())
                 .signupDays(days)
-                .streakDays(streakDays)
+                .dailyStreak(dailyStreak)
                 .build();
     }
 

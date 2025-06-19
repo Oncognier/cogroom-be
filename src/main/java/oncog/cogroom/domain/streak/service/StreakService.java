@@ -3,11 +3,11 @@ package oncog.cogroom.domain.streak.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.member.entity.Member;
+import static oncog.cogroom.domain.streak.dto.StreakResponseDTO.*;
 import oncog.cogroom.domain.streak.entity.Streak;
 import oncog.cogroom.domain.streak.entity.StreakLog;
 import oncog.cogroom.domain.streak.repository.StreakLogRepository;
 import oncog.cogroom.domain.streak.repository.StreakRepository;
-import oncog.cogroom.domain.streak.dto.response.StreakCalendarResponseDTO;
 import oncog.cogroom.global.common.service.BaseService;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +27,7 @@ public class StreakService extends BaseService {
     private final StreakLogRepository streakLogRepository;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    public StreakCalendarResponseDTO getStreakDates() {
+    public StreakCalendarDTO getStreakCalendarWithDailyStreak() {
         Member member = getMember();
 
         LocalDateTime startOfMonth = getStartOfCalendarMonth();
@@ -40,11 +40,21 @@ public class StreakService extends BaseService {
                 .sorted()
                 .toList();
 
-        int streakDays = getStreakDays(member);
+        int dailyStreak = getDailyStreak(member);
 
-        return StreakCalendarResponseDTO.builder()
-                .streakDays(streakDays)
+        return StreakCalendarDTO.builder()
+                .dailyStreak(dailyStreak)
                 .streakDateList(streakDates)
+                .build();
+    }
+
+    public DailyStreakDTO getDailyStreak() {
+        Member member = getMember();
+
+        int dailyStreak = getDailyStreak(member);
+
+        return DailyStreakDTO.builder()
+                .dailyStreak(dailyStreak)
                 .build();
     }
 
@@ -76,10 +86,10 @@ public class StreakService extends BaseService {
         streakLogRepository.save(StreakLog.builder().member(member).streak(streak).build());
     }
 
-    // 스트릭 연속 일자 조회 (totalDays)
-    public int getStreakDays(Member member) {
+    // 스트릭 연속 일자 조회 (dailyStreak)
+    public int getDailyStreak(Member member) {
         return streakRepository.findByMember(member)
-                .map(Streak::getTotalDays)
+                .map(Streak::getDailyStreak)
                 .orElse(0);
     }
 

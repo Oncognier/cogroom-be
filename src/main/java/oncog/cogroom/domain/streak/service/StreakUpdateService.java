@@ -37,7 +37,7 @@ public class StreakUpdateService extends BaseService {
            boolean hasYesterdayLog = hasLogForYesterday(member, startOfYesterday, endOfYesterday);
 
            // 해당 멤버가 전날에 작성한 log 정보가 없는 경우 누적 스트릭 일수를 0으로 초기화
-           if (!hasYesterdayLog && streak.getTotalDays() > 0) { // 기존에 0이 아닐 때만 0으로 초기화 (불필요한 업데이트 방지)
+           if (!hasYesterdayLog && streak.getDailyStreak() > 0) { // 기존에 0이 아닐 때만 0으로 초기화 (불필요한 업데이트 방지)
                streak.resetTotalDays();
            }
         });
