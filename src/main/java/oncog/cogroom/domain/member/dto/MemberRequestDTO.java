@@ -32,6 +32,10 @@ public class MemberRequestDTO {
 
         @Pattern(regexp = "^(?=.*[A-Z])(?=.*[@$!%*?&]).{8,16}$", message = "비밀번호는 영문 소문자, 대문자, 특수 문자로 구성되어야 합니다.")
         private String password;
+
+        public void updateImageUrl(String imageUrl) {
+            this.imageUrl = imageUrl;
+        }
     }
 
     @Getter

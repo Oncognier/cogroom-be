@@ -10,11 +10,14 @@ import oncog.cogroom.domain.member.exception.MemberException;
 import oncog.cogroom.domain.member.repository.MemberRepository;
 import oncog.cogroom.domain.streak.service.StreakService;
 import oncog.cogroom.global.common.service.BaseService;
+import oncog.cogroom.global.s3.enums.UploadType;
+import oncog.cogroom.global.s3.service.S3Service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 import static oncog.cogroom.domain.member.dto.MemberResponseDTO.*;
 
@@ -27,6 +30,7 @@ public class MemberService extends BaseService {
     private final MemberRepository memberRepository;
     private final StreakService streakService;
     private final EmailService emailService;
+    private final S3Service s3Service;
 
     public MemberInfoDTO findMemberInfo() {
         Member member = getMember();
@@ -65,14 +69,22 @@ public class MemberService extends BaseService {
                 .build();
     }
 
-
     public void updateMemberInfo(MemberRequestDTO.MemberInfoUpdateDTO request){
         Member member = getMember();
 
         emailService.isVerified(request.getEmail());
 
+        // temp -> profile or content 디렉토리로 복사
+        String finalUrlList = s3Service.copyFile(request.getImageUrl(), UploadType.PROFILE);
+
+        // 변경된 이미지 경로 설정
+        if (!finalUrlList.isEmpty()) {
+            request.updateImageUrl(finalUrlList);
+        }
+
         member.updateMemberInfo(request);
     }
+
 
     public boolean existNickname(MemberRequestDTO.ExistNicknameDTO request) {
 
