@@ -7,15 +7,17 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Builder
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class DailyQuestionResponseDTO {
-    private Long questionId;
-    private Long assignedQuestionId;
-    private String question;
-    private String answer; // 질문 답변한 경우에만 반환
+public class DailyResponse {
 
+    @Getter
+    @Builder
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class DailyQuestionDTO {
+        private Long questionId;
+        private Long assignedQuestionId;
+        private String question;
+        private String answer; // 질문 답변한 경우에만 반환
+    }
 
     @Getter
     @Builder
@@ -36,5 +38,11 @@ public class DailyQuestionResponseDTO {
             this.assignedDate = assignedDate;
             this.isUpdatable = false;
         }
+    }
+
+    @Getter
+    @Builder
+    public static class HasAnsweredDTO {
+        private boolean hasAnswered;
     }
 }

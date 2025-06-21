@@ -1,6 +1,6 @@
 package oncog.cogroom.domain.daily.repository;
 
-import oncog.cogroom.domain.daily.dto.response.DailyQuestionResponseDTO;
+import oncog.cogroom.domain.daily.dto.response.DailyResponse;
 import oncog.cogroom.domain.daily.entity.AssignedQuestion;
 import oncog.cogroom.domain.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,7 +19,7 @@ public interface AssignedQuestionRepository extends JpaRepository<AssignedQuesti
 
     // 내부 클래스 조회 시 $기호 사용
     @Query("""
-        SELECT new oncog.cogroom.domain.daily.dto.response.DailyQuestionResponseDTO$AssignedQuestionWithAnswerDTO( 
+        SELECT new oncog.cogroom.domain.daily.dto.response.DailyResponse$AssignedQuestionWithAnswerDTO( 
             q.question,
             a.answer,
             aq.assignedDate
@@ -29,5 +29,5 @@ public interface AssignedQuestionRepository extends JpaRepository<AssignedQuesti
         WHERE aq.member.id = :id
         ORDER BY aq.assignedDate DESC
     """)
-    Optional<List<DailyQuestionResponseDTO.AssignedQuestionWithAnswerDTO>> findAssignedQuestionsWithAnswerByMember(Long id);
+    Optional<List<DailyResponse.AssignedQuestionWithAnswerDTO>> findAssignedQuestionsWithAnswerByMember(Long id);
 }

@@ -2,7 +2,7 @@ package oncog.cogroom.domain.member.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import oncog.cogroom.domain.member.dto.MemberRequestDTO;
+import oncog.cogroom.domain.member.dto.request.MemberRequest;
 import oncog.cogroom.domain.member.enums.MemberRole;
 import oncog.cogroom.domain.member.enums.MemberStatus;
 import oncog.cogroom.domain.member.enums.Provider;
@@ -53,7 +53,7 @@ public class Member extends BaseTimeEntity {
     private MemberStatus status = MemberStatus.ACTIVE; // ACTIVE, SUSPENDED, WITHDRAWN
 
 
-    public void updateMemberInfo(MemberRequestDTO.MemberInfoUpdateDTO request) {
+    public void updateMemberInfo(MemberRequest.MemberInfoUpdateDTO request) {
         this.email = request.getEmail();
         this.description = request.getDescription();
         this.phoneNumber = request.getPhoneNumber();

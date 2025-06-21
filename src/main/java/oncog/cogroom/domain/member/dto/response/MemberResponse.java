@@ -1,9 +1,9 @@
-package oncog.cogroom.domain.member.dto;
+package oncog.cogroom.domain.member.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
 
-public class MemberResponseDTO {
+public class MemberResponse {
 
     @Builder
     @Getter

@@ -2,7 +2,7 @@ package oncog.cogroom.domain.content.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import oncog.cogroom.domain.content.dto.ContentResponseDTO;
+import oncog.cogroom.domain.content.dto.response.ContentResponse;
 import oncog.cogroom.domain.content.entity.Content;
 import oncog.cogroom.domain.content.entity.ContentImage;
 import oncog.cogroom.domain.content.enums.ContentStatus;
@@ -25,11 +25,11 @@ public class ContentService {
     private final ContentRepository contentRepository;
     private final ContentImageRepository contentImageRepository;
 
-    public List<ContentResponseDTO> getHomeContents() {
+    public List<ContentResponse.HomeContentDTO> getHomeContents() {
         List<Content> contents = contentRepository.findByStatus(ContentStatus.ONSALE);
 
         return contents.stream()
-                .map(content -> ContentResponseDTO.builder()
+                .map(content -> ContentResponse.HomeContentDTO.builder()
                         .id(content.getId())
                         .title(content.getName())
                         .imageUrl(getContentImage(content).getImageUrl())
