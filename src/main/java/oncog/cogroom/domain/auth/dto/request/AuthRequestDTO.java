@@ -33,7 +33,7 @@ public class AuthRequestDTO {
     @Builder
     @Getter
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class SignupRequestDTO {
+    public static class SignupDTO {
 
         // 공통
         @NotNull
@@ -58,7 +58,7 @@ public class AuthRequestDTO {
     }
 
     @Getter
-    public static class EmailRequestDTO{
+    public static class EmailDTO {
 
         @NotBlank
         @Email

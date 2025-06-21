@@ -9,9 +9,9 @@ import static oncog.cogroom.domain.auth.dto.response.AuthResponseDTO.*;
 
 public interface AuthService {
 
-    LoginResponseDTO login(LoginRequestDTO request);
+    LoginResultDTO login(LoginRequestDTO request);
 
-    SignupResponseDTO signup(SignupRequestDTO request);
+    SignupResultDTO signup(SignupDTO request);
 
     Provider getProvider();
 }

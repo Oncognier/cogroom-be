@@ -1,6 +1,5 @@
 package oncog.cogroom.domain.auth.service;
 
-import oncog.cogroom.domain.auth.dto.response.AuthResponseDTO;
 import oncog.cogroom.domain.member.enums.Provider;
 import org.springframework.stereotype.Component;
 
@@ -9,9 +8,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static oncog.cogroom.domain.auth.dto.request.AuthRequestDTO.LoginRequestDTO;
-import static oncog.cogroom.domain.auth.dto.request.AuthRequestDTO.SignupRequestDTO;
-import static oncog.cogroom.domain.auth.dto.response.AuthResponseDTO.LoginResponseDTO;
-import static oncog.cogroom.domain.auth.dto.response.AuthResponseDTO.SignupResponseDTO;
+import static oncog.cogroom.domain.auth.dto.request.AuthRequestDTO.SignupDTO;
+import static oncog.cogroom.domain.auth.dto.response.AuthResponseDTO.LoginResultDTO;
+import static oncog.cogroom.domain.auth.dto.response.AuthResponseDTO.SignupResultDTO;
 
 /**
  * 해당 라우터를 통해 로그인의 진입점을 하나로 통일
@@ -26,7 +25,7 @@ public class AuthServiceRouter {
                 .collect(Collectors.toMap(AuthService::getProvider, service -> service));
     }
 
-    public LoginResponseDTO login(LoginRequestDTO request) {
+    public LoginResultDTO login(LoginRequestDTO request) {
         AuthService service = serviceMap.get(request.getProvider());
 
         if (service == null) {
@@ -37,7 +36,7 @@ public class AuthServiceRouter {
 
     }
 
-    public SignupResponseDTO signup(SignupRequestDTO request) {
+    public SignupResultDTO signup(SignupDTO request) {
         AuthService service = serviceMap.get(request.getProvider());
 
         return service.signup(request);

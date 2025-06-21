@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.auth.controller.docs.AuthControllerDocs;
 import oncog.cogroom.domain.auth.dto.request.AuthRequestDTO;
 import oncog.cogroom.domain.auth.dto.response.AuthResponseDTO;
-import oncog.cogroom.domain.auth.service.AuthService;
 import oncog.cogroom.domain.auth.service.AuthServiceRouter;
 import oncog.cogroom.domain.auth.service.EmailService;
 import oncog.cogroom.domain.auth.service.session.AuthSessionService;
@@ -23,9 +22,8 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 
 import static oncog.cogroom.domain.auth.dto.request.AuthRequestDTO.LoginRequestDTO;
-import static oncog.cogroom.domain.auth.dto.request.AuthRequestDTO.SignupRequestDTO;
-import static oncog.cogroom.domain.auth.dto.response.AuthResponseDTO.LoginResponseDTO;
-import static oncog.cogroom.domain.auth.dto.response.AuthResponseDTO.SignupResponseDTO;
+import static oncog.cogroom.domain.auth.dto.response.AuthResponseDTO.LoginResultDTO;
+import static oncog.cogroom.domain.auth.dto.response.AuthResponseDTO.SignupResultDTO;
 
 @RestController
 @Slf4j
@@ -40,14 +38,14 @@ public class AuthController implements AuthControllerDocs {
     private final DailyQuestionAssignService dailyQuestionAssignService;
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<LoginResponseDTO>> login(@RequestBody @Valid LoginRequestDTO request, HttpServletResponse response) {
-        LoginResponseDTO result = router.login(request);
+    public ResponseEntity<ApiResponse<LoginResultDTO>> login(@RequestBody @Valid LoginRequestDTO request, HttpServletResponse response) {
+        LoginResultDTO result = router.login(request);
 
         // Token 쿠키로 셋팅
         cookieUtil.addTokenForCookie(response, result.getTokens());
 
         // response body 토큰 제거
-        LoginResponseDTO responseExcludedToken = result.excludeTokens();
+        LoginResultDTO responseExcludedToken = result.excludeTokens();
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, responseExcludedToken));
 
@@ -55,18 +53,20 @@ public class AuthController implements AuthControllerDocs {
 
 
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponse<SignupResponseDTO>> signup(@RequestBody @Valid SignupRequestDTO request, HttpServletResponse response) {
-        SignupResponseDTO result = router.signup(request);
+    public ResponseEntity<ApiResponse<SignupResultDTO>> signup(@RequestBody @Valid AuthRequestDTO.SignupDTO request, HttpServletResponse response) throws MessagingException {
+        SignupResultDTO result = router.signup(request);
 
         // Token 쿠키로 셋팅
         cookieUtil.addTokenForCookie(response, result.getTokens());
 
         // response body 토큰 제거
-        SignupResponseDTO responseExcludedToken = result.excludeTokens();
+        SignupResultDTO responseExcludedToken = result.excludeTokens();
 
         // 가입 후 질문 할당
         dailyQuestionAssignService.assignDailyQuestionAtSignup(request.getProvider(), request.getProviderId());
 
+        // 웰컴 메일 발송
+        emailService.sendWelcomeEmail(request.getEmail());
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, responseExcludedToken));
 
@@ -94,12 +94,12 @@ public class AuthController implements AuthControllerDocs {
 
 
     @PostMapping("/email-verification")
-    public ResponseEntity<ApiResponse<String>> sendEmail(@RequestBody @Valid AuthRequestDTO.EmailRequestDTO request) throws MessagingException, IOException {
+    public ResponseEntity<ApiResponse<String>> sendEmail(@RequestBody @Valid AuthRequestDTO.EmailDTO request) throws MessagingException, IOException {
         // 이메일 중복 검사
         emailService.existEmail(request.getEmail());
 
         // 중복 검사 이후 이메일 전송
-        emailService.sendEmail(request);
+        emailService.sendAuthCodeEmail(request);
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
 
@@ -114,7 +114,7 @@ public class AuthController implements AuthControllerDocs {
     }
 
     @PostMapping("/email/status")
-    public ResponseEntity<ApiResponse<Boolean>> checkEmailVerificationStatus(@RequestBody @Valid AuthRequestDTO.EmailRequestDTO request) {
+    public ResponseEntity<ApiResponse<Boolean>> checkEmailVerificationStatus(@RequestBody @Valid AuthRequestDTO.EmailDTO request) {
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, emailService.verifiedEmail(request)));
 
     }
