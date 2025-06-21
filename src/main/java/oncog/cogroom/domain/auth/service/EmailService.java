@@ -37,7 +37,7 @@ public class EmailService {
     private String emailLinkUrl;
 
     @Async
-    public void sendEmail(AuthRequestDTO.EmailRequestDTO request) throws MessagingException {
+    public void sendAuthCodeEmail(AuthRequestDTO.EmailDTO request) throws MessagingException {
         String toEmail = request.getEmail();
 
         MimeMessage message = mailSender.createMimeMessage();
@@ -50,6 +50,17 @@ public class EmailService {
         mailSender.send(message);
         }
 
+    @Async
+    public void sendWelcomeEmail(String email) throws MessagingException{
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
+
+        helper.setTo(email); // 목적지
+        helper.setSubject("\uD83D\uDCA7안녕, 코그니어!"); // 타이틀
+        helper.setText("\uD83D\uDCA7안녕, 코그니어!");
+        helper.setFrom(fromEmail); // 발신 이메일
+        mailSender.send(message);
+    }
 
     private void saveEmail(String toEmail, String verificationCode) {
         Optional<EmailVerification> emailVerificationOpt = emailRepository.findByEmail(toEmail);
@@ -78,7 +89,7 @@ public class EmailService {
     }
 
     // 이메일의 인증 상태 반환
-    public boolean verifiedEmail(AuthRequestDTO.EmailRequestDTO request) {
+    public boolean verifiedEmail(AuthRequestDTO.EmailDTO request) {
         String toEmail = request.getEmail();
         return emailRepository.existsByEmailAndVerifyStatus(toEmail,true);
     }

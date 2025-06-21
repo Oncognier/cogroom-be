@@ -10,16 +10,16 @@ public class AuthResponseDTO {
     @Getter
     @Builder
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class LoginResponseDTO{
+    public static class LoginResultDTO {
 
         SocialUserInfo socialUserInfo;
         ServiceTokenDTO tokens;
         boolean needSignup;
 
         // token null로 변경
-        public LoginResponseDTO excludeTokens() {
+        public LoginResultDTO excludeTokens() {
 
-            return LoginResponseDTO.builder()
+            return LoginResultDTO.builder()
                     .tokens(null)
                     .needSignup(this.needSignup)
                     .socialUserInfo(this.getSocialUserInfo())
@@ -30,14 +30,14 @@ public class AuthResponseDTO {
     @Getter
     @Builder
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class SignupResponseDTO{
+    public static class SignupResultDTO {
 
         ServiceTokenDTO tokens;
 
         // token null로 변경
-        public SignupResponseDTO excludeTokens() {
+        public SignupResultDTO excludeTokens() {
 
-            return SignupResponseDTO.builder()
+            return SignupResultDTO.builder()
                     .tokens(null)
                     .build();
         }
