@@ -4,7 +4,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import oncog.cogroom.domain.auth.dto.request.AuthRequestDTO;
+import oncog.cogroom.domain.auth.dto.request.AuthRequest;
 import oncog.cogroom.domain.auth.entity.EmailVerification;
 import oncog.cogroom.domain.auth.exception.AuthErrorCode;
 import oncog.cogroom.domain.auth.repository.EmailRepository;
@@ -37,7 +37,7 @@ public class EmailService {
     private String emailLinkUrl;
 
     @Async
-    public void sendAuthCodeEmail(AuthRequestDTO.EmailDTO request) throws MessagingException {
+    public void sendAuthCodeEmail(AuthRequest.EmailDTO request) throws MessagingException {
         String toEmail = request.getEmail();
 
         MimeMessage message = mailSender.createMimeMessage();
@@ -89,7 +89,7 @@ public class EmailService {
     }
 
     // 이메일의 인증 상태 반환
-    public boolean verifiedEmail(AuthRequestDTO.EmailDTO request) {
+    public boolean verifiedEmail(AuthRequest.EmailDTO request) {
         String toEmail = request.getEmail();
         return emailRepository.existsByEmailAndVerifyStatus(toEmail,true);
     }

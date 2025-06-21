@@ -7,7 +7,7 @@ import lombok.Getter;
 import java.util.Date;
 import java.util.Map;
 
-public class SocialUserInfoDTO {
+public class SocialUserInfo {
 
     @Getter
     @Builder

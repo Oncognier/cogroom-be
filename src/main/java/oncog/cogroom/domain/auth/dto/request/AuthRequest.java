@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import oncog.cogroom.domain.member.enums.Provider;
 
-public class AuthRequestDTO {
+public class AuthRequest {
 
     @Builder
     @Getter

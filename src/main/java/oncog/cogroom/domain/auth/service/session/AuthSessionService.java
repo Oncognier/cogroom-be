@@ -3,7 +3,7 @@ package oncog.cogroom.domain.auth.service.session;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import oncog.cogroom.domain.auth.dto.response.AuthResponseDTO;
+import oncog.cogroom.domain.auth.dto.response.AuthResponse;
 import oncog.cogroom.domain.auth.exception.AuthErrorCode;
 import oncog.cogroom.domain.auth.exception.AuthException;
 import oncog.cogroom.domain.member.entity.Member;
@@ -38,7 +38,7 @@ public class AuthSessionService extends BaseService {
     private final MemberRepository memberRepository;
 
     // 토큰 재발급 API
-    public AuthResponseDTO.ServiceTokenDTO reIssue(String refreshToken) {
+    public AuthResponse.ServiceTokenDTO reIssue(String refreshToken) {
 
         // refresh token 검증
         jwtProvider.isValid(refreshToken);
@@ -50,7 +50,7 @@ public class AuthSessionService extends BaseService {
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND_ERROR));
 
         // 토큰 생성
-        AuthResponseDTO.ServiceTokenDTO tokenDTO = tokenUtil.createTokens(member);
+        AuthResponse.ServiceTokenDTO tokenDTO = tokenUtil.createTokens(member);
 
         // 토큰 갱신
         tokenRotation(tokenDTO.getRefreshToken(), memberId);

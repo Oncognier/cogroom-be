@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static oncog.cogroom.domain.auth.dto.request.AuthRequestDTO.LoginRequestDTO;
-import static oncog.cogroom.domain.auth.dto.request.AuthRequestDTO.SignupDTO;
-import static oncog.cogroom.domain.auth.dto.response.AuthResponseDTO.LoginResultDTO;
-import static oncog.cogroom.domain.auth.dto.response.AuthResponseDTO.SignupResultDTO;
+import static oncog.cogroom.domain.auth.dto.request.AuthRequest.LoginRequestDTO;
+import static oncog.cogroom.domain.auth.dto.request.AuthRequest.SignupDTO;
+import static oncog.cogroom.domain.auth.dto.response.AuthResponse.LoginResultDTO;
+import static oncog.cogroom.domain.auth.dto.response.AuthResponse.SignupResultDTO;
 
 /**
  * 해당 라우터를 통해 로그인의 진입점을 하나로 통일

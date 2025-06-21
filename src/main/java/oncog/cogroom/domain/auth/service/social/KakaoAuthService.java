@@ -1,6 +1,6 @@
 package oncog.cogroom.domain.auth.service.social;
 import lombok.extern.slf4j.Slf4j;
-import oncog.cogroom.domain.auth.dto.response.SocialTokenResponseDTO;
+import oncog.cogroom.domain.auth.dto.response.SocialTokenResponse;
 import oncog.cogroom.domain.auth.exception.AuthErrorCode;
 import oncog.cogroom.domain.auth.service.EmailService;
 import oncog.cogroom.domain.auth.userInfo.KakaoUserInfo;
@@ -18,7 +18,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
-import static oncog.cogroom.domain.auth.dto.response.SocialUserInfoDTO.KakaoUserInfoDTO;
+import static oncog.cogroom.domain.auth.dto.response.SocialUserInfo.KakaoUserInfoDTO;
 @Service
 @Slf4j
 public class KakaoAuthService extends AbstractAuthService {
@@ -41,11 +41,11 @@ public class KakaoAuthService extends AbstractAuthService {
         try {
             HttpEntity<MultiValueMap<String, String>> request = getHttpEntityForToken(code);
 
-            ResponseEntity<SocialTokenResponseDTO.KakaoTokenDTO> response = restTemplate.exchange(
+            ResponseEntity<SocialTokenResponse.KakaoTokenDTO> response = restTemplate.exchange(
                     "https://kauth.kakao.com/oauth/token",
                     HttpMethod.POST,
                     request,
-                    SocialTokenResponseDTO.KakaoTokenDTO.class
+                    SocialTokenResponse.KakaoTokenDTO.class
             );
 
             log.info("카카오 토큰 응답: {}", response.getBody());
