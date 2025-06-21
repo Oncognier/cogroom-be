@@ -1,6 +1,5 @@
 package oncog.cogroom.domain.member.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static oncog.cogroom.domain.member.dto.MemberResponseDTO.*;
-import static oncog.cogroom.domain.member.dto.MemberResponseDTO.MemberInfoDTO;
 
 @RestController
 @RequiredArgsConstructor

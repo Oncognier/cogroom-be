@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.CopyObjectRequest;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
@@ -50,28 +51,28 @@ public class S3Service {
                 .stream()
                 .map(file -> {
 
-            // 업로드 파일 요청 생성
-            PutObjectRequest uploadFile = PutObjectRequest.builder()
-                    .bucket(bucket)
-                    .key(generateKey(file.getKey(), request.getUploadType()))
-                    .contentType(file.getValue())
-                    .build();
+                    // 업로드 파일 요청 생성
+                    PutObjectRequest uploadFile = PutObjectRequest.builder()
+                            .bucket(bucket)
+                            .key(generateKey(file.getKey()))
+                            .contentType(file.getValue())
+                            .build();
 
-            // preSignedUrl 요청 생성
-            PutObjectPresignRequest preSignRequest = PutObjectPresignRequest.builder()
-                    .signatureDuration(Duration.ofMinutes(10))
-                    .putObjectRequest(uploadFile)
-                    .build();
+                    // preSignedUrl 요청 생성
+                    PutObjectPresignRequest preSignRequest = PutObjectPresignRequest.builder()
+                            .signatureDuration(Duration.ofMinutes(10))
+                            .putObjectRequest(uploadFile)
+                            .build();
 
-            String preSignedUrl = s3Presigner.presignPutObject(preSignRequest).url().toString();
-            String accessUrl = generateAccessUrl(file.getKey(), request.getUploadType());
+                    String preSignedUrl = s3Presigner.presignPutObject(preSignRequest).url().toString();
+                    String accessUrl = generateAccessUrl(file.getKey());
 
-            return S3ResponseDTO.PreSignedResponseDTO.builder()
-                    .preSignedUrl(preSignedUrl)
-                    .accessUrl(accessUrl)
-                    .build();
+                    return S3ResponseDTO.PreSignedResponseDTO.builder()
+                            .preSignedUrl(preSignedUrl)
+                            .accessUrl(accessUrl)
+                            .build();
 
-        }).collect(Collectors.toList());
+                }).collect(Collectors.toList());
     }
 
     // 백엔드에서 직접 파일 업로드
@@ -90,7 +91,7 @@ public class S3Service {
 
             return fileName;
         } catch (IOException e) {
-            throw new RuntimeException("s3 파일 업로드 실패",e);
+            throw new RuntimeException("s3 파일 업로드 실패", e);
         }
     }
 
@@ -110,42 +111,46 @@ public class S3Service {
         });
     }
 
+    // TEMP -> 영구 디렉토리로 파일 복사
+    public void copyFile(List<String> imageUrlList, UploadType uploadType) {
+        imageUrlList.forEach(url -> {
+            String tempUrl = extractKey(url);
+            String finalUrl = tempUrl.replace("TEMP", uploadType.name());
+
+            // temp -> 영구 uploadType 폴더로 복사
+            s3Client.copyObject(CopyObjectRequest.builder()
+                    .sourceBucket(bucket)
+                    .sourceKey(tempUrl)
+                    .destinationBucket(bucket)
+                    .destinationKey(finalUrl)
+                    .build());
+
+            // temp 디렉토리 내부에 저장된 데이터 삭제
+            s3Client.deleteObject(DeleteObjectRequest.builder()
+                    .bucket(bucket)
+                    .key(tempUrl)
+                    .build());
+        });
+    }
 
     public String extractKey(String fileUrl) {
-
         return fileUrl.replace(cloudFrontUrl, "");
     }
 
     // 저장될 파일 이름(파일 키) 생성
-    private String generateKey(String fileName, UploadType uploadType) {
+    private String generateKey(String fileName) {
         Long memberId = jwtProvider.extractMemberId();
 
-        switch(uploadType){
-            case PROFILE -> { // 프로필 사진일 경우 profile/memberId_파일 명.extension
-                return String.format("%s/%d_%s", uploadType, memberId, fileName);
-            }
-            case CONTENT -> { // 강의 파일인 경우 content/memberId/UUID_파일 명.extension
-                String uuid = UUID.randomUUID().toString();
-                return String.format("%s/%d/%s_%s", uploadType, memberId, uuid,fileName);
-            }
-            default -> throw new MemberException(ApiErrorCode.INTERNAL_SERVER_ERROR);
-        }
+        return String.format("%s/%d_%s", UploadType.TEMP.name(), memberId, fileName);
     }
 
     // CloudFront 접근 URL 생성
-    private String generateAccessUrl(String fileName, UploadType uploadType) {
+    private String generateAccessUrl(String fileName) {
         Long memberId = jwtProvider.extractMemberId();
 
-        switch(uploadType){
-            case PROFILE -> { // 프로필 사진일 경우 profile/memberId_파일 명.extension
-                return String.format("%s/%s/%d_%s", cloudFrontUrl, uploadType.name(), memberId, fileName);
-            }
-            case CONTENT -> { // 강의 파일인 경우 content/memberId/UUID_파일 명.extension
-                String uuid = UUID.randomUUID().toString();
-                return String.format("%s/%s/%d/%s_%s", cloudFrontUrl, uploadType.name(), memberId, uuid,fileName);
-            }
-            default -> throw new MemberException(ApiErrorCode.INTERNAL_SERVER_ERROR);
-        }
+        return String.format("%s%s/%d_%s", cloudFrontUrl, UploadType.TEMP, memberId, fileName);
     }
-
 }
+
+
+
