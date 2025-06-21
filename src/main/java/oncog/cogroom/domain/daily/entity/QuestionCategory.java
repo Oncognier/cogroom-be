@@ -21,7 +21,7 @@ public class QuestionCategory {
     private QuestionCategoryId id;
 
     @CreatedDate
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
