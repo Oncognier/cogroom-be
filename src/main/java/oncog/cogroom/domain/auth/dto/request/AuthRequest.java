@@ -11,7 +11,7 @@ public class AuthRequest {
     @Builder
     @Getter
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class LoginRequestDTO {
+    public static class LoginDTO {
 
         // 공통
         @NotNull
