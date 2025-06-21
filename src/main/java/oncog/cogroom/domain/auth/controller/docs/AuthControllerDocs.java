@@ -28,7 +28,7 @@ public interface AuthControllerDocs {
             value = AuthErrorCode.class,
             include = {"KAKAO_REQUEST_ERROR"})
     @Operation(summary = "소셜/로컬 통합 로그인", description = "소셜/로컬 통합 로그인 로직을 처리합니다.")
-    public ResponseEntity<ApiResponse<AuthResponse.LoginResultDTO>> login(@RequestBody @Valid AuthRequest.LoginRequestDTO request, HttpServletResponse response);
+    public ResponseEntity<ApiResponse<AuthResponse.LoginResultDTO>> login(@RequestBody @Valid AuthRequest.LoginDTO request, HttpServletResponse response);
 
 
     @ApiErrorCodeExamples(

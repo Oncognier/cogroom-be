@@ -1,13 +1,12 @@
 package oncog.cogroom.domain.auth.service;
 
+import oncog.cogroom.domain.auth.dto.request.AuthRequest;
 import oncog.cogroom.domain.member.enums.Provider;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static oncog.cogroom.domain.auth.dto.request.AuthRequest.LoginRequestDTO;
 import static oncog.cogroom.domain.auth.dto.request.AuthRequest.SignupDTO;
 import static oncog.cogroom.domain.auth.dto.response.AuthResponse.LoginResultDTO;
 import static oncog.cogroom.domain.auth.dto.response.AuthResponse.SignupResultDTO;
@@ -25,7 +24,7 @@ public class AuthServiceRouter {
                 .collect(Collectors.toMap(AuthService::getProvider, service -> service));
     }
 
-    public LoginResultDTO login(LoginRequestDTO request) {
+    public LoginResultDTO login(AuthRequest.LoginDTO request) {
         AuthService service = serviceMap.get(request.getProvider());
 
         if (service == null) {

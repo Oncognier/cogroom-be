@@ -34,7 +34,7 @@ public class AuthController implements AuthControllerDocs {
     private final DailyQuestionAssignService dailyQuestionAssignService;
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<AuthResponse.LoginResultDTO>> login(@RequestBody @Valid AuthRequest.LoginRequestDTO request, HttpServletResponse response) {
+    public ResponseEntity<ApiResponse<AuthResponse.LoginResultDTO>> login(@RequestBody @Valid AuthRequest.LoginDTO request, HttpServletResponse response) {
         AuthResponse.LoginResultDTO result = router.login(request);
 
         // Token 쿠키로 셋팅
