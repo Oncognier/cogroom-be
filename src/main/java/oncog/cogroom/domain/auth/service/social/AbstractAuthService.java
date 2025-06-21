@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 import static oncog.cogroom.domain.auth.dto.request.AuthRequestDTO.LoginRequestDTO;
@@ -63,7 +65,7 @@ public abstract class AbstractAuthService implements AuthService {
         emailService.isVerified(request.getEmail());
         Member savedMember = memberRepository.save(Member.builder()
                 .email(request.getEmail())
-                .nickname(request.getNickname())
+                .nickname(generateNickname())
                 .role(MemberRole.USER)
                 .provider(request.getProvider())
                 .providerId(request.getProviderId())
@@ -84,6 +86,17 @@ public abstract class AbstractAuthService implements AuthService {
 
     public final void saveRefreshTokenToRedis(String refreshToken, Long memberId) {
         redisTemplate.opsForValue().set("RT:" + memberId, refreshToken, refreshExpiration, TimeUnit.DAYS);
+    }
+
+    // 랜덤 닉네임 생성
+    public final String generateNickname() {
+        // 10 ~ 9999 까지 랜덤 수 할당
+        int randomUUID = ThreadLocalRandom.current().nextInt(10, 10000);
+        String randomName = String.format("%s%s","코그니어", randomUUID);
+
+        if(Boolean.TRUE.equals(memberRepository.existsByNickname(randomName))) generateNickname();
+
+        return randomName;
     }
 
     // 각 구현체에서 오버라이드된 메소드들이 실행됨
