@@ -112,8 +112,8 @@ public class S3Service {
     }
 
     // TEMP -> 영구 디렉토리로 파일 복사
-    public void copyFile(List<String> imageUrlList, UploadType uploadType) {
-        imageUrlList.forEach(url -> {
+    public List<String> copyFile(List<String> imageUrlList, UploadType uploadType) {
+        return imageUrlList.stream().map(url -> {
             String tempUrl = extractKey(url);
             String finalUrl = tempUrl.replace("TEMP", uploadType.name());
 
@@ -125,12 +125,9 @@ public class S3Service {
                     .destinationKey(finalUrl)
                     .build());
 
-            // temp 디렉토리 내부에 저장된 데이터 삭제
-            s3Client.deleteObject(DeleteObjectRequest.builder()
-                    .bucket(bucket)
-                    .key(tempUrl)
-                    .build());
-        });
+            return String.format("%s%s",cloudFrontUrl,finalUrl);
+        })
+        .toList();
     }
 
     public String extractKey(String fileUrl) {

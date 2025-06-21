@@ -75,7 +75,12 @@ public class MemberService extends BaseService {
         emailService.isVerified(request.getEmail());
 
         // temp -> profile or content 디렉토리로 복사
-        s3Service.copyFile(List.of(request.getImageUrl()), UploadType.PROFILE);
+        List<String> finalUrlList = s3Service.copyFile(List.of(request.getImageUrl()), UploadType.PROFILE);
+
+        // 변경된 이미지 경로 설정
+        if (!finalUrlList.isEmpty()) {
+            request.updateImageUrl(finalUrlList.get(0));
+        }
 
         member.updateMemberInfo(request);
     }
