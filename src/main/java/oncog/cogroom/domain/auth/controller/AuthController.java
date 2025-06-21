@@ -21,10 +21,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
-import static oncog.cogroom.domain.auth.dto.request.AuthRequestDTO.LoginRequestDTO;
-import static oncog.cogroom.domain.auth.dto.response.AuthResponseDTO.LoginResultDTO;
-import static oncog.cogroom.domain.auth.dto.response.AuthResponseDTO.SignupResultDTO;
-
 @RestController
 @Slf4j
 @RequiredArgsConstructor
@@ -38,14 +34,14 @@ public class AuthController implements AuthControllerDocs {
     private final DailyQuestionAssignService dailyQuestionAssignService;
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<LoginResultDTO>> login(@RequestBody @Valid LoginRequestDTO request, HttpServletResponse response) {
-        LoginResultDTO result = router.login(request);
+    public ResponseEntity<ApiResponse<AuthResponseDTO.LoginResultDTO>> login(@RequestBody @Valid AuthRequestDTO.LoginRequestDTO request, HttpServletResponse response) {
+        AuthResponseDTO.LoginResultDTO result = router.login(request);
 
         // Token 쿠키로 셋팅
         cookieUtil.addTokenForCookie(response, result.getTokens());
 
         // response body 토큰 제거
-        LoginResultDTO responseExcludedToken = result.excludeTokens();
+        AuthResponseDTO.LoginResultDTO responseExcludedToken = result.excludeTokens();
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, responseExcludedToken));
 
@@ -53,14 +49,14 @@ public class AuthController implements AuthControllerDocs {
 
 
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponse<SignupResultDTO>> signup(@RequestBody @Valid AuthRequestDTO.SignupDTO request, HttpServletResponse response) throws MessagingException {
-        SignupResultDTO result = router.signup(request);
+    public ResponseEntity<ApiResponse<AuthResponseDTO.SignupResultDTO>> signup(@RequestBody @Valid AuthRequestDTO.SignupDTO request, HttpServletResponse response) throws MessagingException {
+        AuthResponseDTO.SignupResultDTO result = router.signup(request);
 
         // Token 쿠키로 셋팅
         cookieUtil.addTokenForCookie(response, result.getTokens());
 
         // response body 토큰 제거
-        SignupResultDTO responseExcludedToken = result.excludeTokens();
+        AuthResponseDTO.SignupResultDTO responseExcludedToken = result.excludeTokens();
 
         // 가입 후 질문 할당
         dailyQuestionAssignService.assignDailyQuestionAtSignup(request.getProvider(), request.getProviderId());

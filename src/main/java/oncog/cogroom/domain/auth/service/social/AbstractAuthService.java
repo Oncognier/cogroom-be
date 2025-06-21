@@ -1,6 +1,8 @@
 package oncog.cogroom.domain.auth.service.social;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import oncog.cogroom.domain.auth.dto.request.AuthRequestDTO;
+import oncog.cogroom.domain.auth.dto.response.AuthResponseDTO;
 import oncog.cogroom.domain.auth.service.AuthService;
 import oncog.cogroom.domain.auth.service.EmailService;
 import oncog.cogroom.domain.auth.userInfo.SocialUserInfo;
@@ -17,9 +19,7 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
-import static oncog.cogroom.domain.auth.dto.request.AuthRequestDTO.LoginRequestDTO;
-import static oncog.cogroom.domain.auth.dto.request.AuthRequestDTO.SignupDTO;
-import static oncog.cogroom.domain.auth.dto.response.AuthResponseDTO.*;
+
 @RequiredArgsConstructor
 @Slf4j
 public abstract class AbstractAuthService implements AuthService {
@@ -31,7 +31,7 @@ public abstract class AbstractAuthService implements AuthService {
     @Value("${jwt.refresh-token-expiration}")
     private long refreshExpiration;
     // 소셜 로그인 공통 로직
-    public final LoginResultDTO login(LoginRequestDTO request){
+    public final AuthResponseDTO.LoginResultDTO login(AuthRequestDTO.LoginRequestDTO request){
         String accessToken = requestAccessToken(request.getCode());
         SocialUserInfo userInfo = requestUserInfo(accessToken);
         // provider와 ProviderId를 복합 유니크 키로 검사하여 사용자 조회
@@ -41,18 +41,18 @@ public abstract class AbstractAuthService implements AuthService {
         if (memberOpt.isPresent()) {
             Member member = memberOpt.get();
 
-            ServiceTokenDTO tokenDTO = tokenUtil.createTokens(member);
+            AuthResponseDTO.ServiceTokenDTO tokenDTO = tokenUtil.createTokens(member);
 
             // redis에 refreshToken 저장
             saveRefreshTokenToRedis(tokenDTO.getRefreshToken(), member.getId());
 
-            return LoginResultDTO.builder()
+            return AuthResponseDTO.LoginResultDTO.builder()
                     .socialUserInfo(null)
                     .tokens(tokenDTO)
                     .needSignup(false)
                     .build();
         }else{
-            return LoginResultDTO.builder()
+            return AuthResponseDTO.LoginResultDTO.builder()
                     .socialUserInfo(userInfo)
                     .tokens(null)
                     .needSignup(true)
@@ -60,7 +60,7 @@ public abstract class AbstractAuthService implements AuthService {
         }
     }
     // 소셜 로그인의 경우 회원가입 클릭 -> 로그인 처리가 ui적으로 깔끔하기에 토큰 발급
-    public final SignupResultDTO signup(SignupDTO request) {
+    public final AuthResponseDTO.SignupResultDTO signup(AuthRequestDTO.SignupDTO request) {
         // 이메일 인증 유무 검사
         emailService.isVerified(request.getEmail());
         Member savedMember = memberRepository.save(Member.builder()
@@ -75,11 +75,11 @@ public abstract class AbstractAuthService implements AuthService {
                 .status(MemberStatus.ACTIVE)
                 .build());
 
-        ServiceTokenDTO tokenDTO = tokenUtil.createTokens(savedMember);
+        AuthResponseDTO.ServiceTokenDTO tokenDTO = tokenUtil.createTokens(savedMember);
 
         saveRefreshTokenToRedis(tokenDTO.getRefreshToken(), savedMember.getId());
 
-        return SignupResultDTO.builder()
+        return AuthResponseDTO.SignupResultDTO.builder()
                 .tokens(tokenDTO)
                 .build();
     }
