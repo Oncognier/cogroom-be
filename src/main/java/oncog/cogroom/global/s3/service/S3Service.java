@@ -8,6 +8,7 @@ import oncog.cogroom.global.s3.dto.S3RequestDTO;
 import oncog.cogroom.global.s3.dto.S3ResponseDTO;
 import oncog.cogroom.global.s3.enums.UploadType;
 import oncog.cogroom.global.security.jwt.JwtProvider;
+import org.eclipse.angus.mail.imap.IMAPBodyPart;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -111,7 +112,7 @@ public class S3Service {
         });
     }
 
-    // TEMP -> 영구 디렉토리로 파일 복사
+    // TEMP -> 영구 디렉토리로 파일 복사 (복수 파일)
     public List<String> copyFile(List<String> imageUrlList, UploadType uploadType) {
         return imageUrlList.stream().map(url -> {
             String tempUrl = extractKey(url);
@@ -128,6 +129,22 @@ public class S3Service {
             return String.format("%s%s",cloudFrontUrl,finalUrl);
         })
         .toList();
+    }
+
+    // TEMP -> 영구 디렉토리로 파일 복사 (단일 파일)
+    public String copyFile(String imageUrl, UploadType uploadType) {
+            String tempUrl = extractKey(imageUrl);
+            String finalUrl = tempUrl.replace("TEMP", uploadType.name());
+
+            // temp -> 영구 uploadType 폴더로 복사
+            s3Client.copyObject(CopyObjectRequest.builder()
+                    .sourceBucket(bucket)
+                    .sourceKey(tempUrl)
+                    .destinationBucket(bucket)
+                    .destinationKey(finalUrl)
+                    .build());
+
+            return String.format("%s%s",cloudFrontUrl,finalUrl);
     }
 
     public String extractKey(String fileUrl) {
