@@ -2,6 +2,7 @@ package oncog.cogroom.global.config;
 
 import lombok.RequiredArgsConstructor;
 import oncog.cogroom.domain.member.enums.MemberRole;
+import oncog.cogroom.global.security.jwt.JwtAccessDeniedHandler;
 import oncog.cogroom.global.security.jwt.JwtAuthenticationEntryPoint;
 import oncog.cogroom.global.security.jwt.JwtAuthenticationFilter;
 import oncog.cogroom.global.security.jwt.JwtProvider;
@@ -29,6 +30,7 @@ public class SecurityConfig {
     private final JwtProvider jwtProvider;
     private final CustomUserDetailService userDetailService;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
     @Bean
     @Order(1)
@@ -38,7 +40,9 @@ public class SecurityConfig {
         http.securityMatchers(matchers -> matchers.requestMatchers(requestHasRoleAdmin()))
                 .authorizeHttpRequests(auth -> auth.anyRequest().hasAuthority(MemberRole.ADMIN.name()));
 
-        http.exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint));
+        http.exceptionHandling(exception -> exception
+                .accessDeniedHandler(jwtAccessDeniedHandler)
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint));
 
         http.addFilterBefore(
                 new JwtAuthenticationFilter(jwtProvider, userDetailService, jwtAuthenticationEntryPoint),
@@ -59,6 +63,7 @@ public class SecurityConfig {
                         .hasAuthority(MemberRole.USER.name()));
 
         http.exceptionHandling(exception -> exception
+                .accessDeniedHandler(jwtAccessDeniedHandler)
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint));
 
         http.addFilterBefore(new JwtAuthenticationFilter(jwtProvider,userDetailService,jwtAuthenticationEntryPoint),
