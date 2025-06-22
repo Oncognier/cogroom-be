@@ -21,8 +21,8 @@ public class StreakController implements StreakControllerDocs {
     private final StreakService streakService;
 
     @GetMapping("/calendar")
-    public ResponseEntity<ApiResponse<StreakResponse.CalendarWithDailyStreakDTO>> getStreakCalendarWithDailyStreak() {
-        StreakResponse.CalendarWithDailyStreakDTO response = streakService.getStreakCalendarWithDailyStreak();
+    public ResponseEntity<ApiResponse<StreakResponse.CalendarDTO>> getStreakCalendarWithDailyStreak() {
+        StreakResponse.CalendarDTO response = streakService.getStreakCalendar();
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, response));
     }

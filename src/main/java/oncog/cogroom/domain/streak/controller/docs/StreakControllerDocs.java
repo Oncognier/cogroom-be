@@ -17,7 +17,7 @@ public interface StreakControllerDocs {
     @ApiErrorCodeExamples(
             value = {MemberErrorCode.class, AuthErrorCode.class, ApiErrorCode.class},
             include = {"MEMBER_NOT_FOUND_ERROR", "TOKEN_INVALID_ERROR", "TOKEN_EXPIRED_ERROR", "INTERNAL_SERVER_ERROR"})
-    ResponseEntity<ApiResponse<StreakResponse.CalendarWithDailyStreakDTO>> getStreakCalendarWithDailyStreak();
+    ResponseEntity<ApiResponse<StreakResponse.CalendarDTO>> getStreakCalendarWithDailyStreak();
 
     @Operation(summary = "데일리 스트릭 연속 일수 조회", description = "데일리 스트릭 연속 일수를 반환합니다.")
     @ApiErrorCodeExamples(
