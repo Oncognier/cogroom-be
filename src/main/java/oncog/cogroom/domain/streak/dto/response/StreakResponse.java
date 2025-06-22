@@ -9,8 +9,7 @@ public class StreakResponse {
 
     @Getter
     @Builder
-    public static class CalendarWithDailyStreakDTO {
-        private Integer dailyStreak;
+    public static class CalendarDTO {
         private List<String> streakDateList;
     }
 

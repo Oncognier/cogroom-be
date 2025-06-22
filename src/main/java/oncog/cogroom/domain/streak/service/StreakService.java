@@ -27,7 +27,7 @@ public class StreakService extends BaseService {
     private final StreakLogRepository streakLogRepository;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    public StreakResponse.CalendarWithDailyStreakDTO getStreakCalendarWithDailyStreak() {
+    public StreakResponse.CalendarDTO getStreakCalendar() {
         Member member = getMember();
 
         LocalDateTime startOfMonth = getStartOfCalendarMonth();
@@ -40,10 +40,7 @@ public class StreakService extends BaseService {
                 .sorted()
                 .toList();
 
-        int dailyStreak = getDailyStreak(member);
-
-        return StreakResponse.CalendarWithDailyStreakDTO.builder()
-                .dailyStreak(dailyStreak)
+        return StreakResponse.CalendarDTO.builder()
                 .streakDateList(streakDates)
                 .build();
     }
@@ -86,7 +83,7 @@ public class StreakService extends BaseService {
         streakLogRepository.save(StreakLog.builder().member(member).streak(streak).build());
     }
 
-    // 스트릭 연속 일자 조회 (dailyStreak)
+    // 스트릭 연속 일수 조회 (dailyStreak)
     public int getDailyStreak(Member member) {
         return streakRepository.findByMember(member)
                 .map(Streak::getDailyStreak)
