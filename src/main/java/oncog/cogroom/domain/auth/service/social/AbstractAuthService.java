@@ -30,7 +30,7 @@ public abstract class AbstractAuthService implements AuthService {
     @Value("${jwt.refresh-token-expiration}")
     private long refreshExpiration;
     // 소셜 로그인 공통 로직
-    public final AuthResponse.LoginResultDTO login(AuthRequest.LoginRequestDTO request){
+    public final AuthResponse.LoginResultDTO login(AuthRequest.LoginDTO request){
         String accessToken = requestAccessToken(request.getCode());
         SocialUserInfo userInfo = requestUserInfo(accessToken);
         // provider와 ProviderId를 복합 유니크 키로 검사하여 사용자 조회
