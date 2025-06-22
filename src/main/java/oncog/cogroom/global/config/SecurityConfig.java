@@ -29,21 +29,30 @@ public class SecurityConfig {
     private final JwtProvider jwtProvider;
     private final CustomUserDetailService userDetailService;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    @Bean
-    @Order(2)
-    public SecurityFilterChain filterChainPermitAll(HttpSecurity http) throws Exception {
-        configureCommonSecuritySettings(http);
-        http.securityMatchers(matchers -> matchers.requestMatchers(requestPermitAll()))
-                .authorizeHttpRequests(auth -> auth
-                        .anyRequest()
-                        .permitAll());
-        return http.build();
-    }
-    //     추후 주석 해제 예정
+
     @Bean
     @Order(1)
+    public SecurityFilterChain filterChainAdmin(HttpSecurity http) throws Exception {
+        configureCommonSecuritySettings(http);
+
+        http.securityMatchers(matchers -> matchers.requestMatchers(requestHasRoleAdmin()))
+                .authorizeHttpRequests(auth -> auth.anyRequest().hasAuthority(MemberRole.ADMIN.name()));
+
+        http.exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint));
+
+        http.addFilterBefore(
+                new JwtAuthenticationFilter(jwtProvider, userDetailService, jwtAuthenticationEntryPoint),
+                UsernamePasswordAuthenticationFilter.class
+        );
+
+        return http.build();
+    }
+
+    @Bean
+    @Order(2)
     public SecurityFilterChain filterChainAuthorized(HttpSecurity http) throws Exception {
         configureCommonSecuritySettings(http);
+        // User 권한 적용
         http.securityMatchers(matchers -> matchers.requestMatchers(requestHasRoleUser()))
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest()
@@ -57,6 +66,18 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+    @Bean
+    @Order(3)
+    public SecurityFilterChain filterChainPermitAll(HttpSecurity http) throws Exception {
+        configureCommonSecuritySettings(http);
+        http.securityMatchers(matchers -> matchers.requestMatchers(requestPermitAll()))
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest()
+                        .permitAll());
+        return http.build();
+    }
+
     // 인증 및 인가가 필요한 엔드포인트에 적용되는 RequestMatcher
     private RequestMatcher[] requestHasRoleUser() {
         List<RequestMatcher> requestMatchers = List.of(
@@ -68,6 +89,15 @@ public class SecurityConfig {
         );
         return requestMatchers.toArray(RequestMatcher[]::new);
     }
+
+    private RequestMatcher[] requestHasRoleAdmin() {
+        List<RequestMatcher> requestMatchers = List.of(
+                antMatcher("/api/v1/admin/**")
+        );
+        return requestMatchers.toArray(RequestMatcher[]::new);
+    }
+
+
     // permitAll 권한을 가진 엔드포인트에 적용되는 RequestMatcher
     private RequestMatcher[] requestPermitAll() {
         List<RequestMatcher> requestMatchers = List.of(
