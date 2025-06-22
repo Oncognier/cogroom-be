@@ -3,7 +3,7 @@ package oncog.cogroom.domain.content.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.content.controller.docs.ContentControllerDocs;
-import oncog.cogroom.domain.content.dto.ContentResponseDTO;
+import oncog.cogroom.domain.content.dto.response.ContentResponse;
 import oncog.cogroom.domain.content.service.ContentService;
 import oncog.cogroom.global.common.response.ApiResponse;
 import oncog.cogroom.global.common.response.code.ApiSuccessCode;
@@ -22,8 +22,8 @@ public class ContentController implements ContentControllerDocs {
     private final ContentService contentService;
 
     @GetMapping("/home")
-    public ResponseEntity<ApiResponse<List<ContentResponseDTO>>> getHomeContents() {
-        List<ContentResponseDTO> contentList = contentService.getHomeContents();
+    public ResponseEntity<ApiResponse<List<ContentResponse.HomeContentDTO>>> getHomeContents() {
+        List<ContentResponse.HomeContentDTO> contentList = contentService.getHomeContents();
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, contentList));
     }

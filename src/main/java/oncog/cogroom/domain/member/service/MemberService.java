@@ -3,7 +3,7 @@ package oncog.cogroom.domain.member.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.auth.service.EmailService;
-import oncog.cogroom.domain.member.dto.MemberRequestDTO;
+import oncog.cogroom.domain.member.dto.request.MemberRequest;
 import oncog.cogroom.domain.member.entity.Member;
 import oncog.cogroom.domain.member.exception.MemberErrorCode;
 import oncog.cogroom.domain.member.exception.MemberException;
@@ -17,9 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 
-import static oncog.cogroom.domain.member.dto.MemberResponseDTO.*;
+import static oncog.cogroom.domain.member.dto.response.MemberResponse.*;
 
 @Service
 @RequiredArgsConstructor
@@ -69,7 +68,7 @@ public class MemberService extends BaseService {
                 .build();
     }
 
-    public void updateMemberInfo(MemberRequestDTO.MemberInfoUpdateDTO request){
+    public void updateMemberInfo(MemberRequest.MemberInfoUpdateDTO request){
         Member member = getMember();
 
         emailService.isVerified(request.getEmail());
@@ -86,7 +85,7 @@ public class MemberService extends BaseService {
     }
 
 
-    public boolean existNickname(MemberRequestDTO.ExistNicknameDTO request) {
+    public boolean existNickname(MemberRequest.ExistNicknameDTO request) {
 
         if(Boolean.TRUE.equals(memberRepository.existsByNickname(request.getNickname()))){
             throw new MemberException(MemberErrorCode.NICKNAME_DUPLICATE_ERROR);

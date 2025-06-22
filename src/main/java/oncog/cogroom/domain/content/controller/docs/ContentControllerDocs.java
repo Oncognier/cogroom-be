@@ -2,7 +2,7 @@ package oncog.cogroom.domain.content.controller.docs;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import oncog.cogroom.domain.content.dto.ContentResponseDTO;
+import oncog.cogroom.domain.content.dto.response.ContentResponse;
 import oncog.cogroom.domain.content.exception.ContentErrorCode;
 import oncog.cogroom.global.common.response.ApiResponse;
 import oncog.cogroom.global.common.response.code.ApiErrorCode;
@@ -18,5 +18,5 @@ public interface ContentControllerDocs {
             value = {ContentErrorCode.class, ApiErrorCode.class},
             include = {"IMAGE_NOT_FOUND_ERROR", "CONTENTS_NOT_FOUND_ERROR", "INTERNAL_SERVER_ERROR"})
     @Operation(summary = "콘텐츠 목록 조회(홈)", description = "홈 화면에서의 콘텐츠 목록을 조회합니다.")
-    ResponseEntity<ApiResponse<List<ContentResponseDTO>>> getHomeContents();
+    ResponseEntity<ApiResponse<List<ContentResponse.HomeContentDTO>>> getHomeContents();
 }

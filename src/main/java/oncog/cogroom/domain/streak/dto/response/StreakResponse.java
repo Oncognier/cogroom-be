@@ -1,15 +1,15 @@
-package oncog.cogroom.domain.streak.dto;
+package oncog.cogroom.domain.streak.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
 
-public class StreakResponseDTO {
+public class StreakResponse {
 
     @Getter
     @Builder
-    public static class StreakCalendarDTO {
+    public static class CalendarWithDailyStreakDTO {
         private Integer dailyStreak;
         private List<String> streakDateList;
     }

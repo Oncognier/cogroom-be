@@ -28,7 +28,7 @@ public class EmailVerification {
     private boolean verifyStatus;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime expireDate;
 
     public void updateStatus() {

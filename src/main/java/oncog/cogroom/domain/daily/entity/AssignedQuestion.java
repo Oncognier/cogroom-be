@@ -32,7 +32,7 @@ public class AssignedQuestion {
     private boolean isAnswered = false;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime assignedDate;
 
     public void setIsAnswered() {

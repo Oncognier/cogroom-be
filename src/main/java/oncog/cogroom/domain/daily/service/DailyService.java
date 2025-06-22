@@ -2,9 +2,8 @@ package oncog.cogroom.domain.daily.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import oncog.cogroom.domain.daily.dto.request.DailyAnswerRequestDTO;
-import oncog.cogroom.domain.daily.dto.response.DailyQuestionResponseDTO;
-import oncog.cogroom.domain.daily.dto.response.HasAnsweredResponseDTO;
+import oncog.cogroom.domain.daily.dto.request.DailyRequest.*;
+import oncog.cogroom.domain.daily.dto.response.DailyResponse;
 import oncog.cogroom.domain.daily.entity.Answer;
 import oncog.cogroom.domain.daily.entity.AssignedQuestion;
 import oncog.cogroom.domain.daily.entity.Question;
@@ -22,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -33,7 +31,7 @@ public class DailyService extends BaseService {
     private final AssignedQuestionRepository assignedQuestionRepository;
     private final StreakService streakService;
 
-    public DailyQuestionResponseDTO getTodayDailyQuestion() {
+    public DailyResponse.DailyQuestionDTO getTodayDailyQuestion() {
         Member member = getMember();
         log.info("멤버 아이디: {}", member.getId());
 
@@ -46,7 +44,7 @@ public class DailyService extends BaseService {
                 ? getDailyAnswer(member, startOfToday, endOfToday).getAnswer()
                 : null;
 
-        return DailyQuestionResponseDTO.builder()
+        return DailyResponse.DailyQuestionDTO.builder()
                 .questionId(question.getQuestion().getId())
                 .assignedQuestionId(question.getId())
                 .question(question.getQuestion().getQuestion())
@@ -56,7 +54,7 @@ public class DailyService extends BaseService {
     }
 
     @Transactional
-    public void createDailyAnswer(DailyAnswerRequestDTO request) {
+    public void createDailyAnswer(DailyAnswerDTO request) {
         Member member = getMember();
 
         Question question = getTodayAssignedQuestion(member).getQuestion();
@@ -73,7 +71,7 @@ public class DailyService extends BaseService {
     }
 
     @Transactional
-    public void updateDailyAnswer(DailyAnswerRequestDTO request) {
+    public void updateDailyAnswer(DailyAnswerDTO request) {
         Member member = getMember();
 
         LocalDateTime startOfToday = getStartOfToday();
@@ -88,9 +86,9 @@ public class DailyService extends BaseService {
 
     // 마이 페이지에서 데일리 질문 & 답변 조회
     @Transactional(readOnly = true)
-    public List<DailyQuestionResponseDTO.AssignedQuestionWithAnswerDTO> getAssignedAndAnsweredQuestion() {
+    public List<DailyResponse.AssignedQuestionWithAnswerDTO> getAssignedAndAnsweredQuestion() {
 
-        List<DailyQuestionResponseDTO.AssignedQuestionWithAnswerDTO> response =
+        List<DailyResponse.AssignedQuestionWithAnswerDTO> response =
                 assignedQuestionRepository.findAssignedQuestionsWithAnswerByMember(jwtProvider.extractMemberId())
                 .orElseThrow(() -> new DailyException(DailyErrorCode.ANSWER_NOT_FOUND_ERROR));
 
@@ -107,12 +105,12 @@ public class DailyService extends BaseService {
 
 
     // 데일리 최초 답변 여부 조회
-    public HasAnsweredResponseDTO getHasAnswered() {
+    public DailyResponse.HasAnsweredDTO getHasAnswered() {
         Member member = getMember();
 
         boolean hasAnswered = answerRepository.existsByMember(member);
 
-        return HasAnsweredResponseDTO.builder()
+        return DailyResponse.HasAnsweredDTO.builder()
                 .hasAnswered(hasAnswered)
                 .build();
     }

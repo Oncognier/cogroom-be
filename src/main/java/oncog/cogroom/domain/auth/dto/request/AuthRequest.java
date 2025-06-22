@@ -6,12 +6,12 @@ import lombok.Builder;
 import lombok.Getter;
 import oncog.cogroom.domain.member.enums.Provider;
 
-public class AuthRequestDTO {
+public class AuthRequest {
 
     @Builder
     @Getter
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class LoginRequestDTO {
+    public static class LoginDTO {
 
         // 공통
         @NotNull

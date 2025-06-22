@@ -1,4 +1,4 @@
-package oncog.cogroom.domain.member.dto;
+package oncog.cogroom.domain.member.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.Email;
@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
 
-public class MemberRequestDTO {
+public class MemberRequest {
 
     @Builder
     @Getter

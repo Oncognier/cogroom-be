@@ -3,7 +3,7 @@ package oncog.cogroom.domain.streak.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.member.entity.Member;
-import static oncog.cogroom.domain.streak.dto.StreakResponseDTO.*;
+import oncog.cogroom.domain.streak.dto.response.StreakResponse;
 import oncog.cogroom.domain.streak.entity.Streak;
 import oncog.cogroom.domain.streak.entity.StreakLog;
 import oncog.cogroom.domain.streak.repository.StreakLogRepository;
@@ -27,7 +27,7 @@ public class StreakService extends BaseService {
     private final StreakLogRepository streakLogRepository;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    public StreakCalendarDTO getStreakCalendarWithDailyStreak() {
+    public StreakResponse.CalendarWithDailyStreakDTO getStreakCalendarWithDailyStreak() {
         Member member = getMember();
 
         LocalDateTime startOfMonth = getStartOfCalendarMonth();
@@ -42,18 +42,18 @@ public class StreakService extends BaseService {
 
         int dailyStreak = getDailyStreak(member);
 
-        return StreakCalendarDTO.builder()
+        return StreakResponse.CalendarWithDailyStreakDTO.builder()
                 .dailyStreak(dailyStreak)
                 .streakDateList(streakDates)
                 .build();
     }
 
-    public DailyStreakDTO getDailyStreak() {
+    public StreakResponse.DailyStreakDTO getDailyStreak() {
         Member member = getMember();
 
         int dailyStreak = getDailyStreak(member);
 
-        return DailyStreakDTO.builder()
+        return StreakResponse.DailyStreakDTO.builder()
                 .dailyStreak(dailyStreak)
                 .build();
     }

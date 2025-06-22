@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import oncog.cogroom.domain.auth.userInfo.SocialUserInfo;
 
-public class AuthResponseDTO {
+public class AuthResponse {
 
     @Getter
     @Builder

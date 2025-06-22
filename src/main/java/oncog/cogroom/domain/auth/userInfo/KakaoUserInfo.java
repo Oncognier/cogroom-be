@@ -1,13 +1,13 @@
 package oncog.cogroom.domain.auth.userInfo;
 
 import lombok.RequiredArgsConstructor;
-import oncog.cogroom.domain.auth.dto.response.SocialUserInfoDTO;
+import oncog.cogroom.domain.auth.dto.response.SocialUserInfo;
 import oncog.cogroom.domain.member.enums.Provider;
 
 @RequiredArgsConstructor
-public class KakaoUserInfo implements SocialUserInfo {
+public class KakaoUserInfo implements oncog.cogroom.domain.auth.userInfo.SocialUserInfo {
 
-    private final SocialUserInfoDTO.KakaoUserInfoDTO kakaoUserInfo;
+    private final SocialUserInfo.KakaoUserInfoDTO kakaoUserInfo;
 
     @Override
     public String getProviderId() {
