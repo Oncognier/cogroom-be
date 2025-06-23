@@ -89,7 +89,7 @@ public class DailyService extends BaseService {
     public List<DailyResponse.AssignedQuestionWithAnswerDTO> getAssignedAndAnsweredQuestion() {
 
         List<DailyResponse.AssignedQuestionWithAnswerDTO> response =
-                assignedQuestionRepository.findAssignedQuestionsWithAnswerByMember(jwtProvider.extractMemberId())
+                assignedQuestionRepository.findAssignedQuestionsWithAnswerByMember(getMember().getId())
                 .orElseThrow(() -> new DailyException(DailyErrorCode.ANSWER_NOT_FOUND_ERROR));
 
         // 데일리 질문이 할당된 시간이 00:00:00 ~ 23:59:59 내로 할당되었는지 검사

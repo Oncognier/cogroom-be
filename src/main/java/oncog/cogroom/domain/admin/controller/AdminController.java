@@ -1,7 +1,6 @@
 package oncog.cogroom.domain.admin.controller;
 
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.admin.controller.docs.AdminControllerDocs;
@@ -41,7 +40,7 @@ public class AdminController implements AdminControllerDocs {
 
     @PostMapping("/daily/questions")
     public ResponseEntity<ApiResponse<String>> createDailyQuestions(@RequestBody AdminRequest.DailyQuestionsDTO request) {
-        AdminService.createDailyQuestions(request);
+        adminService.createDailyQuestions(request);
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
     }

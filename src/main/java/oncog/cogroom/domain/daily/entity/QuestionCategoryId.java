@@ -20,5 +20,5 @@ public class QuestionCategoryId implements Serializable {
     private Long questionId;
 
     @Column(nullable = false)
-    private Long categoryId;
+    private Integer categoryId;
 }

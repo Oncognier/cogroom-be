@@ -2,11 +2,8 @@ package oncog.cogroom.domain.daily.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import oncog.cogroom.domain.member.entity.Member;
-import org.springframework.data.annotation.CreatedDate;
+import oncog.cogroom.global.common.entity.BaseEntity;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -15,16 +12,8 @@ import java.time.LocalDateTime;
 @Builder
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "QUESTION_CATEGORY")
-public class QuestionCategory {
+public class QuestionCategory extends BaseEntity {
 
     @EmbeddedId
     private QuestionCategoryId id;
-
-    @CreatedDate
-    @Column(nullable = false, updatable = false, columnDefinition = "TIMESTAMP")
-    private LocalDateTime createdAt;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, name = "created_by")
-    private Member createdBy;
 }
