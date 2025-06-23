@@ -1,8 +1,9 @@
-package oncog.cogroom.global.common.entity;
+package oncog.cogroom.domain.category.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
 import oncog.cogroom.domain.member.entity.Member;
+import oncog.cogroom.global.common.entity.BaseTimeEntity;
 
 @Entity
 @Getter
@@ -14,7 +15,7 @@ public class Category extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(nullable = false)
     private String name;
