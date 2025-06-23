@@ -39,4 +39,13 @@ public class AdminResponse {
         }
 
     }
+
+    @Getter
+    @Builder
+    public static class DailyQuestionsDTO {
+        private Long id;
+        private String question;
+        private List<String> categories;
+        private String level;
+    }
 }

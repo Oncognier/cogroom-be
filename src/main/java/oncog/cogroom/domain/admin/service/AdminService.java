@@ -61,6 +61,10 @@ public class AdminService extends BaseService {
 
     }
 
+    public PageResponse<AdminResponse.DailyQuestionsDTO> getDailyQuestions(Pageable pageable, List<Integer> category, List<String> level, String keyword) {
+
+    }
+
     @Transactional
     public void createDailyQuestions(AdminRequest.DailyQuestionsDTO request) {
         validateDailyQuestionRequest(request);
@@ -130,4 +134,6 @@ public class AdminService extends BaseService {
 
         return categories;
     }
+
+
 }
