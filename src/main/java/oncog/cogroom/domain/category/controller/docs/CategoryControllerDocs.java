@@ -13,7 +13,7 @@ import java.util.List;
 @Tag(name = "Category", description = "카테고리 관련 API")
 public interface CategoryControllerDocs {
 
-    @Operation(summary = "카테고리 목록 조회", description = "카테고리 코드 및 이름을 조회합니다.")
+    @Operation(summary = "카테고리 목록 조회", description = "카테고리 id 및 이름을 조회합니다.")
     @ApiErrorCodeExamples(
             value = {ApiErrorCode.class},
             include = {"INTERNAL_SERVER_ERROR"})
