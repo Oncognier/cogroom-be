@@ -106,7 +106,7 @@ public class AdminService extends BaseService {
         try {
             QuestionLevel.valueOf(request.getLevel().toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new AdminException(AdminErrorCode.INVALID_QUESTION_LEVEL_ERROR);
+            throw new AdminException(AdminErrorCode.INVALID_LEVEL_ERROR);
         }
     }
 
@@ -125,7 +125,7 @@ public class AdminService extends BaseService {
                 .toList();
 
         if (!invalidCategoryIds.isEmpty()) {
-            throw new AdminException(AdminErrorCode.CATEGORY_NOT_FOUND_ERROR);
+            throw new AdminException(AdminErrorCode.INVALID_CATEGORY_ERROR);
         }
 
         return categories;

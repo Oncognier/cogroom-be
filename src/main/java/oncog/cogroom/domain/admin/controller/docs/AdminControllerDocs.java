@@ -5,6 +5,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import oncog.cogroom.domain.admin.dto.request.AdminRequest;
 import oncog.cogroom.domain.admin.dto.response.AdminResponse;
 import oncog.cogroom.domain.admin.dto.response.PageResponse;
+import oncog.cogroom.domain.admin.exception.AdminErrorCode;
+import oncog.cogroom.domain.auth.exception.AuthErrorCode;
+import oncog.cogroom.domain.member.exception.MemberErrorCode;
 import oncog.cogroom.global.common.response.ApiResponse;
 import oncog.cogroom.global.common.response.code.ApiErrorCode;
 import oncog.cogroom.global.exception.swagger.ApiErrorCodeExamples;
@@ -31,9 +34,11 @@ public interface AdminControllerDocs {
             @RequestParam(required = false) String keyword,
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable);
 
-    @Operation(summary = "데일리 질문 추가", description = "데일리 질문을 추가합니다.")
+    @Operation(summary = "데일리 질문 등록", description = "데일리 질문을 등록합니다.")
     @ApiErrorCodeExamples(
-            value = {ApiErrorCode.class},
-            include = {"INTERNAL_SERVER_ERROR"})
+            value = {MemberErrorCode.class, AuthErrorCode.class, AdminErrorCode.class, ApiErrorCode.class},
+            include = {"QUESTION_LIST_EMPTY_ERROR", "LEVEL_EMPTY_ERROR", "INVALID_LEVEL_ERROR",
+                    "CATEGORY_EMPTY_ERROR", "INVALID_CATEGORY_ERROR", "INTERNAL_SERVER_ERROR",
+                    "TOKEN_INVALID_ERROR","TOKEN_EXPIRED_ERROR", "MEMBER_NOT_FOUND_ERROR"})
     ResponseEntity<ApiResponse<String>> createDailyQuestions(@RequestBody AdminRequest.DailyQuestionsDTO request);
 }
