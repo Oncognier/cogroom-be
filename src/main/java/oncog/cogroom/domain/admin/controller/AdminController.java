@@ -2,6 +2,9 @@ package oncog.cogroom.domain.admin.controller;
 
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import oncog.cogroom.domain.admin.controller.docs.AdminControllerDocs;
+import oncog.cogroom.domain.admin.dto.request.AdminRequest;
 import oncog.cogroom.domain.admin.dto.response.AdminResponse;
 import oncog.cogroom.domain.admin.dto.response.PageResponse;
 import oncog.cogroom.domain.admin.service.AdminService;
@@ -12,17 +15,15 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 
 @RestController
+@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin")
-public class AdminController {
+public class AdminController implements AdminControllerDocs {
 
     private final AdminService adminService;
 
@@ -35,5 +36,12 @@ public class AdminController {
 
         PageResponse<AdminResponse.MemberListDTO> result = adminService.findMemberList(pageable, startDate, endDate, keyword);
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, result));
+    }
+
+    @PostMapping("/daily/questions")
+    public ResponseEntity<ApiResponse<String>> createDailyQuestions(@RequestBody AdminRequest.DailyQuestionsDTO request) {
+        adminService.createDailyQuestions(request);
+
+        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
     }
 }
