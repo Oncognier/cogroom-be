@@ -2,6 +2,7 @@ package oncog.cogroom.domain.admin.controller.docs;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+<<<<<<< HEAD
 import oncog.cogroom.domain.admin.dto.request.AdminRequest;
 import oncog.cogroom.domain.admin.dto.response.AdminResponse;
 import oncog.cogroom.domain.admin.dto.response.PageResponse;
@@ -10,18 +11,27 @@ import oncog.cogroom.domain.auth.exception.AuthErrorCode;
 import oncog.cogroom.domain.member.exception.MemberErrorCode;
 import oncog.cogroom.global.common.response.ApiResponse;
 import oncog.cogroom.global.common.response.code.ApiErrorCode;
+=======
+import oncog.cogroom.domain.admin.dto.response.AdminResponse;
+import oncog.cogroom.domain.admin.dto.response.PageResponse;
+import oncog.cogroom.global.common.response.ApiResponse;
+>>>>>>> 0eea8cc (feat: 사용자 삭제 및 권한 변경 API 구현)
 import oncog.cogroom.global.exception.swagger.ApiErrorCodeExamples;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+<<<<<<< HEAD
 import org.springframework.web.bind.annotation.RequestBody;
+=======
+>>>>>>> 0eea8cc (feat: 사용자 삭제 및 권한 변경 API 구현)
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.util.List;
 
+<<<<<<< HEAD
 @Tag(name = "Admin", description = "관리자 관련 API")
 public interface AdminControllerDocs {
 
@@ -30,10 +40,22 @@ public interface AdminControllerDocs {
             value = {ApiErrorCode.class},
             include = {"INTERNAL_SERVER_ERROR"})
     ResponseEntity<ApiResponse<PageResponse<AdminResponse.MemberListDTO>>> getMemberList(
+=======
+@Tag(name = "Admin", description = "어드민 관련 API")
+public interface AdminControllerDocs {
+
+    @ApiErrorCodeExamples(
+            value = {},
+            include = {}
+    )
+    @Operation(summary = "어드민 페이지 회원 조회", description = "회원 관리 페이지에서 회원 정보를 조회합니다.")
+    public ResponseEntity<ApiResponse<PageResponse<AdminResponse.MemberListDTO>>> getMemberList(
+>>>>>>> 0eea8cc (feat: 사용자 삭제 및 권한 변경 API 구현)
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy/MM/dd") LocalDate startDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy/MM/dd") LocalDate endDate,
             @RequestParam(required = false) String keyword,
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable);
+<<<<<<< HEAD
 
     @Operation(summary = "데일리 질문 목록 조회", description = "데일리 질문 목록을 조회합니다.")
     @ApiErrorCodeExamples(
@@ -53,4 +75,6 @@ public interface AdminControllerDocs {
                     "CATEGORY_EMPTY_ERROR", "INVALID_CATEGORY_ERROR", "INTERNAL_SERVER_ERROR",
                     "TOKEN_INVALID_ERROR","TOKEN_EXPIRED_ERROR", "MEMBER_NOT_FOUND_ERROR", "FORBIDDEN_ERROR"})
     ResponseEntity<ApiResponse<String>> createDailyQuestions(@RequestBody AdminRequest.DailyQuestionsDTO request);
+=======
+>>>>>>> 0eea8cc (feat: 사용자 삭제 및 권한 변경 API 구현)
 }

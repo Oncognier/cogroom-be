@@ -4,10 +4,12 @@ package oncog.cogroom.domain.admin.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.admin.controller.docs.AdminControllerDocs;
+
 import oncog.cogroom.domain.admin.dto.request.AdminRequest;
 import oncog.cogroom.domain.admin.dto.response.AdminResponse;
 import oncog.cogroom.domain.admin.dto.response.PageResponse;
 import oncog.cogroom.domain.admin.service.AdminService;
+import oncog.cogroom.domain.member.enums.MemberRole;
 import oncog.cogroom.global.common.response.ApiResponse;
 import oncog.cogroom.global.common.response.code.ApiSuccessCode;
 import org.springframework.data.domain.Pageable;
@@ -55,5 +57,17 @@ public class AdminController implements AdminControllerDocs {
         adminService.createDailyQuestions(request);
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
+    }
+    @DeleteMapping("/members")
+    public ResponseEntity<ApiResponse<Void>> deleteMembers(AdminRequest.DeleteMembersDTO request){
+        adminService.deleteMembers(request);
+
+        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
+    }
+
+    @PatchMapping("/members/{memberId}")
+    public ResponseEntity<ApiResponse<Void>> updateMemberRole(@PathVariable Long memberId,
+                                                              @RequestParam MemberRole role) {
+
     }
 }

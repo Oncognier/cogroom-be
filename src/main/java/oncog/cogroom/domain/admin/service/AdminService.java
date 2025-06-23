@@ -16,6 +16,9 @@ import oncog.cogroom.domain.daily.enums.QuestionLevel;
 import oncog.cogroom.domain.daily.repository.QuestionCategoryRepository;
 import oncog.cogroom.domain.daily.repository.QuestionRepository;
 import oncog.cogroom.domain.member.entity.Member;
+import oncog.cogroom.domain.member.enums.MemberRole;
+import oncog.cogroom.domain.member.exception.MemberErrorCode;
+import oncog.cogroom.domain.member.exception.MemberException;
 import oncog.cogroom.domain.member.repository.MemberRepository;
 import oncog.cogroom.global.common.service.BaseService;
 import org.springframework.data.domain.Page;
@@ -182,4 +185,18 @@ public class AdminService extends BaseService {
         }
     }
 
+    // 사용자 삭제 (status 변경)
+    public void deleteMembers(AdminRequest.DeleteMembersDTO request) {
+        List<Long> memberIdList = request.getMemberIdList();
+
+        memberIdList.stream().forEach(id -> memberRepository.findById(id).ifPresent(Member::withDrawMember));
+    }
+
+    // 사용자 권한 변경
+    public void updateMemberRole(Long memberId, MemberRole role) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND_ERROR));
+
+        member.updateMemberRole(role);
+    }
 }

@@ -60,4 +60,12 @@ public class Member extends BaseTimeEntity {
         this.profileImageUrl = request.getImageUrl();
         this.nickname = request.getNickname();
     }
+
+    public void withDrawMember(){
+        this.status = MemberStatus.WITHDRAWN;
+    }
+
+    public void updateMemberRole(MemberRole role) {
+        this.role = role;
+    }
 }
