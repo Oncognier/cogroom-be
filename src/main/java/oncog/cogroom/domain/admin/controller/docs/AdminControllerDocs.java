@@ -39,6 +39,6 @@ public interface AdminControllerDocs {
             value = {MemberErrorCode.class, AuthErrorCode.class, AdminErrorCode.class, ApiErrorCode.class},
             include = {"QUESTION_LIST_EMPTY_ERROR", "LEVEL_EMPTY_ERROR", "INVALID_LEVEL_ERROR",
                     "CATEGORY_EMPTY_ERROR", "INVALID_CATEGORY_ERROR", "INTERNAL_SERVER_ERROR",
-                    "TOKEN_INVALID_ERROR","TOKEN_EXPIRED_ERROR", "MEMBER_NOT_FOUND_ERROR"})
+                    "TOKEN_INVALID_ERROR","TOKEN_EXPIRED_ERROR", "MEMBER_NOT_FOUND_ERROR", "FORBIDDEN_ERROR"})
     ResponseEntity<ApiResponse<String>> createDailyQuestions(@RequestBody AdminRequest.DailyQuestionsDTO request);
 }
