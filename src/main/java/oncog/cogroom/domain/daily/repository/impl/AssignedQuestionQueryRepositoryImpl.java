@@ -14,6 +14,7 @@ import oncog.cogroom.domain.daily.entity.QQuestion;
 import oncog.cogroom.domain.daily.entity.QQuestionCategory;
 import oncog.cogroom.domain.daily.enums.QuestionLevel;
 import oncog.cogroom.domain.daily.repository.AssignedQuestionQueryRepository;
+import oncog.cogroom.domain.member.entity.QMember;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -107,6 +108,7 @@ public class AssignedQuestionQueryRepositoryImpl implements AssignedQuestionQuer
         QQuestion q = QQuestion.question1;
         QQuestionCategory qc = QQuestionCategory.questionCategory;
         QCategory c = QCategory.category;
+        QMember m = QMember.member;
 
         // 키 조건 구성: (질문 ID + 답변일시)가 일치하는 레코드만
         BooleanBuilder keyConditions = new BooleanBuilder();
@@ -118,12 +120,14 @@ public class AssignedQuestionQueryRepositoryImpl implements AssignedQuestionQuer
         return queryFactory
                 .select(Projections.constructor(
                         AdminResponse.MemberDailyDTO.class,
+                        m.nickname,
                         q.question.as("questionText"),
                         q.level.as("questionLevel"),
                         c.name.as("category"), // // 단일 행 기준 카테고리
                         a.createdAt.as("answeredAt")
                 ))
                 .from(aq)
+                .join(aq.member, m)
                 .join(aq.question ,q)
                 .join(a).on(a.member.eq(aq.member).and(a.question.eq(aq.question)))
                 .join(qc).on(qc.question.id.eq(q.id))

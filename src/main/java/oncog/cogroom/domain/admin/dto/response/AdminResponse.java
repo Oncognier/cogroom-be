@@ -66,6 +66,7 @@ public class AdminResponse {
     @Getter
     @RequiredArgsConstructor
     public static class MemberDailyDTO {
+        private final String nickname;
         private final String questionText;
         private final QuestionLevel questionLevel;
         private final String category;
@@ -77,12 +78,13 @@ public class AdminResponse {
     @Getter
     @Builder
     public static class MemberDailyListDTO {
+        private final String nickname;
         private final String questionText;
         private final QuestionLevel questionLevel;
         private final Set<String> categories;
         @JsonFormat(pattern = "yyyy/MM/dd", timezone = "Asia/Seoul")
         private final LocalDateTime answeredAt;
 
-        }
+    }
     }
 

@@ -235,6 +235,7 @@ public class AdminService extends BaseService {
 
             grouped.computeIfAbsent(key, k ->
                     AdminResponse.MemberDailyListDTO.builder()
+                            .nickname(dto.getNickname())
                             .questionText(dto.getQuestionText())
                             .questionLevel(dto.getQuestionLevel())
                             .answeredAt(dto.getAnsweredAt())

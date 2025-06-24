@@ -18,15 +18,12 @@ public class QuestionCategory extends BaseEntity {
     @EmbeddedId
     private QuestionCategoryId id;
 
-<<<<<<< HEAD
     // 조회 목적으로 사용
-=======
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("questionId")
     @JoinColumn(name = "question_id")
     private Question question;
 
->>>>>>> 9d06872 (feat: 회원 관리 내부 데일리 콘텐츠 조회 API 구현)
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("categoryId")
     @JoinColumn(name = "category_id")
