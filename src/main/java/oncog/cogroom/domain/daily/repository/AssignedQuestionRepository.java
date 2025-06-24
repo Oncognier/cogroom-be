@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public interface AssignedQuestionRepository extends JpaRepository<AssignedQuestion, Long> {
+public interface AssignedQuestionRepository extends JpaRepository<AssignedQuestion, Long>, AssignedQuestionQueryRepository {
     boolean existsByMemberAndAssignedDateBetween(Member member, LocalDateTime start, LocalDateTime end);
 
     Optional<AssignedQuestion> findByMemberAndAssignedDateGreaterThanEqualAndAssignedDateLessThan(Member member, LocalDateTime start, LocalDateTime end);
@@ -32,22 +32,5 @@ public interface AssignedQuestionRepository extends JpaRepository<AssignedQuesti
     """)
     Optional<List<DailyResponse.AssignedQuestionWithAnswerDTO>> findAssignedQuestionsWithAnswerByMember(Long id);
 
-    @Query("""
-    SELECT new oncog.cogroom.domain.admin.dto.response.AdminResponse$MemberDailyDTO(
-        q.question as questionText,
-        q.level as questionLevel,
-        c.name as category,
-        a.createdAt as answeredAt
-   )
-    FROM AssignedQuestion aq
-    JOIN aq.question q
-    JOIN Answer a ON a.member = aq.member AND a.question = aq.question
-    JOIN QuestionCategory qc ON qc.id.questionId = q.id
-    JOIN qc.category c
-    WHERE aq.member.id = :memberId
-     AND aq.isAnswered = true
-    ORDER BY a.createdAt DESC
 
-    """)
-    Optional<List<AdminResponse.MemberDailyDTO>> findDailyContentsInfoByMember(Long memberId);
 }

@@ -12,6 +12,7 @@ import oncog.cogroom.domain.member.enums.MemberRole;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 public class AdminResponse {
 
@@ -68,6 +69,7 @@ public class AdminResponse {
         private final String questionText;
         private final QuestionLevel questionLevel;
         private final String category;
+        @JsonFormat(pattern = "yyyy/MM/dd", timezone = "Asia/Seoul")
         private final LocalDateTime answeredAt;
 
     }
@@ -77,7 +79,8 @@ public class AdminResponse {
     public static class MemberDailyListDTO {
         private final String questionText;
         private final QuestionLevel questionLevel;
-        private final List<String> categories;
+        private final Set<String> categories;
+        @JsonFormat(pattern = "yyyy/MM/dd", timezone = "Asia/Seoul")
         private final LocalDateTime answeredAt;
 
         }
