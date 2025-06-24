@@ -71,7 +71,7 @@ public class AdminService extends BaseService {
 
         // 유효한 카테고리 검사
         if (categoryIds != null && !categoryIds.isEmpty()) {
-            validateCategories(categoryIds);
+            this.validateCategoriesByIds(categoryIds);
         }
 
         // 유효한 난이도 검사
@@ -115,7 +115,7 @@ public class AdminService extends BaseService {
         QuestionLevel level = QuestionLevel.valueOf(request.getLevel().toUpperCase());
 
         // 유효한 카테고리인지 확인
-        List<Category> categories = validateCategories(requestedCategoryIds);
+        List<Category> categories = this.validateCategoriesByIds(requestedCategoryIds);
 
         for (AdminRequest.DailyQuestionsDTO.QuestionDTO questionDTO : questionList) {
             Question question = questionRepository.save(
@@ -151,7 +151,7 @@ public class AdminService extends BaseService {
     }
 
     // 카테고리 유효성 검사 (카테고리 존재 여부)
-    private List<Category> validateCategories(List<Integer> categoryIds) {
+    private List<Category> validateCategoriesByIds(List<Integer> categoryIds) {
         List<Category> categories = categoryRepository.findAllById(categoryIds);
 
         // 실제 존재하는 카테고리 id set
@@ -169,6 +169,30 @@ public class AdminService extends BaseService {
         }
 
         return categories;
+    }
+
+    private void validateCategoriesByNames(List<String> categories) {
+
+        // DB에 존재하는 카테고리 이름 리스트 조회
+        List<String> categoryNames = categoryRepository.findAllName();
+
+        // 요청 카테고리 Name과 실제 카테고리 비교
+        List<String> invalidCategoryNames = categories.stream()
+                .filter(categoryNames::contains)
+                .toList();
+
+        if (!invalidCategoryNames.isEmpty()) {
+            throw new AdminException(AdminErrorCode.CATEGORY_INVALID_ERROR);
+        }
+    }
+
+    private void validateLevels(List<QuestionLevel> questionLevels) {
+        List<QuestionLevel> questionLevelList = Arrays.stream(QuestionLevel.values()).toList();
+
+        questionLevels.stream()
+                .forEach(level -> {
+                    if(!questionLevelList.contains(level)) throw new AdminException(AdminErrorCode.LEVEL_INVALID_ERROR);
+                });
     }
 
     // 유효한 난이도인지 확인
@@ -209,7 +233,13 @@ public class AdminService extends BaseService {
                                                                            LocalDate startDate,
                                                                            LocalDate endDate
                                                                            ) {
-        // 질문 내용과 답변 시간 조합으로 페이징 데이터 조회
+        // 카테고리 유효성 검사
+        validateCategoriesByNames(categories);
+
+        // 질문 난이도 유효성 검사
+        validateLevels(questionLevels);
+
+            // 질문 내용과 답변 시간 조합으로 페이징 데이터 조회
         Page<DailyResponse.QuestionAnsweredKey> pagedData = assignedQuestionRepository.findPagedData(memberId, pageable,categories, keyword ,questionLevels,startDate,endDate);
 
         // 페이징 유효성 검사

@@ -85,6 +85,7 @@ public interface AdminControllerDocs {
     @ApiErrorCodeExamples(
             value = {MemberErrorCode.class, AuthErrorCode.class, AdminErrorCode.class, ApiErrorCode.class},
             include = { "INTERNAL_SERVER_ERROR", "TOKEN_INVALID_ERROR",
+                    "LEVEL_INVALID_ERROR", "CATEGORY_INVALID_ERROR",
                     "TOKEN_EXPIRED_ERROR", "MEMBER_NOT_FOUND_ERROR", "FORBIDDEN_ERROR",
                     "DATE_INVALID_ERROR", "TYPE_MISMATCH_ERROR" ,"PAGE_OUT_OF_RANGE_ERROR"}
     )
