@@ -36,7 +36,7 @@ public class AdminController implements AdminControllerDocs {
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy/MM/dd") LocalDate startDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy/MM/dd") LocalDate endDate,
             @RequestParam(required = false) String keyword,
-            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+            @PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
         PageResponse<AdminResponse.MemberListDTO> result = adminService.findMemberList(pageable, startDate, endDate, keyword);
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, result));
@@ -47,7 +47,7 @@ public class AdminController implements AdminControllerDocs {
             @RequestParam(required = false) List<Integer> category,
             @RequestParam(required = false) List<String> level,
             @RequestParam(required = false) String keyword,
-            @PageableDefault(size = 4, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+            @PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         PageResponse<AdminResponse.DailyQuestionsDTO> response = adminService.getDailyQuestions(pageable, category, level, keyword);
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, response));
@@ -83,7 +83,7 @@ public class AdminController implements AdminControllerDocs {
             @RequestParam(required = false) List<QuestionLevel> questionLevel,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy/MM/dd") LocalDate startDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy/MM/dd") LocalDate endDate,
-            @PageableDefault(size = 10, sort = "answeredAt", direction = Sort.Direction.DESC) Pageable pageable) {
+            @PageableDefault(size = 5, sort = "answeredAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
         PageResponse<AdminResponse.MemberDailyListDTO> result = adminService.getDailyContents(
                 memberId, pageable, category, keyword, questionLevel,startDate,endDate);
