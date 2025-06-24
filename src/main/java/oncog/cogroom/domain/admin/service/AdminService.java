@@ -203,21 +203,20 @@ public class AdminService extends BaseService {
     }
 
     public PageResponse<AdminResponse.MemberDailyListDTO> getDailyContents(Long memberId, Pageable pageable,
-                                                                           String category,
+                                                                           List<String> categories,
                                                                            String keyword,
-                                                                           QuestionLevel questionLevel,
+                                                                           List<QuestionLevel> questionLevels,
                                                                            LocalDate startDate,
                                                                            LocalDate endDate
                                                                            ) {
         // 질문 내용과 답변 시간 조합으로 페이징 데이터 조회
-        Page<DailyResponse.QuestionAnsweredKey> pagedData = assignedQuestionRepository.findPagedData(memberId, pageable,category, keyword ,questionLevel,startDate,endDate);
+        Page<DailyResponse.QuestionAnsweredKey> pagedData = assignedQuestionRepository.findPagedData(memberId, pageable,categories, keyword ,questionLevels,startDate,endDate);
 
         // 페이징 유효성 검사
         validatePageRange(pagedData, pageable);
 
         // (질문, 난이도, 카테고리, 답변 시간) 데이터 리스트 형태로 조회
-        List<AdminResponse.MemberDailyDTO> memberDailyDtoList = assignedQuestionRepository.findMemberDailyDtoList(memberId, pagedData.getContent(),
-                                                                                                        category,keyword, questionLevel,startDate,endDate);
+        List<AdminResponse.MemberDailyDTO> memberDailyDtoList = assignedQuestionRepository.findMemberDailyDtoList(memberId, pagedData.getContent());
 
         // (질문, 난이도, 카테고리 리스트, 답변 시간) 형식으로 데이터 가공
         List<AdminResponse.MemberDailyListDTO> memberDailyListDtoList = groupByQuestion(memberDailyDtoList);
@@ -231,13 +230,14 @@ public class AdminService extends BaseService {
         Map<String, AdminResponse.MemberDailyListDTO> grouped = new LinkedHashMap<>();
 
         for (AdminResponse.MemberDailyDTO dto : flatList) {
-            String key = dto.getQuestionText() + "::" + dto.getAnsweredAt();
+            String key = dto.getQuestion() + "::" + dto.getAnsweredAt();
 
             grouped.computeIfAbsent(key, k ->
                     AdminResponse.MemberDailyListDTO.builder()
+                            .assignedQuestionId(dto.getAssignedQuestionId())
                             .nickname(dto.getNickname())
-                            .questionText(dto.getQuestionText())
-                            .questionLevel(dto.getQuestionLevel())
+                            .question(dto.getQuestion())
+                            .level(dto.getLevel())
                             .answeredAt(dto.getAnsweredAt())
                             .categories(new HashSet<>()).build()
             ).getCategories().add(dto.getCategory());

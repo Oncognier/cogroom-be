@@ -66,9 +66,10 @@ public class AdminResponse {
     @Getter
     @RequiredArgsConstructor
     public static class MemberDailyDTO {
+        private final Long assignedQuestionId;
         private final String nickname;
-        private final String questionText;
-        private final QuestionLevel questionLevel;
+        private final String question;
+        private final QuestionLevel level;
         private final String category;
         @JsonFormat(pattern = "yyyy/MM/dd", timezone = "Asia/Seoul")
         private final LocalDateTime answeredAt;
@@ -78,9 +79,10 @@ public class AdminResponse {
     @Getter
     @Builder
     public static class MemberDailyListDTO {
+        private final Long assignedQuestionId;
         private final String nickname;
-        private final String questionText;
-        private final QuestionLevel questionLevel;
+        private final String question;
+        private final QuestionLevel level;
         private final Set<String> categories;
         @JsonFormat(pattern = "yyyy/MM/dd", timezone = "Asia/Seoul")
         private final LocalDateTime answeredAt;

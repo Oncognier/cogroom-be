@@ -33,9 +33,9 @@ public class AssignedQuestionQueryRepositoryImpl implements AssignedQuestionQuer
     @Override
     public Page<DailyResponse.QuestionAnsweredKey> findPagedData(Long memberId,
                                                                  Pageable pageable,
-                                                                 String category,
+                                                                 List<String> categories,
                                                                  String keyword,
-                                                                 QuestionLevel questionLevel,
+                                                                 List<QuestionLevel> questionLevels,
                                                                  LocalDate startDate,
                                                                  LocalDate endDate) {
         QAssignedQuestion aq = QAssignedQuestion.assignedQuestion;
@@ -53,11 +53,11 @@ public class AssignedQuestionQueryRepositoryImpl implements AssignedQuestionQuer
         if (keyword != null && !keyword.isBlank()) { // 키워드 필터
             conditions.and(q.question.contains(keyword));
         }
-        if (category != null && !category.isBlank()) { // 카테고리 필터
-            conditions.and(c.name.eq(category));
+        if (categories != null && !categories.isEmpty()) {
+            conditions.and(c.name.in(categories));
         }
-        if (questionLevel != null) { // 난이도 필터
-            conditions.and(q.level.eq(questionLevel));
+        if (questionLevels != null && !questionLevels.isEmpty()) { // 난이도 필터
+            conditions.and(q.level.in(questionLevels));
         }
         if (startDate != null && endDate != null) { // 날짜 필터
             conditions.and(a.createdAt.between(startDate.atStartOfDay(), endDate.atTime(LocalTime.MAX)));
@@ -92,13 +92,7 @@ public class AssignedQuestionQueryRepositoryImpl implements AssignedQuestionQuer
 
     @Override
     public List<AdminResponse.MemberDailyDTO> findMemberDailyDtoList(Long memberId,
-                                                                     List<DailyResponse.QuestionAnsweredKey> keys,
-                                                                     String category,
-                                                                     String keyword,
-                                                                     QuestionLevel questionLevel,
-                                                                     LocalDate startDate,
-                                                                     LocalDate endDate
-                                                                     ) {
+                                                                     List<DailyResponse.QuestionAnsweredKey> keys) {
 
         // 키가 비어있으면 빈 리스트 반환
         if(keys.isEmpty()) return Collections.emptyList();
@@ -120,6 +114,7 @@ public class AssignedQuestionQueryRepositoryImpl implements AssignedQuestionQuer
         return queryFactory
                 .select(Projections.constructor(
                         AdminResponse.MemberDailyDTO.class,
+                        aq.id.as("assignedQuestionId"),
                         m.nickname,
                         q.question.as("questionText"),
                         q.level.as("questionLevel"),

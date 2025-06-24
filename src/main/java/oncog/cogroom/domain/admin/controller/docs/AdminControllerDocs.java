@@ -90,9 +90,9 @@ public interface AdminControllerDocs {
     )
     public ResponseEntity<ApiResponse<PageResponse<AdminResponse.MemberDailyListDTO>>> getDailyContents(
             @PathVariable Long memberId,
-            @RequestParam(required = false) String category,
+            @RequestParam(required = false) List<String> category,
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) QuestionLevel questionLevel,
+            @RequestParam(required = false) List<QuestionLevel> questionLevel,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy/MM/dd") LocalDate startDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy/MM/dd") LocalDate endDate,
             @PageableDefault(size = 10, sort = "answeredAt", direction = Sort.Direction.DESC) Pageable pageable);

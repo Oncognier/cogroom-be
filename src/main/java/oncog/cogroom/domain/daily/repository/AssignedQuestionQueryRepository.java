@@ -12,18 +12,13 @@ import java.util.List;
 public interface AssignedQuestionQueryRepository {
     Page<DailyResponse.QuestionAnsweredKey> findPagedData(Long memberId,
                                                           Pageable pageable,
-                                                          String category,
+                                                          List<String> category,
                                                           String keyword,
-                                                          QuestionLevel questionLevel,
+                                                          List<QuestionLevel> questionLevel,
                                                           LocalDate startDate,
                                                           LocalDate endDate);
 
     List<AdminResponse.MemberDailyDTO> findMemberDailyDtoList(Long memberId,
-                                                              List<DailyResponse.QuestionAnsweredKey> keys,
-                                                              String category,
-                                                              String keyword,
-                                                              QuestionLevel questionLevel,
-                                                              LocalDate startDate,
-                                                              LocalDate endDate);
+                                                              List<DailyResponse.QuestionAnsweredKey> keys);
 
 }
