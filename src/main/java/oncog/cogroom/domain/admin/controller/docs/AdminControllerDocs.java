@@ -44,7 +44,8 @@ public interface AdminControllerDocs {
     @ApiErrorCodeExamples(
             value = {MemberErrorCode.class, AuthErrorCode.class, AdminErrorCode.class, ApiErrorCode.class},
             include = {"LEVEL_INVALID_ERROR", "CATEGORY_INVALID_ERROR", "INTERNAL_SERVER_ERROR", "TOKEN_INVALID_ERROR",
-                    "TOKEN_EXPIRED_ERROR", "MEMBER_NOT_FOUND_ERROR", "FORBIDDEN_ERROR", "PAGE_OUT_OF_RANGE_ERROR"})
+                    "TOKEN_EXPIRED_ERROR", "MEMBER_NOT_FOUND_ERROR", "FORBIDDEN_ERROR", "PAGE_OUT_OF_RANGE_ERROR",
+                    "DATE_INVALID_ERROR", "TYPE_MISMATCH_ERROR"})
     ResponseEntity<ApiResponse<PageResponse<AdminResponse.DailyQuestionsDTO>>> getDailyQuestions(
             @RequestParam(required = false) List<Integer> category,
             @RequestParam(required = false) List<String> level,
@@ -85,7 +86,7 @@ public interface AdminControllerDocs {
             value = {MemberErrorCode.class, AuthErrorCode.class, AdminErrorCode.class, ApiErrorCode.class},
             include = { "INTERNAL_SERVER_ERROR", "TOKEN_INVALID_ERROR",
                     "TOKEN_EXPIRED_ERROR", "MEMBER_NOT_FOUND_ERROR", "FORBIDDEN_ERROR",
-                    "PAGE_OUT_OF_RANGE_ERROR"}
+                    "DATE_INVALID_ERROR", "TYPE_MISMATCH_ERROR" ,"PAGE_OUT_OF_RANGE_ERROR"}
     )
     public ResponseEntity<ApiResponse<PageResponse<AdminResponse.MemberDailyListDTO>>> getDailyContents(
             @PathVariable Long memberId,
