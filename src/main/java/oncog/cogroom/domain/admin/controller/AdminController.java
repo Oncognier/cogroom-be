@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -36,6 +37,17 @@ public class AdminController implements AdminControllerDocs {
 
         PageResponse<AdminResponse.MemberListDTO> result = adminService.findMemberList(pageable, startDate, endDate, keyword);
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, result));
+    }
+
+    @GetMapping("/daily/questions")
+    public ResponseEntity<ApiResponse<PageResponse<AdminResponse.DailyQuestionsDTO>>> getDailyQuestions(
+            @RequestParam(required = false) List<Integer> category,
+            @RequestParam(required = false) List<String> level,
+            @RequestParam(required = false) String keyword,
+            @PageableDefault(size = 4, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        PageResponse<AdminResponse.DailyQuestionsDTO> response = adminService.getDailyQuestions(pageable, category, level, keyword);
+
+        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, response));
     }
 
     @PostMapping("/daily/questions")
