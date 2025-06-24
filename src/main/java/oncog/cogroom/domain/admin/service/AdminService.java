@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.admin.dto.request.AdminRequest;
 import oncog.cogroom.domain.admin.dto.response.AdminResponse;
-import oncog.cogroom.domain.admin.dto.response.PageResponse;
+import oncog.cogroom.global.common.response.PageResponse;
 import oncog.cogroom.domain.admin.exception.AdminErrorCode;
 import oncog.cogroom.domain.admin.exception.AdminException;
 import oncog.cogroom.domain.category.entity.Category;
@@ -165,7 +165,7 @@ public class AdminService extends BaseService {
                 .toList();
 
         if (!invalidCategoryIds.isEmpty()) {
-            throw new AdminException(AdminErrorCode.INVALID_CATEGORY_ERROR);
+            throw new AdminException(AdminErrorCode.CATEGORY_INVALID_ERROR);
         }
 
         return categories;
@@ -176,7 +176,7 @@ public class AdminService extends BaseService {
         try {
             QuestionLevel.valueOf(level.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new AdminException(AdminErrorCode.INVALID_LEVEL_ERROR);
+            throw new AdminException(AdminErrorCode.LEVEL_INVALID_ERROR);
         }
     }
 
@@ -210,16 +210,19 @@ public class AdminService extends BaseService {
                                                                            LocalDate endDate
                                                                            ) {
         // 질문 내용과 답변 시간 조합으로 페이징 데이터 조회
-        Page<DailyResponse.QuestionAnsweredKey> keyPage = assignedQuestionRepository.findPagedData(memberId, pageable,category, keyword ,questionLevel,startDate,endDate);
+        Page<DailyResponse.QuestionAnsweredKey> pagedData = assignedQuestionRepository.findPagedData(memberId, pageable,category, keyword ,questionLevel,startDate,endDate);
+
+        // 페이징 유효성 검사
+        validatePageRange(pagedData, pageable);
 
         // (질문, 난이도, 카테고리, 답변 시간) 데이터 리스트 형태로 조회
-        List<AdminResponse.MemberDailyDTO> raw = assignedQuestionRepository.findMemberDailyDtoList(memberId, keyPage.getContent(),
+        List<AdminResponse.MemberDailyDTO> memberDailyDtoList = assignedQuestionRepository.findMemberDailyDtoList(memberId, pagedData.getContent(),
                                                                                                         category,keyword, questionLevel,startDate,endDate);
 
         // (질문, 난이도, 카테고리 리스트, 답변 시간) 형식으로 데이터 가공
-        List<AdminResponse.MemberDailyListDTO> memberDailyListDtoList = groupByQuestion(raw);
+        List<AdminResponse.MemberDailyListDTO> memberDailyListDtoList = groupByQuestion(memberDailyDtoList);
 
-        return PageResponse.of(keyPage, memberDailyListDtoList);
+        return PageResponse.of(pagedData, memberDailyListDtoList);
 
     }
 

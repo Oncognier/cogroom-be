@@ -7,7 +7,7 @@ import oncog.cogroom.domain.admin.controller.docs.AdminControllerDocs;
 
 import oncog.cogroom.domain.admin.dto.request.AdminRequest;
 import oncog.cogroom.domain.admin.dto.response.AdminResponse;
-import oncog.cogroom.domain.admin.dto.response.PageResponse;
+import oncog.cogroom.global.common.response.PageResponse;
 import oncog.cogroom.domain.admin.service.AdminService;
 import oncog.cogroom.domain.daily.enums.QuestionLevel;
 import oncog.cogroom.domain.member.enums.MemberRole;
