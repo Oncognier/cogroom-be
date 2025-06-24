@@ -71,7 +71,7 @@ public class AdminService extends BaseService {
 
         // 유효한 카테고리 검사
         if (categoryIds != null && !categoryIds.isEmpty()) {
-            this.validateCategoriesByIds(categoryIds);
+            validateCategoriesByIds(categoryIds);
         }
 
         // 유효한 난이도 검사
