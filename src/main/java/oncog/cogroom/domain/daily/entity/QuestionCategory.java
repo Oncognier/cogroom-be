@@ -20,6 +20,11 @@ public class QuestionCategory extends BaseEntity {
 
     // 조회 목적으로 사용
     @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("questionId")
+    @JoinColumn(name = "question_id")
+    private Question question;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("categoryId")
     @JoinColumn(name = "category_id")
     private Category category;

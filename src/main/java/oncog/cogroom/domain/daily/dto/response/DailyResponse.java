@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -44,5 +45,13 @@ public class DailyResponse {
     @Builder
     public static class HasAnsweredDTO {
         private boolean hasAnswered;
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    public static class QuestionAnsweredKey {
+        private final Long questionId;
+        private final LocalDateTime createdAt;
+
     }
 }

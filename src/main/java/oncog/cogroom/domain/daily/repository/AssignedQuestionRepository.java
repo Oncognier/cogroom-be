@@ -1,5 +1,6 @@
 package oncog.cogroom.domain.daily.repository;
 
+import oncog.cogroom.domain.admin.dto.response.AdminResponse;
 import oncog.cogroom.domain.daily.dto.response.DailyResponse;
 import oncog.cogroom.domain.daily.entity.AssignedQuestion;
 import oncog.cogroom.domain.member.entity.Member;
@@ -10,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public interface AssignedQuestionRepository extends JpaRepository<AssignedQuestion, Long> {
+public interface AssignedQuestionRepository extends JpaRepository<AssignedQuestion, Long>, AssignedQuestionQueryRepository {
     boolean existsByMemberAndAssignedDateBetween(Member member, LocalDateTime start, LocalDateTime end);
 
     Optional<AssignedQuestion> findByMemberAndAssignedDateGreaterThanEqualAndAssignedDateLessThan(Member member, LocalDateTime start, LocalDateTime end);
@@ -30,4 +31,6 @@ public interface AssignedQuestionRepository extends JpaRepository<AssignedQuesti
         ORDER BY aq.assignedDate DESC
     """)
     Optional<List<DailyResponse.AssignedQuestionWithAnswerDTO>> findAssignedQuestionsWithAnswerByMember(Long id);
+
+
 }

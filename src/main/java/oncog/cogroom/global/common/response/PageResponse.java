@@ -1,4 +1,4 @@
-package oncog.cogroom.domain.admin.dto.response;
+package oncog.cogroom.global.common.response;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Builder;

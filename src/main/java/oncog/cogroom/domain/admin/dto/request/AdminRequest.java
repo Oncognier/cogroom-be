@@ -1,6 +1,7 @@
 package oncog.cogroom.domain.admin.dto.request;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
@@ -22,4 +23,9 @@ public class AdminRequest {
 
     }
 
+    @Getter
+    @Builder
+    public static class DeleteMembersDTO {
+        private List<Long> memberIdList;
+    }
 }
