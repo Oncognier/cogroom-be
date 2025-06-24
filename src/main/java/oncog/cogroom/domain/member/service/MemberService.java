@@ -49,6 +49,7 @@ public class MemberService extends BaseService {
         return MemberSummaryDTO.builder()
                 .imageUrl(member.getProfileImageUrl())
                 .nickname(member.getNickname())
+                .memberRole(member.getRole())
                 .build();
     }
 

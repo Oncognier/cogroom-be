@@ -2,6 +2,7 @@ package oncog.cogroom.domain.member.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
+import oncog.cogroom.domain.member.enums.MemberRole;
 
 public class MemberResponse {
 
@@ -20,6 +21,8 @@ public class MemberResponse {
     public static class MemberSummaryDTO {
         private String nickname;
         private String imageUrl;
+        private MemberRole memberRole;
+
     }
 
     @Builder
