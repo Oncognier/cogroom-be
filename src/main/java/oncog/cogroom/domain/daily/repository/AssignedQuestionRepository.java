@@ -1,5 +1,6 @@
 package oncog.cogroom.domain.daily.repository;
 
+import oncog.cogroom.domain.admin.dto.response.AdminResponse;
 import oncog.cogroom.domain.daily.dto.response.DailyResponse;
 import oncog.cogroom.domain.daily.entity.AssignedQuestion;
 import oncog.cogroom.domain.member.entity.Member;
@@ -30,4 +31,23 @@ public interface AssignedQuestionRepository extends JpaRepository<AssignedQuesti
         ORDER BY aq.assignedDate DESC
     """)
     Optional<List<DailyResponse.AssignedQuestionWithAnswerDTO>> findAssignedQuestionsWithAnswerByMember(Long id);
+
+    @Query("""
+    SELECT new oncog.cogroom.domain.admin.dto.response.AdminResponse$MemberDailyDTO(
+        q.question as questionText,
+        q.level as questionLevel,
+        c.name as category,
+        a.createdAt as answeredAt
+   )
+    FROM AssignedQuestion aq
+    JOIN aq.question q
+    JOIN Answer a ON a.member = aq.member AND a.question = aq.question
+    JOIN QuestionCategory qc ON qc.id.questionId = q.id
+    JOIN qc.category c
+    WHERE aq.member.id = :memberId
+     AND aq.isAnswered = true
+    ORDER BY a.createdAt DESC
+
+    """)
+    Optional<List<AdminResponse.MemberDailyDTO>> findDailyContentsInfoByMember(Long memberId);
 }

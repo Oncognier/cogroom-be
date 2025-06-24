@@ -13,6 +13,7 @@ import oncog.cogroom.domain.daily.entity.Question;
 import oncog.cogroom.domain.daily.entity.QuestionCategory;
 import oncog.cogroom.domain.daily.entity.QuestionCategoryId;
 import oncog.cogroom.domain.daily.enums.QuestionLevel;
+import oncog.cogroom.domain.daily.repository.AssignedQuestionRepository;
 import oncog.cogroom.domain.daily.repository.QuestionCategoryRepository;
 import oncog.cogroom.domain.daily.repository.QuestionRepository;
 import oncog.cogroom.domain.member.entity.Member;
@@ -30,8 +31,7 @@ import org.springframework.util.CollectionUtils;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,6 +43,7 @@ public class AdminService extends BaseService {
     private final QuestionRepository questionRepository;
     private final CategoryRepository categoryRepository;
     private final QuestionCategoryRepository questionCategoryRepository;
+    private final AssignedQuestionRepository assignedQuestionRepository;
 
     // QueryDsl로 개선 고려
     public PageResponse<AdminResponse.MemberListDTO> findMemberList(Pageable pageable, LocalDate startDate, LocalDate endDate, String keyword) {
@@ -198,5 +199,39 @@ public class AdminService extends BaseService {
                 .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND_ERROR));
 
         member.updateMemberRole(role);
+    }
+
+    public List<AdminResponse.MemberDailyListDTO> getDailyContents(Long memberId) {
+
+        Optional<List<AdminResponse.MemberDailyDTO>> memberDailyDtoOpt = assignedQuestionRepository.findDailyContentsInfoByMember(memberId);
+
+        // 답변한 질문의 내용, 카테고리 ,난이도, 답변 날짜를 플랫한 리스트 형태로 조회
+        if(memberDailyDtoOpt.isPresent()){
+            List<AdminResponse.MemberDailyDTO> memberDailyDtoList = memberDailyDtoOpt.get();
+
+            Map<String, AdminResponse.MemberDailyListDTO> mapForGroupingCategory = new LinkedHashMap<>();
+
+            // 조회한 데이터에서 질문에 해당하는 카테고리를 리스트 형태로 그룹핑
+            for (AdminResponse.MemberDailyDTO dto : memberDailyDtoList) {
+                String key = dto.getQuestionText() + "::" + dto.getAnsweredAt();
+
+                // 기존 key로 value가 존재한다면 카테고리 리스트에 새로운 카테고리 추가, 없는 경우 새로 value 생성
+                mapForGroupingCategory.computeIfAbsent(key, k ->
+                        AdminResponse.MemberDailyListDTO.builder()
+                                .questionText(dto.getQuestionText())
+                                .questionLevel(dto.getQuestionLevel())
+                                .answeredAt(dto.getAnsweredAt())
+                                .categories(new ArrayList<>()).build()
+                ).getCategories().add(dto.getCategory());
+            }
+
+            // value 리스트 추출
+            List<AdminResponse.MemberDailyListDTO> memberDailyListDtoList = mapForGroupingCategory.values().stream().toList();
+
+
+            return memberDailyListDtoList;
+
+        }
+        return Collections.emptyList();
     }
 }

@@ -9,6 +9,7 @@ import oncog.cogroom.domain.admin.dto.request.AdminRequest;
 import oncog.cogroom.domain.admin.dto.response.AdminResponse;
 import oncog.cogroom.domain.admin.dto.response.PageResponse;
 import oncog.cogroom.domain.admin.service.AdminService;
+import oncog.cogroom.domain.daily.enums.QuestionLevel;
 import oncog.cogroom.domain.member.enums.MemberRole;
 import oncog.cogroom.global.common.response.ApiResponse;
 import oncog.cogroom.global.common.response.code.ApiSuccessCode;
@@ -58,6 +59,7 @@ public class AdminController implements AdminControllerDocs {
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
     }
+
     @DeleteMapping("/members")
     public ResponseEntity<ApiResponse<Void>> deleteMembers(AdminRequest.DeleteMembersDTO request){
         adminService.deleteMembers(request);
@@ -68,6 +70,23 @@ public class AdminController implements AdminControllerDocs {
     @PatchMapping("/members/{memberId}")
     public ResponseEntity<ApiResponse<Void>> updateMemberRole(@PathVariable Long memberId,
                                                               @RequestParam MemberRole role) {
+        adminService.updateMemberRole(memberId, role);
+
+        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
+    }
+
+    @GetMapping("/members/{memberId}/daily")
+    public ResponseEntity<ApiResponse<List<AdminResponse.MemberDailyListDTO>>> getDailyContents(
+            @PathVariable Long memberId,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) QuestionLevel questionLevel,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy/MM/dd") LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy/MM/dd") LocalDate endDate,
+            @RequestParam(required = false) String keyword) {
+
+        List<AdminResponse.MemberDailyListDTO> result = adminService.getDailyContents(memberId);
+
+        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, result));
 
     }
 }

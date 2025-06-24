@@ -4,10 +4,13 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 import oncog.cogroom.domain.daily.entity.Question;
+import lombok.RequiredArgsConstructor;
+import oncog.cogroom.domain.daily.enums.QuestionLevel;
 import oncog.cogroom.domain.member.entity.Member;
 import oncog.cogroom.domain.member.enums.MemberRole;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class AdminResponse {
@@ -58,4 +61,25 @@ public class AdminResponse {
                     .build();
         }
     }
-}
+
+    @Getter
+    @RequiredArgsConstructor
+    public static class MemberDailyDTO {
+        private final String questionText;
+        private final QuestionLevel questionLevel;
+        private final String category;
+        private final LocalDateTime answeredAt;
+
+    }
+
+    @Getter
+    @Builder
+    public static class MemberDailyListDTO {
+        private final String questionText;
+        private final QuestionLevel questionLevel;
+        private final List<String> categories;
+        private final LocalDateTime answeredAt;
+
+        }
+    }
+
