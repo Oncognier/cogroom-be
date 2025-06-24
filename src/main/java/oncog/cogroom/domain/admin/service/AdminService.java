@@ -61,8 +61,44 @@ public class AdminService extends BaseService {
 
     }
 
-    public PageResponse<AdminResponse.DailyQuestionsDTO> getDailyQuestions(Pageable pageable, List<Integer> category, List<String> level, String keyword) {
+    // 조건 검색 -> QueryDsl로 개선 고려
+    public PageResponse<AdminResponse.DailyQuestionsDTO> getDailyQuestions(Pageable pageable, List<Integer> categoryIds, List<String> levels, String keyword) {
 
+        // 유효한 카테고리 검사
+        if (categoryIds != null && !categoryIds.isEmpty()) {
+            validateCategories(categoryIds);
+        }
+
+        // 유효한 난이도 검사
+        if (levels != null) {
+            for (String level : levels) {
+                validateQuestionLevel(level.toUpperCase());
+            }
+        }
+
+        List<Integer> filteredCategoryIds = (categoryIds == null || categoryIds.isEmpty()) ? null : categoryIds;
+        List<String> filteredLevels = (levels == null || levels.isEmpty()) ? null : levels;
+        String filteredKeyword = (keyword == null || keyword.isBlank()) ? null : keyword;
+
+        // 조회 조건으로 필터링
+        Page<Question> page = questionRepository.findDailyQuestionsByFilter(
+                filteredCategoryIds, filteredLevels, filteredKeyword, pageable
+        );
+
+        // DTO 변환
+        List<AdminResponse.DailyQuestionsDTO> data = page.stream()
+                .map(question -> {
+                    List<String> categoryNames = questionCategoryRepository.findAllByIdQuestionId(question.getId()).stream()
+                            .map(qc -> qc.getCategory().getName())
+                            .toList();
+                    return AdminResponse.DailyQuestionsDTO.of(question, categoryNames);
+                })
+                .toList();
+
+        // 유효한 페이지인지 확인
+        validatePageRange(page, pageable);
+
+        return PageResponse.of(page, data);
     }
 
     @Transactional
@@ -74,7 +110,7 @@ public class AdminService extends BaseService {
         QuestionLevel level = QuestionLevel.valueOf(request.getLevel().toUpperCase());
 
         // 유효한 카테고리인지 확인
-        List<Category> categories = getValidCategories(requestedCategoryIds);
+        List<Category> categories = validateCategories(requestedCategoryIds);
 
         for (AdminRequest.DailyQuestionsDTO.QuestionDTO questionDTO : questionList) {
             Question question = questionRepository.save(
@@ -106,17 +142,12 @@ public class AdminService extends BaseService {
             throw new AdminException(AdminErrorCode.LEVEL_EMPTY_ERROR);
         }
 
-        // 유효한 난이도인지 확인
-        try {
-            QuestionLevel.valueOf(request.getLevel().toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new AdminException(AdminErrorCode.INVALID_LEVEL_ERROR);
-        }
+        validateQuestionLevel(request.getLevel().toUpperCase());
     }
 
     // 카테고리 유효성 검사 (카테고리 존재 여부)
-    private List<Category> getValidCategories(List<Integer> requestedCategoryIds) {
-        List<Category> categories = categoryRepository.findAllById(requestedCategoryIds);
+    private List<Category> validateCategories(List<Integer> categoryIds) {
+        List<Category> categories = categoryRepository.findAllById(categoryIds);
 
         // 실제 존재하는 카테고리 id set
         Set<Integer> existingIds = categories.stream()
@@ -124,7 +155,7 @@ public class AdminService extends BaseService {
                 .collect(Collectors.toSet());
 
         // 요청 카테고리 id와 실제 카테고리 비교
-        List<Integer> invalidCategoryIds = requestedCategoryIds.stream()
+        List<Integer> invalidCategoryIds = categoryIds.stream()
                 .filter(id -> !existingIds.contains(id))
                 .toList();
 
@@ -135,5 +166,20 @@ public class AdminService extends BaseService {
         return categories;
     }
 
+    // 유효한 난이도인지 확인
+    private void validateQuestionLevel(String level) {
+        try {
+            QuestionLevel.valueOf(level.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new AdminException(AdminErrorCode.INVALID_LEVEL_ERROR);
+        }
+    }
+
+    // 유효한 페이지인지 확인 (범위 초과 여부)
+    private void validatePageRange(Page<?> page, Pageable pageable) {
+        if (page.getTotalPages() > 0 && pageable.getPageNumber() > page.getTotalPages() - 1) {
+            throw new AdminException(AdminErrorCode.PAGE_OUT_OF_RANGE_ERROR);
+        }
+    }
 
 }

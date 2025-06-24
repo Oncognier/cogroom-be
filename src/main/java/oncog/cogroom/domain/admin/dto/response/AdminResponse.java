@@ -3,6 +3,7 @@ package oncog.cogroom.domain.admin.dto.response;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
+import oncog.cogroom.domain.daily.entity.Question;
 import oncog.cogroom.domain.member.entity.Member;
 import oncog.cogroom.domain.member.enums.MemberRole;
 
@@ -43,9 +44,18 @@ public class AdminResponse {
     @Getter
     @Builder
     public static class DailyQuestionsDTO {
-        private Long id;
+        private Long questionId;
         private String question;
         private List<String> categories;
         private String level;
+
+        public static DailyQuestionsDTO of(Question question, List<String> categories) {
+            return DailyQuestionsDTO.builder()
+                    .questionId(question.getId())
+                    .question(question.getQuestion())
+                    .categories(categories)
+                    .level(question.getLevel().name())
+                    .build();
+        }
     }
 }
