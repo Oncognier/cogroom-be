@@ -20,6 +20,8 @@ public class AdminResponse {
     @Builder
     public static class MemberListDTO {
 
+        private Long memberId;
+
         private String nickname;
 
         private String email;
@@ -34,7 +36,8 @@ public class AdminResponse {
 
         public static List<AdminResponse.MemberListDTO> of(List<Member> members) {
             return members.stream()
-                    .map(member -> AdminResponse.MemberListDTO.builder()
+                    .map(member -> MemberListDTO.builder()
+                            .memberId(member.getId())
                             .nickname(member.getNickname())
                             .email(member.getEmail())
                             .imageUrl(member.getProfileImageUrl())
