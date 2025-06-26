@@ -22,6 +22,7 @@ import oncog.cogroom.domain.member.enums.MemberRole;
 import oncog.cogroom.domain.member.exception.MemberErrorCode;
 import oncog.cogroom.domain.member.exception.MemberException;
 import oncog.cogroom.domain.member.repository.MemberRepository;
+import oncog.cogroom.global.common.response.code.ApiErrorCode;
 import oncog.cogroom.global.common.service.BaseService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -210,7 +211,7 @@ public class AdminService extends BaseService {
     // 유효한 페이지인지 확인 (범위 초과 여부)
     private void validatePageRange(Page<?> page, Pageable pageable) {
         if (page.getTotalPages() > 0 && pageable.getPageNumber() > page.getTotalPages() - 1) {
-            throw new AdminException(AdminErrorCode.PAGE_OUT_OF_RANGE_ERROR);
+            throw new AdminException(ApiErrorCode.PAGE_OUT_OF_RANGE_ERROR);
         }
     }
 
