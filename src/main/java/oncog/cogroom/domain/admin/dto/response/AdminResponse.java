@@ -28,7 +28,7 @@ public class AdminResponse {
 
         private String imageUrl;
 
-        @JsonFormat(pattern = "yyyy/MM/dd", timezone = "Asia/Seoul")
+        @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
         private LocalDate createdAt;
 
         private MemberRole memberRole;
@@ -74,7 +74,7 @@ public class AdminResponse {
         private final String question;
         private final QuestionLevel level;
         private final String category;
-        @JsonFormat(pattern = "yyyy/MM/dd", timezone = "Asia/Seoul")
+        @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
         private final LocalDateTime answeredAt;
 
     }
@@ -87,7 +87,7 @@ public class AdminResponse {
         private final String question;
         private final QuestionLevel level;
         private final Set<String> categories;
-        @JsonFormat(pattern = "yyyy/MM/dd", timezone = "Asia/Seoul")
+        @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
         private final LocalDateTime answeredAt;
 
     }
