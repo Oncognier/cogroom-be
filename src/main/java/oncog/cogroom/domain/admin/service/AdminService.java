@@ -56,6 +56,9 @@ public class AdminService extends BaseService {
         // 사용자 조회
         Page<Member> pages = memberRepository.findMembersByFilter(keyword, startDateTime, endDateTime, pageable);
 
+        // 페이징 유효성 검사
+        validatePageRange(pages, pageable);
+
         // 사용자 정보 리스트 DTO로 변경
         List<AdminResponse.MemberListDTO> memberList = AdminResponse.MemberListDTO.of(pages.getContent());
 
