@@ -132,6 +132,8 @@ public class AdminService extends BaseService {
             List<QuestionCategory> questionCategories = categories.stream()
                     .map(category -> QuestionCategory.builder()
                             .id(new QuestionCategoryId(question.getId(), category.getId()))
+                            .question(question)
+                            .category(category)
                             .build())
                     .toList();
 
