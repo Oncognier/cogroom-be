@@ -61,8 +61,13 @@ public class Member extends BaseTimeEntity {
         this.nickname = request.getNickname();
     }
 
-    public void withDrawMember(){
-        this.status = MemberStatus.WITHDRAWN;
+    public void updateMemberStatusToPending(){
+        this.status = MemberStatus.PENDING;
+    }
+
+
+    public void updateMemberStatusToActive(){
+        this.status = MemberStatus.PENDING;
     }
 
     public void updateMemberRole(MemberRole role) {

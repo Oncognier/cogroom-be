@@ -221,7 +221,7 @@ public class AdminService extends BaseService {
     public void deleteMembers(AdminRequest.DeleteMembersDTO request) {
         List<Long> memberIdList = request.getMemberIdList();
 
-        memberIdList.stream().forEach(id -> memberRepository.findById(id).ifPresent(Member::withDrawMember));
+        memberIdList.stream().forEach(id -> memberRepository.findById(id).ifPresent(Member::updateMemberStatusToPending));
     }
 
     // 사용자 권한 변경
