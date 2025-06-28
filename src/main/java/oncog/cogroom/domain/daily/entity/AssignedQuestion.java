@@ -38,4 +38,8 @@ public class AssignedQuestion {
     public void setIsAnswered() {
         this.isAnswered = true;
     }
+
+    public void setMember(Member newMember) {
+        this.member = newMember;
+    }
 }

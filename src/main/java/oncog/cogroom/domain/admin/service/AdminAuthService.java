@@ -7,6 +7,7 @@ import oncog.cogroom.domain.admin.dto.response.AdminResponse;
 import oncog.cogroom.domain.admin.validator.AdminValidator;
 import oncog.cogroom.domain.member.entity.Member;
 import oncog.cogroom.domain.member.enums.MemberRole;
+import oncog.cogroom.domain.member.enums.MemberStatus;
 import oncog.cogroom.domain.member.exception.MemberErrorCode;
 import oncog.cogroom.domain.member.exception.MemberException;
 import oncog.cogroom.domain.member.repository.MemberRepository;
@@ -20,6 +21,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -68,6 +70,19 @@ public class AdminAuthService extends BaseService {
         member.updateMemberRole(role);
     }
 
+    public void deletePendingMember() {
+        List<Member> pendingMembers = memberRepository.findByStatus(MemberStatus.PENDING);
+
+        if (pendingMembers.isEmpty()) {
+            return;
+        }
+
+        List<Member> withDrawMembers = pendingMembers.stream()
+                .filter(member -> LocalDate.now().isAfter(member.getUpdatedAt().toLocalDate().plusDays(30)))
+                .collect(Collectors.toList());
+
+        memberRepository.deleteAll(withDrawMembers);
+        }
+    }
 
 
-}

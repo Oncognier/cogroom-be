@@ -32,25 +32,25 @@ public class SecurityConfig {
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
-    @Bean
-    @Order(1)
-    public SecurityFilterChain filterChainAdmin(HttpSecurity http) throws Exception {
-        configureCommonSecuritySettings(http);
-
-        http.securityMatchers(matchers -> matchers.requestMatchers(requestHasRoleAdmin()))
-                .authorizeHttpRequests(auth -> auth.anyRequest().hasAuthority(MemberRole.ADMIN.name()));
-
-        http.exceptionHandling(exception -> exception
-                .accessDeniedHandler(jwtAccessDeniedHandler)
-                .authenticationEntryPoint(jwtAuthenticationEntryPoint));
-
-        http.addFilterBefore(
-                new JwtAuthenticationFilter(jwtProvider, userDetailService, jwtAuthenticationEntryPoint),
-                UsernamePasswordAuthenticationFilter.class
-        );
-
-        return http.build();
-    }
+//    @Bean
+//    @Order(1)
+//    public SecurityFilterChain filterChainAdmin(HttpSecurity http) throws Exception {
+//        configureCommonSecuritySettings(http);
+//
+//        http.securityMatchers(matchers -> matchers.requestMatchers(requestHasRoleAdmin()))
+//                .authorizeHttpRequests(auth -> auth.anyRequest().hasAuthority(MemberRole.ADMIN.name()));
+//
+//        http.exceptionHandling(exception -> exception
+//                .accessDeniedHandler(jwtAccessDeniedHandler)
+//                .authenticationEntryPoint(jwtAuthenticationEntryPoint));
+//
+//        http.addFilterBefore(
+//                new JwtAuthenticationFilter(jwtProvider, userDetailService, jwtAuthenticationEntryPoint),
+//                UsernamePasswordAuthenticationFilter.class
+//        );
+//
+//        return http.build();
+//    }
 
     @Bean
     @Order(2)

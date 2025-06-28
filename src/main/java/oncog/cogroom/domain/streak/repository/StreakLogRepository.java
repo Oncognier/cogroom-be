@@ -11,4 +11,6 @@ public interface StreakLogRepository extends JpaRepository<StreakLog, Long> {
     boolean existsByMemberAndCreatedAtBetween(Member member, LocalDateTime start, LocalDateTime end);
 
     List<StreakLog> findAllByMemberAndCreatedAtBetween(Member member, LocalDateTime start, LocalDateTime end);
+
+    List<StreakLog> findByMember(Member member);
 }

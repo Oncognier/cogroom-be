@@ -31,4 +31,7 @@ public class Answer extends BaseTimeEntity {
     public void updateAnswer(String newAnswer) {
         this.answer = newAnswer;
     }
+
+    public void setMember(Member newMember) {
+        this.member = newMember;}
 }
