@@ -61,7 +61,7 @@ public class AdminController implements AdminControllerDocs {
     }
 
     @DeleteMapping("/members")
-    public ResponseEntity<ApiResponse<Void>> deleteMembers(AdminRequest.DeleteMembersDTO request){
+    public ResponseEntity<ApiResponse<Void>> deleteMembers(@RequestBody AdminRequest.DeleteMembersDTO request){
         adminService.deleteMembers(request);
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
