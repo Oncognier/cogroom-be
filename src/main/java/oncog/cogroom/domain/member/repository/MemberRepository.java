@@ -32,6 +32,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     WHERE(:keyword IS NULL OR m.nickname LIKE %:keyword% OR m.email LIKE %:keyword%)
     AND(:startDate IS NULL OR m.createdAt >= :startDate)
     AND(:endDate IS NULL OR m.createdAt <= :endDate)
+    AND(m.status <> 'WITHDRAWN')
     """)
 
     Page<Member> findMembersByFilter(

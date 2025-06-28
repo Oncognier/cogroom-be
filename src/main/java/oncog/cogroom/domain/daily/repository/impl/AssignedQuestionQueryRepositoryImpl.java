@@ -15,6 +15,7 @@ import oncog.cogroom.domain.daily.entity.QQuestionCategory;
 import oncog.cogroom.domain.daily.enums.QuestionLevel;
 import oncog.cogroom.domain.daily.repository.AssignedQuestionQueryRepository;
 import oncog.cogroom.domain.member.entity.QMember;
+import oncog.cogroom.domain.member.enums.MemberStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -24,11 +25,19 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
 public class AssignedQuestionQueryRepositoryImpl implements AssignedQuestionQueryRepository {
     private final JPAQueryFactory queryFactory;
+
+    QAssignedQuestion aq = QAssignedQuestion.assignedQuestion;
+    QAnswer a = QAnswer.answer1;
+    QQuestion q = QQuestion.question1;
+    QQuestionCategory qc = QQuestionCategory.questionCategory;
+    QCategory c = QCategory.category;
+    QMember m = QMember.member;
 
     @Override
     public Page<DailyResponse.QuestionAnsweredKey> findPagedData(Long memberId,
@@ -38,16 +47,12 @@ public class AssignedQuestionQueryRepositoryImpl implements AssignedQuestionQuer
                                                                  List<QuestionLevel> questionLevels,
                                                                  LocalDate startDate,
                                                                  LocalDate endDate) {
-        QAssignedQuestion aq = QAssignedQuestion.assignedQuestion;
-        QAnswer a = QAnswer.answer1;
-        QQuestion q = QQuestion.question1;
-        QQuestionCategory qc = QQuestionCategory.questionCategory;
-        QCategory c = QCategory.category;
 
         // 공통 WHERE 조건: 회원 ID 일치 + 답변 완료된 질문
         BooleanBuilder conditions = new BooleanBuilder()
                 .and(aq.member.id.eq(memberId))
-                .and(aq.isAnswered.isTrue());
+                .and(aq.isAnswered.isTrue())
+                .and(aq.member.status.ne(MemberStatus.WITHDRAWN));
 
 
         if (keyword != null && !keyword.isBlank()) { // 키워드 필터
@@ -97,13 +102,6 @@ public class AssignedQuestionQueryRepositoryImpl implements AssignedQuestionQuer
         // 키가 비어있으면 빈 리스트 반환
         if(keys.isEmpty()) return Collections.emptyList();
 
-        QAssignedQuestion aq = QAssignedQuestion.assignedQuestion;
-        QAnswer a = QAnswer.answer1;
-        QQuestion q = QQuestion.question1;
-        QQuestionCategory qc = QQuestionCategory.questionCategory;
-        QCategory c = QCategory.category;
-        QMember m = QMember.member;
-
         // 키 조건 구성: (질문 ID + 답변일시)가 일치하는 레코드만
         BooleanBuilder keyConditions = new BooleanBuilder();
         for (DailyResponse.QuestionAnsweredKey key : keys) {
@@ -132,5 +130,7 @@ public class AssignedQuestionQueryRepositoryImpl implements AssignedQuestionQuer
                 .orderBy(a.createdAt.desc())
                 .fetch();
     }
+
+
 
 }
