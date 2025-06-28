@@ -148,6 +148,7 @@ public class AdminDailyService {
                             .assignedQuestionId(dto.getAssignedQuestionId())
                             .nickname(dto.getNickname())
                             .question(dto.getQuestion())
+                            .imageUrl(dto.getImageUrl())
                             .level(dto.getLevel())
                             .answeredAt(dto.getAnsweredAt())
                             .categories(new HashSet<>()).build()

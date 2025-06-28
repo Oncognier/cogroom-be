@@ -72,6 +72,7 @@ public class AdminResponse {
         private final Long assignedQuestionId;
         private final String nickname;
         private final String question;
+        private final String imageUrl;
         private final QuestionLevel level;
         private final String category;
         @JsonFormat(pattern = "yyyy/MM/dd", timezone = "Asia/Seoul")
@@ -85,6 +86,7 @@ public class AdminResponse {
         private final Long assignedQuestionId;
         private final String nickname;
         private final String question;
+        private final String imageUrl;
         private final QuestionLevel level;
         private final Set<String> categories;
         @JsonFormat(pattern = "yyyy/MM/dd", timezone = "Asia/Seoul")

@@ -115,6 +115,7 @@ public class AssignedQuestionQueryRepositoryImpl implements AssignedQuestionQuer
                         aq.id.as("assignedQuestionId"),
                         m.nickname,
                         q.question.as("questionText"),
+                        m.profileImageUrl.as("imageUrl"),
                         q.level.as("questionLevel"),
                         c.name.as("category"), // // 단일 행 기준 카테고리
                         a.createdAt.as("answeredAt")

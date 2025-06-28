@@ -80,13 +80,13 @@ public class AdminController implements AdminControllerDocs {
             @PathVariable Long memberId,
             @RequestParam(required = false) List<String> category,
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) List<QuestionLevel> questionLevel,
+            @RequestParam(required = false) List<QuestionLevel> level,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy/MM/dd") LocalDate startDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy/MM/dd") LocalDate endDate,
             @PageableDefault(size = 5, sort = "answeredAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
         PageResponse<AdminResponse.MemberDailyListDTO> result = adminDailyService.getDailyContents(
-                memberId, pageable, category, keyword, questionLevel,startDate,endDate);
+                memberId, pageable, category, keyword, level,startDate,endDate);
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, result));
 
