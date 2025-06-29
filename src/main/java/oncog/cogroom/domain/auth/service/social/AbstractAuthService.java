@@ -5,10 +5,13 @@ import oncog.cogroom.domain.auth.dto.request.AuthRequest;
 import oncog.cogroom.domain.auth.dto.response.AuthResponse;
 import oncog.cogroom.domain.auth.service.AuthService;
 import oncog.cogroom.domain.auth.service.EmailService;
+import oncog.cogroom.domain.auth.service.TokenService;
 import oncog.cogroom.domain.auth.userInfo.SocialUserInfo;
 import oncog.cogroom.domain.member.entity.Member;
 import oncog.cogroom.domain.member.enums.MemberRole;
 import oncog.cogroom.domain.member.enums.MemberStatus;
+import oncog.cogroom.domain.member.exception.MemberErrorCode;
+import oncog.cogroom.domain.member.exception.MemberException;
 import oncog.cogroom.domain.member.repository.MemberRepository;
 import oncog.cogroom.global.common.util.TokenUtil;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,9 +29,11 @@ public abstract class AbstractAuthService implements AuthService {
     private final EmailService emailService;
     private final TokenUtil tokenUtil;
     private final RedisTemplate<String, String> redisTemplate;
+    private final TokenService tokenService;
 
     @Value("${jwt.refresh-token-expiration}")
     private long refreshExpiration;
+
     // 소셜 로그인 공통 로직
     public final AuthResponse.LoginResultDTO login(AuthRequest.LoginDTO request){
         String accessToken = requestAccessToken(request.getCode());
@@ -86,6 +91,18 @@ public abstract class AbstractAuthService implements AuthService {
                 .build();
     }
 
+    public final void withdraw(AuthRequest.WithdrawDTO request, String accessToken) {
+        Member member = memberRepository.findById(request.getMemberId()).orElseThrow(
+                () -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND_ERROR)
+        );
+
+        member.updateMemberStatusToPending();
+
+        tokenService.expireToken(accessToken.substring(7), member.getId());
+
+        memberRepository.save(member);
+    }
+
     public final void saveRefreshTokenToRedis(String refreshToken, Long memberId) {
         redisTemplate.opsForValue().set("RT:" + memberId, refreshToken, refreshExpiration, TimeUnit.DAYS);
     }
@@ -105,4 +122,6 @@ public abstract class AbstractAuthService implements AuthService {
     protected abstract String requestAccessToken(String code);
 
     protected abstract SocialUserInfo requestUserInfo(String accessToken);
+
+    protected abstract void unlink(String providerId);
 }

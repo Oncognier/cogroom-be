@@ -3,6 +3,7 @@ import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.auth.dto.response.SocialTokenResponse;
 import oncog.cogroom.domain.auth.exception.AuthErrorCode;
 import oncog.cogroom.domain.auth.service.EmailService;
+import oncog.cogroom.domain.auth.service.TokenService;
 import oncog.cogroom.domain.auth.userInfo.KakaoUserInfo;
 import oncog.cogroom.domain.auth.userInfo.SocialUserInfo;
 import oncog.cogroom.domain.member.enums.Provider;
@@ -25,14 +26,18 @@ public class KakaoAuthService extends AbstractAuthService {
     @Value("${oauth.kakao.client-id}")
     private String clientId;
 
+    @Value("${oauth.kakao.admin-key}")
+    private String adminKey;
+
     private final RestTemplate restTemplate;
 
     public KakaoAuthService(MemberRepository memberRepository,
                             TokenUtil tokenUtil,
+                            TokenService tokenService,
                             EmailService emailService,
                             RestTemplate restTemplate,
                             RedisTemplate<String, String> redisTemplate) {
-        super( memberRepository, emailService ,tokenUtil, redisTemplate);
+        super( memberRepository, emailService ,tokenUtil, redisTemplate, tokenService);
         this.restTemplate = restTemplate;
     }
     // 카카오 액세스 토큰 조회
@@ -76,6 +81,26 @@ public class KakaoAuthService extends AbstractAuthService {
             log.error("Kakao 사용자 정보 조회 API 호출 실패: 상태 코드 {}, 응답 본문 {}", e.getStatusCode(), e.getResponseBodyAsString());
             throw new AuthException(AuthErrorCode.KAKAO_REQUEST_ERROR);
         }
+    }
+
+    @Override
+    protected void unlink(String providerId) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.set("Authorization", "KakaoAK " + adminKey);
+
+        LinkedMultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("target_id_type", "user_id");
+        body.add("target_id", providerId);
+
+        HttpEntity<LinkedMultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
+
+        restTemplate.exchange(
+                "https://kapi.kakao.com/v1/user/unlink",
+                HttpMethod.POST,
+                request,
+                String.class
+        );
     }
 
     public Provider getProvider() {
