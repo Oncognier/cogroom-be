@@ -4,14 +4,14 @@ package oncog.cogroom.domain.admin.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.admin.controller.docs.AdminControllerDocs;
-
 import oncog.cogroom.domain.admin.dto.request.AdminRequest;
 import oncog.cogroom.domain.admin.dto.response.AdminResponse;
-import oncog.cogroom.global.common.response.PageResponse;
-import oncog.cogroom.domain.admin.service.AdminService;
+import oncog.cogroom.domain.admin.service.AdminAuthService;
+import oncog.cogroom.domain.admin.service.AdminDailyService;
 import oncog.cogroom.domain.daily.enums.QuestionLevel;
 import oncog.cogroom.domain.member.enums.MemberRole;
 import oncog.cogroom.global.common.response.ApiResponse;
+import oncog.cogroom.global.common.response.PageResponse;
 import oncog.cogroom.global.common.response.code.ApiSuccessCode;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -29,8 +29,8 @@ import java.util.List;
 @RequestMapping("/api/v1/admin")
 public class AdminController implements AdminControllerDocs {
 
-    private final AdminService adminService;
-
+    private final AdminDailyService adminDailyService;
+    private final AdminAuthService adminAuthService;
     @GetMapping("/members")
     public ResponseEntity<ApiResponse<PageResponse<AdminResponse.MemberListDTO>>> getMemberList(
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy/MM/dd") LocalDate startDate,
@@ -38,7 +38,7 @@ public class AdminController implements AdminControllerDocs {
             @RequestParam(required = false) String keyword,
             @PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        PageResponse<AdminResponse.MemberListDTO> result = adminService.findMemberList(pageable, startDate, endDate, keyword);
+        PageResponse<AdminResponse.MemberListDTO> result = adminAuthService.findMemberList(pageable, startDate, endDate, keyword);
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, result));
     }
 
@@ -48,21 +48,21 @@ public class AdminController implements AdminControllerDocs {
             @RequestParam(required = false) List<String> level,
             @RequestParam(required = false) String keyword,
             @PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        PageResponse<AdminResponse.DailyQuestionsDTO> response = adminService.getDailyQuestions(pageable, category, level, keyword);
+        PageResponse<AdminResponse.DailyQuestionsDTO> response = adminDailyService.getDailyQuestions(pageable, category, level, keyword);
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, response));
     }
 
     @PostMapping("/daily/questions")
     public ResponseEntity<ApiResponse<String>> createDailyQuestions(@RequestBody AdminRequest.DailyQuestionsDTO request) {
-        adminService.createDailyQuestions(request);
+        adminDailyService.createDailyQuestions(request);
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
     }
 
     @DeleteMapping("/members")
-    public ResponseEntity<ApiResponse<Void>> deleteMembers(AdminRequest.DeleteMembersDTO request){
-        adminService.deleteMembers(request);
+    public ResponseEntity<ApiResponse<Void>> deleteMembers(@RequestBody AdminRequest.DeleteMembersDTO request){
+        adminAuthService.deleteMembers(request);
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
     }
@@ -70,7 +70,7 @@ public class AdminController implements AdminControllerDocs {
     @PatchMapping("/members/{memberId}")
     public ResponseEntity<ApiResponse<Void>> updateMemberRole(@PathVariable Long memberId,
                                                               @RequestParam MemberRole role) {
-        adminService.updateMemberRole(memberId, role);
+        adminAuthService.updateMemberRole(memberId, role);
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
     }
@@ -80,13 +80,13 @@ public class AdminController implements AdminControllerDocs {
             @PathVariable Long memberId,
             @RequestParam(required = false) List<String> category,
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) List<QuestionLevel> questionLevel,
+            @RequestParam(required = false) List<QuestionLevel> level,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy/MM/dd") LocalDate startDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy/MM/dd") LocalDate endDate,
             @PageableDefault(size = 5, sort = "answeredAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        PageResponse<AdminResponse.MemberDailyListDTO> result = adminService.getDailyContents(
-                memberId, pageable, category, keyword, questionLevel,startDate,endDate);
+        PageResponse<AdminResponse.MemberDailyListDTO> result = adminDailyService.getDailyContents(
+                memberId, pageable, category, keyword, level,startDate,endDate);
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, result));
 

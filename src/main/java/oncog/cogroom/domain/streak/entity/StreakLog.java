@@ -35,4 +35,8 @@ public class StreakLog {
     @Column(nullable = false, updatable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
 
+    public void setMember(Member newMember) {
+        this.member = newMember;
+    }
+
 }

@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.auth.service.EmailService;
 import oncog.cogroom.domain.member.dto.request.MemberRequest;
 import oncog.cogroom.domain.member.entity.Member;
+import oncog.cogroom.domain.member.enums.MemberStatus;
+import oncog.cogroom.domain.member.event.MembersWithDrawnEvent;
 import oncog.cogroom.domain.member.exception.MemberErrorCode;
 import oncog.cogroom.domain.member.exception.MemberException;
 import oncog.cogroom.domain.member.repository.MemberRepository;
@@ -12,11 +14,14 @@ import oncog.cogroom.domain.streak.service.StreakService;
 import oncog.cogroom.global.common.service.BaseService;
 import oncog.cogroom.global.s3.enums.UploadType;
 import oncog.cogroom.global.s3.service.S3Service;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static oncog.cogroom.domain.member.dto.response.MemberResponse.*;
 
@@ -30,6 +35,7 @@ public class MemberService extends BaseService {
     private final StreakService streakService;
     private final EmailService emailService;
     private final S3Service s3Service;
+    private final ApplicationEventPublisher eventPublisher;
 
     public MemberInfoDTO findMemberInfo() {
         Member member = getMember();
@@ -93,5 +99,33 @@ public class MemberService extends BaseService {
         }
 
         return false;
+    }
+
+    // 탈퇴한 사용자 데이터 생성 또는 조회 (기본적으로 1개 필요해서 생성)
+    public Member getOrCreateUnknownMember() {
+        return memberRepository.findByEmail("unknown@system.com")
+                .orElseGet(() -> memberRepository.save(
+                        Member.builder()
+                                .email("unknown@system.com")
+                                .nickname("탈퇴한 사용자")
+                                .status(MemberStatus.WITHDRAWN)
+                                .build()
+                ));
+    }
+
+    // 탈퇴 후 30일 지난 회원 삭제 및 관련 데이터 사용자 변경
+    public void deletePendingMember() {
+        List<Member> pendingMembers = memberRepository.findByStatus(MemberStatus.PENDING);
+
+        if (!pendingMembers.isEmpty()) {
+            List<Member> withDrawMembers = pendingMembers.stream()
+                    .filter(member -> LocalDate.now().isAfter(member.getUpdatedAt().toLocalDate().plusDays(30)))
+                    .collect(Collectors.toList());
+
+            eventPublisher.publishEvent(new MembersWithDrawnEvent(withDrawMembers));
+
+            memberRepository.deleteAll(withDrawMembers);
+
+        }
     }
 }

@@ -34,4 +34,7 @@ public class Streak {
     public void resetTotalDays() {
         this.dailyStreak = 0;
     }
+
+    public void setMember(Member newMember){
+        this.member = newMember;}
 }

@@ -18,6 +18,8 @@ public interface AssignedQuestionRepository extends JpaRepository<AssignedQuesti
 
     Optional<AssignedQuestion> findByMemberAndId(Member member, Long id);
 
+    List<AssignedQuestion> findByMember(Member member);
+
     // 내부 클래스 조회 시 $기호 사용
     @Query("""
         SELECT new oncog.cogroom.domain.daily.dto.response.DailyResponse$AssignedQuestionWithAnswerDTO( 

@@ -40,6 +40,9 @@ public abstract class AbstractAuthService implements AuthService {
         if (memberOpt.isPresent()) {
             Member member = memberOpt.get();
 
+            // 탈퇴 유예 기간에 재로그인 하는 경우 다시 계정 활성화
+            if(member.getStatus().equals(MemberStatus.PENDING)) member.updateMemberStatusToActive();
+
             AuthResponse.ServiceTokenDTO tokenDTO = tokenUtil.createTokens(member);
 
             // redis에 refreshToken 저장
