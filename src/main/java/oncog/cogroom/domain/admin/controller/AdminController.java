@@ -78,7 +78,7 @@ public class AdminController implements AdminControllerDocs {
     @GetMapping("/members/{memberId}/daily")
     public ResponseEntity<ApiResponse<PageResponse<AdminResponse.MemberDailyListDTO>>> getDailyContents(
             @PathVariable Long memberId,
-            @RequestParam(required = false) List<String> category,
+            @RequestParam(required = false) List<Integer> category,
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) List<QuestionLevel> level,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy/MM/dd") LocalDate startDate,

@@ -108,14 +108,14 @@ public class AdminDailyService {
     }
 
     public PageResponse<AdminResponse.MemberDailyListDTO> getDailyContents(Long memberId, Pageable pageable,
-                                                                           List<String> categories,
+                                                                           List<Integer> categories,
                                                                            String keyword,
                                                                            List<QuestionLevel> questionLevels,
                                                                            LocalDate startDate,
                                                                            LocalDate endDate
     ) {
         // 카테고리 유효성 검사
-        adminValidator.validateCategoriesByNames(categories);
+        adminValidator.validateCategoriesByIds(categories);
 
         // 질문 난이도 유효성 검사
         adminValidator.validateLevels(questionLevels);
