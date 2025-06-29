@@ -62,22 +62,6 @@ public class AdminValidator {
         return categories;
     }
 
-    public void validateCategoriesByNames(List<String> categories) {
-        if(categories == null) return;
-
-        // DB에 존재하는 카테고리 이름 리스트 조회
-        List<String> categoryNames = categoryRepository.findAllName();
-
-        // 요청 카테고리 Name과 실제 카테고리 비교
-        List<String> invalidCategoryNames = categories.stream()
-                .filter(category -> !categoryNames.contains(category))
-                .toList();
-
-        if (!invalidCategoryNames.isEmpty()) {
-            throw new AdminException(AdminErrorCode.CATEGORY_INVALID_ERROR);
-        }
-    }
-
     public void validateLevels(List<QuestionLevel> questionLevels) {
         if(questionLevels == null) return;
 
