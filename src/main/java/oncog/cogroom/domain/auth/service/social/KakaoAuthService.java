@@ -47,9 +47,8 @@ public class KakaoAuthService extends AbstractAuthService {
         try {
             HttpEntity<MultiValueMap<String, String>> request = getHttpEntityForToken(code);
 
-            ResponseEntity<SocialTokenResponse.KakaoTokenDTO> response = restTemplate.exchange(
+            ResponseEntity<SocialTokenResponse.KakaoTokenDTO> response = restTemplate.postForEntity(
                     "https://kauth.kakao.com/oauth/token",
-                    HttpMethod.POST,
                     request,
                     SocialTokenResponse.KakaoTokenDTO.class
             );
@@ -67,12 +66,11 @@ public class KakaoAuthService extends AbstractAuthService {
     @Override
     protected SocialUserInfo requestUserInfo(String accessToken) {
         try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setBearerAuth(accessToken);
+            HttpEntity<Void> request = createBearerRequest(accessToken);
 
             KakaoUserInfoDTO responseDTO = restTemplate.postForEntity(
                     "https://kapi.kakao.com/v2/user/me",
-                    new HttpEntity<>(headers),
+                    request,
                     KakaoUserInfoDTO.class
             ).getBody();
 
@@ -86,9 +84,7 @@ public class KakaoAuthService extends AbstractAuthService {
 
     @Override
     public void unlink(Member member) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.set("Authorization", "KakaoAK " + adminKey);
+        HttpHeaders headers = createAdminHeader();
 
         LinkedMultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("target_id_type", "user_id");
@@ -119,4 +115,16 @@ public class KakaoAuthService extends AbstractAuthService {
         return new HttpEntity<>(params, headers);
     }
 
+    private HttpEntity<Void> createBearerRequest(String accessToken) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(accessToken);
+        return new HttpEntity<>(headers);
+    }
+
+    private HttpHeaders createAdminHeader() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.set("Authorization", "KakaoAK " + adminKey);
+        return headers;
+    }
 }
