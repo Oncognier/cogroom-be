@@ -12,7 +12,7 @@ import java.util.List;
 public interface AssignedQuestionQueryRepository {
     Page<DailyResponse.QuestionAnsweredKey> findPagedData(Long memberId,
                                                           Pageable pageable,
-                                                          List<String> category,
+                                                          List<Integer> category,
                                                           String keyword,
                                                           List<QuestionLevel> questionLevel,
                                                           LocalDate startDate,

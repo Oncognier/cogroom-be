@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 public class MemberScheduler {
     private final MemberService memberService;
 
-//    @Scheduled(cron = "0 0 0 * * *")
-    @Scheduled(cron = "0 */1 * * * *")
+    @Scheduled(cron = "0 0 0 * * *")
+//    @Scheduled(cron = "0 */1 * * * *")
     public void withDrawPendingMember() {
         log.info("탈퇴 후 30일 경과된 사용자 삭제 시작");
         memberService.deletePendingMember();

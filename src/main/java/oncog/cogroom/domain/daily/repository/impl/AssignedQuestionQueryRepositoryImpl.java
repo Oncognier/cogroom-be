@@ -42,7 +42,7 @@ public class AssignedQuestionQueryRepositoryImpl implements AssignedQuestionQuer
     @Override
     public Page<DailyResponse.QuestionAnsweredKey> findPagedData(Long memberId,
                                                                  Pageable pageable,
-                                                                 List<String> categories,
+                                                                 List<Integer> categories,
                                                                  String keyword,
                                                                  List<QuestionLevel> questionLevels,
                                                                  LocalDate startDate,
@@ -59,7 +59,7 @@ public class AssignedQuestionQueryRepositoryImpl implements AssignedQuestionQuer
             conditions.and(q.question.contains(keyword));
         }
         if (categories != null && !categories.isEmpty()) {
-            conditions.and(c.name.in(categories));
+            conditions.and(c.id.in(categories));
         }
         if (questionLevels != null && !questionLevels.isEmpty()) { // 난이도 필터
             conditions.and(q.level.in(questionLevels));
