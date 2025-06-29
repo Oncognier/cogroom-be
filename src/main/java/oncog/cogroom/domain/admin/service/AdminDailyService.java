@@ -6,6 +6,7 @@ import oncog.cogroom.domain.admin.dto.request.AdminRequest;
 import oncog.cogroom.domain.admin.dto.response.AdminResponse;
 import oncog.cogroom.domain.admin.validator.AdminValidator;
 import oncog.cogroom.domain.category.entity.Category;
+import oncog.cogroom.domain.category.repository.CategoryRepository;
 import oncog.cogroom.domain.daily.dto.response.DailyResponse;
 import oncog.cogroom.domain.daily.entity.Question;
 import oncog.cogroom.domain.daily.entity.QuestionCategory;
@@ -34,6 +35,7 @@ public class AdminDailyService {
     private final QuestionRepository questionRepository;
     private final QuestionCategoryRepository questionCategoryRepository;
     private final AssignedQuestionRepository assignedQuestionRepository;
+    private final CategoryRepository categoryRepository;
     private final AdminValidator adminValidator;
 
     // 조건 검색 -> QueryDsl로 개선 고려
@@ -81,11 +83,12 @@ public class AdminDailyService {
         adminValidator.validateDailyQuestionRequest(request);
 
         List<AdminRequest.DailyQuestionsDTO.QuestionDTO> questionList = request.getQuestionList();
-        List<Integer> requestedCategoryIds = request.getCategoryList();
+        List<Integer> categoryIds = request.getCategoryList();
         QuestionLevel level = QuestionLevel.valueOf(request.getLevel().toUpperCase());
 
         // 유효한 카테고리인지 확인
-        List<Category> categories = adminValidator.validateCategoriesByIds(requestedCategoryIds);
+        adminValidator.validateCategoriesByIds(categoryIds);
+        List<Category> categories = categoryRepository.findAllById(categoryIds);
 
         for (AdminRequest.DailyQuestionsDTO.QuestionDTO questionDTO : questionList) {
             Question question = questionRepository.save(
