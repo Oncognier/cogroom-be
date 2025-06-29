@@ -103,6 +103,7 @@ public abstract class AbstractAuthService implements AuthService {
         memberRepository.save(member);
     }
 
+
     public final void saveRefreshTokenToRedis(String refreshToken, Long memberId) {
         redisTemplate.opsForValue().set("RT:" + memberId, refreshToken, refreshExpiration, TimeUnit.DAYS);
     }
@@ -123,5 +124,4 @@ public abstract class AbstractAuthService implements AuthService {
 
     protected abstract SocialUserInfo requestUserInfo(String accessToken);
 
-    protected abstract void unlink(String providerId);
 }

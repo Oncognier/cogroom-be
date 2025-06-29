@@ -118,14 +118,13 @@ public class MemberService extends BaseService {
         List<Member> pendingMembers = memberRepository.findByStatus(MemberStatus.PENDING);
 
         if (!pendingMembers.isEmpty()) {
-            List<Member> withDrawMembers = pendingMembers.stream()
+            List<Member> withdrawnMembers = pendingMembers.stream()
                     .filter(member -> LocalDate.now().isAfter(member.getUpdatedAt().toLocalDate().plusDays(30)))
                     .collect(Collectors.toList());
 
-            eventPublisher.publishEvent(new MembersWithDrawnEvent(withDrawMembers));
+            eventPublisher.publishEvent(new MembersWithDrawnEvent(withdrawnMembers));
 
-            memberRepository.deleteAll(withDrawMembers);
-
+            memberRepository.deleteAll(withdrawnMembers);
         }
     }
 }

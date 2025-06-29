@@ -6,6 +6,7 @@ import oncog.cogroom.domain.auth.service.EmailService;
 import oncog.cogroom.domain.auth.service.TokenService;
 import oncog.cogroom.domain.auth.userInfo.KakaoUserInfo;
 import oncog.cogroom.domain.auth.userInfo.SocialUserInfo;
+import oncog.cogroom.domain.member.entity.Member;
 import oncog.cogroom.domain.member.enums.Provider;
 import oncog.cogroom.domain.member.repository.MemberRepository;
 import oncog.cogroom.global.common.util.TokenUtil;
@@ -84,20 +85,19 @@ public class KakaoAuthService extends AbstractAuthService {
     }
 
     @Override
-    protected void unlink(String providerId) {
+    public void unlink(Member member) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.set("Authorization", "KakaoAK " + adminKey);
 
         LinkedMultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("target_id_type", "user_id");
-        body.add("target_id", providerId);
+        body.add("target_id", member.getProviderId());
 
         HttpEntity<LinkedMultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
 
-        restTemplate.exchange(
+        restTemplate.postForEntity(
                 "https://kapi.kakao.com/v1/user/unlink",
-                HttpMethod.POST,
                 request,
                 String.class
         );
