@@ -12,7 +12,7 @@ import static oncog.cogroom.domain.auth.dto.response.AuthResponse.LoginResultDTO
 import static oncog.cogroom.domain.auth.dto.response.AuthResponse.SignupResultDTO;
 
 /**
- * 해당 라우터를 통해 로그인의 진입점을 하나로 통일
+ * 해당 라우터를 통해 진입점을 하나로 통일
  */
 @Component
 public class AuthServiceRouter {
@@ -39,5 +39,11 @@ public class AuthServiceRouter {
         AuthService service = serviceMap.get(request.getProvider());
 
         return service.signup(request);
+    }
+
+    public void withdraw(AuthRequest.WithdrawDTO request, String accessToken) {
+        AuthService service = serviceMap.get(request.getProvider());
+
+        service.withdraw(request, accessToken);
     }
 }

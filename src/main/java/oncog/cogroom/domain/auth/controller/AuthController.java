@@ -44,7 +44,6 @@ public class AuthController implements AuthControllerDocs {
         AuthResponse.LoginResultDTO responseExcludedToken = result.excludeTokens();
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, responseExcludedToken));
-
     }
 
 
@@ -73,7 +72,6 @@ public class AuthController implements AuthControllerDocs {
         authSessionService.logout(request);
 
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
-
     }
 
     @PostMapping("/reissue")
@@ -112,6 +110,13 @@ public class AuthController implements AuthControllerDocs {
     @PostMapping("/email/status")
     public ResponseEntity<ApiResponse<Boolean>> checkEmailVerificationStatus(@RequestBody @Valid AuthRequest.EmailDTO request) {
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, emailService.verifiedEmail(request)));
+    }
 
+    @DeleteMapping("/withdraw")
+    public ResponseEntity<ApiResponse<Void>> withdrawMember(@RequestBody AuthRequest.WithdrawDTO request,
+                                                            @RequestHeader("Authorization") String accessToken) {
+        router.withdraw(request, accessToken);
+
+        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
     }
 }

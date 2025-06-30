@@ -35,6 +35,7 @@ spring:
 oauth:
   kakao:
     client-id: ${KAKAO_REST_API_KEY}
+    admin-key: ${KAKAO_ADMIN_KEY}
 jwt:
   secret: ${JWT_SECRET_KEY}
   access-token-expiration: ${JWT_ACCESS_EXPIRATION}

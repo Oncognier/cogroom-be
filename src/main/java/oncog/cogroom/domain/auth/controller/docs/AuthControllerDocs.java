@@ -17,6 +17,7 @@ import oncog.cogroom.global.exception.swagger.ApiErrorCodeExamples;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
@@ -40,13 +41,13 @@ public interface AuthControllerDocs {
 
     @ApiErrorCodeExamples(
             value = {AuthErrorCode.class, ApiErrorCode.class},
-            include = {"EMAIL_PATTERN_ERROR", "ALREADY_EXIST_EMAIL", "EMPTY_FILED_ERROR"})
+            include = {"EMAIL_PATTERN_ERROR", "EMAIL_DUPLICATE_ERROR", "EMPTY_FILED_ERROR"})
     @Operation(summary = "인증 이메일 전송", description = "인증용 링크가 포함된 이메일을 전송합니다. ")
     public ResponseEntity<ApiResponse<String>> sendEmail(@RequestBody @Valid AuthRequest.EmailDTO request) throws MessagingException, IOException;
 
     @ApiErrorCodeExamples(
             value = {AuthErrorCode.class, ApiErrorCode.class},
-            include = {"EMAIL_PATTERN_ERROR", "EXPIRED_LINK"})
+            include = {"EMAIL_PATTERN_ERROR", "LINK_EXPIRED_ERROR"})
     @Operation(summary = "이메일 인증", description = "링크가 클릭되었을 때 이메일을 인증합니다.")
     public ResponseEntity<ApiResponse<Void>> verifyEmail(@RequestParam String userEmail,
                                                          @RequestParam String verificationCode);
@@ -56,7 +57,7 @@ public interface AuthControllerDocs {
 
     @ApiErrorCodeExamples(
             value = {AuthErrorCode.class, MemberErrorCode.class},
-            include = {"INVALID_TOKEN", "IN_BLACK_LIST", "EXPIRED_TOKEN", "MEMBER_NOT_FOUND"}
+            include = {"TOKEN_INVALID_ERROR", "TOKEN_BLACK_LIST_ERROR", "TOKEN_EXPIRED_ERROR", "MEMBER_NOT_FOUND_ERROR_ERROR"}
     )
     @Operation(summary = "토큰 갱신 API", description = "토큰 재발급 API 입니다.")
     public ResponseEntity<ApiResponse<Void>> reIssue(@CookieValue String refreshToken,
@@ -64,8 +65,20 @@ public interface AuthControllerDocs {
 
     @ApiErrorCodeExamples(
             value = {AuthErrorCode.class, MemberErrorCode.class},
-            include = {"INVALID_TOKEN", "IN_BLACK_LIST", "EXPIRED_TOKEN", "MEMBER_NOT_FOUND"}
+            include = {"TOKEN_INVALID_ERROR", "TOKEN_BLACK_LIST_ERROR", "TOKEN_EXPIRED_ERROR", "MEMBER_NOT_FOUND_ERROR"}
     )
     @Operation(summary = "로그아웃 API", description = "로그아웃 API 입니다.")
     public ResponseEntity<ApiResponse<Void>> logout(HttpServletRequest request);
+
+
+    @ApiErrorCodeExamples(
+            value = {AuthErrorCode.class, MemberErrorCode.class, ApiErrorCode.class},
+            include = {"TOKEN_INVALID_ERROR", "TOKEN_BLACK_LIST_ERROR", "TOKEN_EXPIRED_ERROR", "MEMBER_NOT_FOUND_ERROR",
+            "EMPTY_FIELD_ERROR", "BAD_REQUEST_ERROR","TYPE_MISMATCH_ERROR", "INTERNAL_SERVER_ERROR",
+                    "KAKAO_REQUEST_ERROR"
+            }
+    )
+    @Operation(summary = "회원탈퇴 API", description = "회원 탈퇴 API 입니다.")
+    public ResponseEntity<ApiResponse<Void>> withdrawMember(@RequestBody AuthRequest.WithdrawDTO request,
+                                                            @RequestHeader("Authorization") String accessToken);
 }

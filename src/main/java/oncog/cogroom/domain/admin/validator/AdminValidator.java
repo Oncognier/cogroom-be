@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -43,6 +44,8 @@ public class AdminValidator {
 
     // 카테고리 유효성 검사 (카테고리 존재 여부)
     public List<Category> validateCategoriesByIds(List<Integer> categoryIds) {
+        if(categoryIds == null) return Collections.emptyList();
+
         List<Category> categories = categoryRepository.findAllById(categoryIds);
 
         // 실제 존재하는 카테고리 id set

@@ -64,4 +64,15 @@ public class AuthRequest {
         @Email
         private String email;
     }
+
+    @Getter
+    @Builder
+    public static class WithdrawDTO {
+
+        @NotNull
+        private Long memberId;
+
+        @NotBlank
+        private Provider provider;
+    }
 }

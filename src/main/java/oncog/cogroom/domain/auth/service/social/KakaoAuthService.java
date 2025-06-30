@@ -3,8 +3,10 @@ import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.auth.dto.response.SocialTokenResponse;
 import oncog.cogroom.domain.auth.exception.AuthErrorCode;
 import oncog.cogroom.domain.auth.service.EmailService;
+import oncog.cogroom.domain.auth.service.TokenService;
 import oncog.cogroom.domain.auth.userInfo.KakaoUserInfo;
 import oncog.cogroom.domain.auth.userInfo.SocialUserInfo;
+import oncog.cogroom.domain.member.entity.Member;
 import oncog.cogroom.domain.member.enums.Provider;
 import oncog.cogroom.domain.member.repository.MemberRepository;
 import oncog.cogroom.global.common.util.TokenUtil;
@@ -25,14 +27,18 @@ public class KakaoAuthService extends AbstractAuthService {
     @Value("${oauth.kakao.client-id}")
     private String clientId;
 
+    @Value("${oauth.kakao.admin-key}")
+    private String adminKey;
+
     private final RestTemplate restTemplate;
 
     public KakaoAuthService(MemberRepository memberRepository,
                             TokenUtil tokenUtil,
+                            TokenService tokenService,
                             EmailService emailService,
                             RestTemplate restTemplate,
                             RedisTemplate<String, String> redisTemplate) {
-        super( memberRepository, emailService ,tokenUtil, redisTemplate);
+        super( memberRepository, emailService ,tokenUtil, redisTemplate, tokenService);
         this.restTemplate = restTemplate;
     }
     // 카카오 액세스 토큰 조회
@@ -41,9 +47,8 @@ public class KakaoAuthService extends AbstractAuthService {
         try {
             HttpEntity<MultiValueMap<String, String>> request = getHttpEntityForToken(code);
 
-            ResponseEntity<SocialTokenResponse.KakaoTokenDTO> response = restTemplate.exchange(
+            ResponseEntity<SocialTokenResponse.KakaoTokenDTO> response = restTemplate.postForEntity(
                     "https://kauth.kakao.com/oauth/token",
-                    HttpMethod.POST,
                     request,
                     SocialTokenResponse.KakaoTokenDTO.class
             );
@@ -61,12 +66,11 @@ public class KakaoAuthService extends AbstractAuthService {
     @Override
     protected SocialUserInfo requestUserInfo(String accessToken) {
         try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setBearerAuth(accessToken);
+            HttpEntity<Void> request = createBearerRequest(accessToken);
 
             KakaoUserInfoDTO responseDTO = restTemplate.postForEntity(
                     "https://kapi.kakao.com/v2/user/me",
-                    new HttpEntity<>(headers),
+                    request,
                     KakaoUserInfoDTO.class
             ).getBody();
 
@@ -76,6 +80,23 @@ public class KakaoAuthService extends AbstractAuthService {
             log.error("Kakao 사용자 정보 조회 API 호출 실패: 상태 코드 {}, 응답 본문 {}", e.getStatusCode(), e.getResponseBodyAsString());
             throw new AuthException(AuthErrorCode.KAKAO_REQUEST_ERROR);
         }
+    }
+
+    @Override
+    public void unlink(Member member) {
+        HttpHeaders headers = createAdminHeader();
+
+        LinkedMultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("target_id_type", "user_id");
+        body.add("target_id", member.getProviderId());
+
+        HttpEntity<LinkedMultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
+
+        restTemplate.postForEntity(
+                "https://kapi.kakao.com/v1/user/unlink",
+                request,
+                String.class
+        );
     }
 
     public Provider getProvider() {
@@ -94,4 +115,16 @@ public class KakaoAuthService extends AbstractAuthService {
         return new HttpEntity<>(params, headers);
     }
 
+    private HttpEntity<Void> createBearerRequest(String accessToken) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(accessToken);
+        return new HttpEntity<>(headers);
+    }
+
+    private HttpHeaders createAdminHeader() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.set("Authorization", "KakaoAK " + adminKey);
+        return headers;
+    }
 }

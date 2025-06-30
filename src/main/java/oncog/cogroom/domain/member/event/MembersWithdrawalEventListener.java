@@ -1,6 +1,7 @@
 package oncog.cogroom.domain.member.event;
 
 import lombok.RequiredArgsConstructor;
+import oncog.cogroom.domain.auth.service.AuthService;
 import oncog.cogroom.domain.daily.entity.Answer;
 import oncog.cogroom.domain.daily.entity.AssignedQuestion;
 import oncog.cogroom.domain.daily.repository.AnswerRepository;
@@ -13,8 +14,7 @@ import oncog.cogroom.domain.streak.repository.StreakLogRepository;
 import oncog.cogroom.domain.streak.repository.StreakRepository;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.event.TransactionPhase;
-import org.springframework.transaction.event.TransactionalEventListener;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +28,7 @@ public class MembersWithdrawalEventListener {
     private final MemberService memberService;
     private final StreakRepository streakRepository;
     private final StreakLogRepository streakLogRepository;
+    private final AuthService authService;
 
     @EventListener()
     public void handleWithdrawnMembers(MembersWithDrawnEvent event) {
@@ -59,6 +60,8 @@ public class MembersWithdrawalEventListener {
                 streakLogRepository.saveAll(streakLogs);
             }
 
+            // 소셜 로그인까지 탈퇴
+            authService.unlink(member);
         }
     }
 
