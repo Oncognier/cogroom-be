@@ -46,7 +46,6 @@ public class AuthController implements AuthControllerDocs {
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, responseExcludedToken));
     }
 
-
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<AuthResponse.SignupResultDTO>> signup(@RequestBody @Valid AuthRequest.SignupDTO request, HttpServletResponse response) throws MessagingException {
         AuthResponse.SignupResultDTO result = router.signup(request);
