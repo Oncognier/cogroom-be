@@ -37,7 +37,7 @@ public interface AuthControllerDocs {
             include = {"EMAIL_PATTERN_ERROR", "PHONENUMBER_PATTERN_ERROR", "PASSWORD_PATTERN_ERROR", "NICKNAME_INVALID_PATTERN","SIZE_ERROR",
             "EMPTY_FIELD_ERROR"})
     @Operation(summary = "소셜/로컬 통합 회원가입", description = "소셜/로컬 통합 회원가입 로직을 처리합니다. ")
-    public ResponseEntity<ApiResponse<AuthResponse.SignupResultDTO>> signup(@RequestBody @Valid AuthRequest.SignupDTO request, HttpServletResponse response) throws MessagingException;
+    public ResponseEntity<ApiResponse<AuthResponse.SignupResultDTO>> signup(@RequestBody @Valid AuthRequest.SignupDTO request, HttpServletResponse response) throws MessagingException, IOException;
 
     @ApiErrorCodeExamples(
             value = {AuthErrorCode.class, ApiErrorCode.class},
