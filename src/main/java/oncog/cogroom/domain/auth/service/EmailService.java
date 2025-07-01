@@ -7,15 +7,17 @@ import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.auth.dto.request.AuthRequest;
 import oncog.cogroom.domain.auth.entity.EmailVerification;
 import oncog.cogroom.domain.auth.exception.AuthErrorCode;
+import oncog.cogroom.domain.auth.exception.AuthException;
 import oncog.cogroom.domain.auth.repository.EmailRepository;
 import oncog.cogroom.domain.member.repository.MemberRepository;
-import oncog.cogroom.domain.auth.exception.AuthException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
@@ -30,6 +32,7 @@ public class EmailService {
     private final EmailRepository emailRepository;
     private final MemberRepository memberRepository;
     private final JavaMailSender mailSender;
+    private final SpringTemplateEngine templateEngine;
 
     @Value("${spring.mail.username}")
     private String fromEmail;
@@ -44,10 +47,13 @@ public class EmailService {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
 
+        Context context = new Context();
+        context.setVariable("verifyLink",generateVerificationLink(toEmail));
+
         helper.setTo(toEmail); // 목적지
         helper.setSubject("[코그룸/회원가입] 인증 링크"); // 타이틀
-        helper.setText(generateVerificationLink(toEmail));
         helper.setFrom(fromEmail); // 발신 이메일
+        helper.setText(templateEngine.process("email-page", context), true);
         mailSender.send(message);
         }
 
@@ -124,7 +130,7 @@ public class EmailService {
 
         saveEmail(toEmail, String.valueOf(verificationCode));
 
-        return String.format("%s/api/v1/auth/check-verification?userEmail=%s&verificationCode=%s 링크를 10분 이내에 클릭해주세요.", emailLinkUrl, toEmail ,verificationCode);
+        return String.format("%s/api/v1/auth/check-verification?userEmail=%s&verificationCode=%s", emailLinkUrl, toEmail ,verificationCode);
     }
 
     // 인증 코드 생성
