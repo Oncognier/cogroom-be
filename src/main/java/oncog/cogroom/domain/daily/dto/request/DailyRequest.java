@@ -12,8 +12,8 @@ public class DailyRequest {
     public static class DailyAnswerDTO {
         private Long assignedQuestionId;
 
-        @NotBlank
-        @Size(max = 100, message = "answerSizeExceeded")
+        @NotBlank(message = "답변을 1자 이상 작성해주세요.")
+        @Size(max = 100, message = "답변은 100자 이하여야 합니다.")
         private String answer;
     }
 }
