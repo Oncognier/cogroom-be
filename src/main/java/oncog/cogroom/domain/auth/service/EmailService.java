@@ -70,6 +70,7 @@ public class EmailService {
                 value -> {
                     EmailVerification emailVerification = emailVerificationOpt.get();
                     emailVerification.updateCode(verificationCode);
+                    emailVerification.updateStatusToFalse();
                     emailVerification.updateExpireDate();
                 },
                 () -> {
@@ -112,7 +113,7 @@ public class EmailService {
             }
 
             // 링크 시간이 만료되지 않았으면 인증
-            emailVerification.updateStatus();
+            emailVerification.updateStatusToTrue();
         });
     }
 
