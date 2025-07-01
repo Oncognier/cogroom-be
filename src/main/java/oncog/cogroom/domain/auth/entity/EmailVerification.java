@@ -31,8 +31,11 @@ public class EmailVerification {
     @Column(nullable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime expireDate;
 
-    public void updateStatus() {
+    public void updateStatusToTrue() {
         this.verifyStatus = true;
+    }
+    public void updateStatusToFalse() {
+        this.verifyStatus = false;
     }
 
     public void updateCode(String verifyCode) {

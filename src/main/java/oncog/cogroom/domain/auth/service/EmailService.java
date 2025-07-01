@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -70,6 +71,7 @@ public class EmailService {
                 value -> {
                     EmailVerification emailVerification = emailVerificationOpt.get();
                     emailVerification.updateCode(verificationCode);
+                    emailVerification.updateStatusToFalse();
                     emailVerification.updateExpireDate();
                 },
                 () -> {
@@ -112,7 +114,7 @@ public class EmailService {
             }
 
             // 링크 시간이 만료되지 않았으면 인증
-            emailVerification.updateStatus();
+            emailVerification.updateStatusToTrue();
         });
     }
 
@@ -129,5 +131,16 @@ public class EmailService {
     private int generateVerificationCode() {
         SecureRandom secureRandom = new SecureRandom();
         return 100000 + secureRandom.nextInt(900000);
+    }
+
+    public void clearNotVerifiedEmail() {
+        List<EmailVerification> notVerifiedEmails = emailRepository.findAllByVerifyStatus(false);
+
+        notVerifiedEmails.stream()
+                .forEach(email -> {
+                    if (LocalDateTime.now().isAfter(email.getExpireDate())) {
+                        emailRepository.delete(email);
+                    }
+                });
     }
 }

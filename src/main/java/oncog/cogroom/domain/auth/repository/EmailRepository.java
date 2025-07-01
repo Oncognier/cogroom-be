@@ -3,6 +3,7 @@ package oncog.cogroom.domain.auth.repository;
 import oncog.cogroom.domain.auth.entity.EmailVerification;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface EmailRepository extends JpaRepository<EmailVerification, Long> {
@@ -12,5 +13,5 @@ public interface EmailRepository extends JpaRepository<EmailVerification, Long> 
 
     Boolean existsByEmailAndVerifyStatus(String email, boolean status);
 
-
+    List<EmailVerification> findAllByVerifyStatus(boolean status);
 }
