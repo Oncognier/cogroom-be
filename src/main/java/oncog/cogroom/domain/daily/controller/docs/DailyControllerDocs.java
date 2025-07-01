@@ -26,8 +26,8 @@ public interface DailyControllerDocs {
     @Operation(summary = "데일리 답변 등록", description = "데일리 질문에 대한 답변을 등록합니다.")
     @ApiErrorCodeExamples(
             value = {MemberErrorCode.class, DailyErrorCode.class, AuthErrorCode.class, ApiErrorCode.class},
-            include = {"MEMBER_NOT_FOUND_ERROR", "QUESTION_NOT_FOUND_ERROR", "ANSWER_ALREADY_EXIST_ERROR", "EMPTY_FILED_ERROR",
-                    "ASSIGNED_QUESTION_NOT_FOUND_ERROR", "ANSWER_LENGTH_EXCEEDED_ERROR", "ANSWER_TIME_EXPIRED_ERROR",
+            include = {"MEMBER_NOT_FOUND_ERROR", "QUESTION_NOT_FOUND_ERROR", "ANSWER_ALREADY_EXIST_ERROR", "ANSWER_SIZE_ERROR",
+                    "ASSIGNED_QUESTION_NOT_FOUND_ERROR", "ANSWER_NOTBLANK_ERROR", "ANSWER_TIME_EXPIRED_ERROR",
                     "TOKEN_INVALID_ERROR","TOKEN_EXPIRED_ERROR", "INTERNAL_SERVER_ERROR"})
     ResponseEntity<ApiResponse<String>> createDailyAnswer(@RequestBody @Valid DailyRequest.DailyAnswerDTO request);
 
