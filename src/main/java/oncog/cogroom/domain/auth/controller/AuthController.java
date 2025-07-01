@@ -47,7 +47,7 @@ public class AuthController implements AuthControllerDocs {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponse<AuthResponse.SignupResultDTO>> signup(@RequestBody @Valid AuthRequest.SignupDTO request, HttpServletResponse response) throws MessagingException {
+    public ResponseEntity<ApiResponse<AuthResponse.SignupResultDTO>> signup(@RequestBody @Valid AuthRequest.SignupDTO request, HttpServletResponse response) throws MessagingException, IOException {
         AuthResponse.SignupResultDTO result = router.signup(request);
 
         // Token 쿠키로 셋팅
@@ -87,7 +87,7 @@ public class AuthController implements AuthControllerDocs {
 
 
     @PostMapping("/email-verification")
-    public ResponseEntity<ApiResponse<String>> sendEmail(@RequestBody @Valid AuthRequest.EmailDTO request) throws MessagingException, IOException {
+    public ResponseEntity<ApiResponse<String>> sendEmail(@RequestBody @Valid AuthRequest.EmailDTO request) throws MessagingException {
         // 이메일 중복 검사
         emailService.existEmail(request.getEmail());
 
