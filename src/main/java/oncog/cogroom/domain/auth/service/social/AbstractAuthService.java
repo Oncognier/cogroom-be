@@ -3,6 +3,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.auth.dto.request.AuthRequest;
 import oncog.cogroom.domain.auth.dto.response.AuthResponse;
+import oncog.cogroom.domain.auth.entity.WithdrawReason;
+import oncog.cogroom.domain.auth.repository.WithdrawReasonRepository;
 import oncog.cogroom.domain.auth.service.AuthService;
 import oncog.cogroom.domain.auth.service.EmailService;
 import oncog.cogroom.domain.auth.service.TokenService;
@@ -26,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public abstract class AbstractAuthService implements AuthService {
     private final MemberRepository memberRepository;
+    private final WithdrawReasonRepository withdrawReasonRepository;
     private final EmailService emailService;
     private final TokenUtil tokenUtil;
     private final RedisTemplate<String, String> redisTemplate;
@@ -100,9 +103,18 @@ public abstract class AbstractAuthService implements AuthService {
 
         tokenService.expireToken(accessToken.substring(7), member.getId());
 
+        // 탈퇴 사유 저장
+        saveWithdrawReason(request.getReason());
+
         memberRepository.save(member);
     }
 
+    // 탈퇴 사유 저장
+    private void saveWithdrawReason(String reason) {
+        withdrawReasonRepository.save(WithdrawReason.builder()
+                .reason(reason)
+                .build());
+    }
 
     public final void saveRefreshTokenToRedis(String refreshToken, Long memberId) {
         redisTemplate.opsForValue().set("RT:" + memberId, refreshToken, refreshExpiration, TimeUnit.DAYS);

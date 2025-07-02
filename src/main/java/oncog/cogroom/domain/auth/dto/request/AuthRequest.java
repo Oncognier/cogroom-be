@@ -74,5 +74,8 @@ public class AuthRequest {
 
         @NotBlank
         private Provider provider;
+
+        @NotEmpty
+        private String reason;
     }
 }
