@@ -2,7 +2,9 @@ package oncog.cogroom.domain.member.controller.docs;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import oncog.cogroom.domain.auth.dto.request.AuthRequest;
 import oncog.cogroom.domain.auth.exception.AuthErrorCode;
 import oncog.cogroom.domain.daily.dto.response.DailyResponse;
 import oncog.cogroom.domain.daily.exception.DailyErrorCode;
@@ -14,6 +16,7 @@ import oncog.cogroom.global.common.response.code.ApiErrorCode;
 import oncog.cogroom.global.exception.swagger.ApiErrorCodeExamples;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
 
@@ -62,4 +65,15 @@ public interface MemberControllerDocs {
     )
     @Operation(summary = "데일리 질문 및 답변 조회", description = "마이페이지 내에서 사용자에게 할당된 데일리 질문과 그에 대한 답변을 조회합니다.")
     public ResponseEntity<ApiResponse<List<DailyResponse.AssignedQuestionWithAnswerDTO>>> getDailyQuestionAndAnswer();
+
+    @ApiErrorCodeExamples(
+            value = {AuthErrorCode.class, MemberErrorCode.class, ApiErrorCode.class},
+            include = {"TOKEN_INVALID_ERROR", "TOKEN_BLACK_LIST_ERROR", "TOKEN_EXPIRED_ERROR", "MEMBER_NOT_FOUND_ERROR",
+                    "EMPTY_FIELD_ERROR", "BAD_REQUEST_ERROR","TYPE_MISMATCH_ERROR", "INTERNAL_SERVER_ERROR",
+                    "KAKAO_REQUEST_ERROR"
+            }
+    )
+    @Operation(summary = "회원탈퇴 API", description = "회원 탈퇴 API 입니다.")
+    public ResponseEntity<ApiResponse<Void>> withdrawMember(@RequestBody AuthRequest.WithdrawDTO request,
+                                                            HttpServletRequest servletRequest);
 }

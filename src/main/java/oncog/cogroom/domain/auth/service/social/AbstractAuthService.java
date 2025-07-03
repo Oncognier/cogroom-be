@@ -28,11 +28,9 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public abstract class AbstractAuthService implements AuthService {
     private final MemberRepository memberRepository;
-    private final WithdrawReasonRepository withdrawReasonRepository;
     private final EmailService emailService;
     private final TokenUtil tokenUtil;
     private final RedisTemplate<String, String> redisTemplate;
-    private final TokenService tokenService;
 
     @Value("${jwt.refresh-token-expiration}")
     private long refreshExpiration;
@@ -94,27 +92,7 @@ public abstract class AbstractAuthService implements AuthService {
                 .build();
     }
 
-    public final void withdraw(AuthRequest.WithdrawDTO request, String accessToken) {
-        Member member = memberRepository.findById(request.getMemberId()).orElseThrow(
-                () -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND_ERROR)
-        );
 
-        member.updateMemberStatusToPending();
-
-        tokenService.expireToken(accessToken.substring(7), member.getId());
-
-        // 탈퇴 사유 저장
-        saveWithdrawReason(request.getReason());
-
-        memberRepository.save(member);
-    }
-
-    // 탈퇴 사유 저장
-    private void saveWithdrawReason(String reason) {
-        withdrawReasonRepository.save(WithdrawReason.builder()
-                .reason(reason)
-                .build());
-    }
 
     public final void saveRefreshTokenToRedis(String refreshToken, Long memberId) {
         redisTemplate.opsForValue().set("RT:" + memberId, refreshToken, refreshExpiration, TimeUnit.DAYS);

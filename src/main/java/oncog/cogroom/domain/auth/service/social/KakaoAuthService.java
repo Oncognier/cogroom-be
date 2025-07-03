@@ -34,13 +34,11 @@ public class KakaoAuthService extends AbstractAuthService {
     private final RestTemplate restTemplate;
 
     public KakaoAuthService(MemberRepository memberRepository,
-                            WithdrawReasonRepository withdrawReasonRepository,
                             TokenUtil tokenUtil,
-                            TokenService tokenService,
                             EmailService emailService,
                             RestTemplate restTemplate,
                             RedisTemplate<String, String> redisTemplate) {
-        super( memberRepository, withdrawReasonRepository, emailService ,tokenUtil, redisTemplate, tokenService);
+        super( memberRepository, emailService ,tokenUtil, redisTemplate);
         this.restTemplate = restTemplate;
     }
     // 카카오 액세스 토큰 조회

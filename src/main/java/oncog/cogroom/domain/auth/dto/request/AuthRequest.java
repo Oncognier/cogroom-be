@@ -69,12 +69,6 @@ public class AuthRequest {
     @Builder
     public static class WithdrawDTO {
 
-        @NotNull
-        private Long memberId;
-
-        @NotBlank
-        private Provider provider;
-
         @NotEmpty
         private String reason;
     }

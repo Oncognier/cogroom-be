@@ -1,8 +1,13 @@
 package oncog.cogroom.domain.member.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import oncog.cogroom.domain.auth.dto.request.AuthRequest;
+import oncog.cogroom.domain.auth.entity.WithdrawReason;
+import oncog.cogroom.domain.auth.repository.WithdrawReasonRepository;
 import oncog.cogroom.domain.auth.service.EmailService;
+import oncog.cogroom.domain.auth.service.TokenService;
 import oncog.cogroom.domain.member.dto.request.MemberRequest;
 import oncog.cogroom.domain.member.entity.Member;
 import oncog.cogroom.domain.member.enums.MemberStatus;
@@ -36,6 +41,8 @@ public class MemberService extends BaseService {
     private final EmailService emailService;
     private final S3Service s3Service;
     private final ApplicationEventPublisher eventPublisher;
+    private final TokenService tokenService;
+    private final WithdrawReasonRepository withdrawReasonRepository;
 
     public MemberInfoDTO findMemberInfo() {
         Member member = getMember();
@@ -91,6 +98,25 @@ public class MemberService extends BaseService {
         member.updateMemberInfo(request);
     }
 
+    public void withdraw(AuthRequest.WithdrawDTO request, HttpServletRequest servletRequest) {
+        Member member = getMember();
+
+        member.updateMemberStatusToPending();
+
+        tokenService.expireToken(jwtProvider.resolveToken(servletRequest), member.getId());
+
+        // 탈퇴 사유 저장
+        saveWithdrawReason(request.getReason());
+
+        memberRepository.save(member);
+    }
+
+    // 탈퇴 사유 저장
+    private void saveWithdrawReason(String reason) {
+        withdrawReasonRepository.save(WithdrawReason.builder()
+                .reason(reason)
+                .build());
+    }
 
     public boolean existNickname(MemberRequest.ExistNicknameDTO request) {
 
