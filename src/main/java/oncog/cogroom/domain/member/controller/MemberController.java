@@ -70,7 +70,7 @@ public class MemberController implements MemberControllerDocs {
     }
 
     @DeleteMapping("/withdraw")
-    public ResponseEntity<ApiResponse<Void>> withdrawMember(@RequestBody AuthRequest.WithdrawDTO request,
+    public ResponseEntity<ApiResponse<Void>> withdrawMember(@RequestBody MemberRequest.WithdrawDTO request,
                                                             HttpServletRequest servletRequest) {
         memberService.withdraw(request, servletRequest);
 

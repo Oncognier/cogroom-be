@@ -1,10 +1,7 @@
 package oncog.cogroom.domain.member.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -43,5 +40,13 @@ public class MemberRequest {
     public static class ExistNicknameDTO {
         @NotBlank
         private String nickname;
+    }
+
+    @Getter
+    @Builder
+    public static class WithdrawDTO {
+
+        @NotEmpty
+        private String reason;
     }
 }

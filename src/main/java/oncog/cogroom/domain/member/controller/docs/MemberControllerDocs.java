@@ -74,6 +74,6 @@ public interface MemberControllerDocs {
             }
     )
     @Operation(summary = "회원탈퇴 API", description = "회원 탈퇴 API 입니다.")
-    public ResponseEntity<ApiResponse<Void>> withdrawMember(@RequestBody AuthRequest.WithdrawDTO request,
+    public ResponseEntity<ApiResponse<Void>> withdrawMember(@RequestBody MemberRequest.WithdrawDTO request,
                                                             HttpServletRequest servletRequest);
 }

@@ -65,11 +65,5 @@ public class AuthRequest {
         private String email;
     }
 
-    @Getter
-    @Builder
-    public static class WithdrawDTO {
 
-        @NotEmpty
-        private String reason;
-    }
 }

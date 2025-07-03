@@ -98,7 +98,7 @@ public class MemberService extends BaseService {
         member.updateMemberInfo(request);
     }
 
-    public void withdraw(AuthRequest.WithdrawDTO request, HttpServletRequest servletRequest) {
+    public void withdraw(MemberRequest.WithdrawDTO request, HttpServletRequest servletRequest) {
         Member member = getMember();
 
         member.updateMemberStatusToPending();
