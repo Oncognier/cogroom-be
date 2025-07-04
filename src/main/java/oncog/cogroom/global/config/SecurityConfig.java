@@ -60,7 +60,7 @@ public class SecurityConfig {
         http.securityMatchers(matchers -> matchers.requestMatchers(requestHasRoleUser()))
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest()
-                        .hasAnyAuthority(MemberRole.USER.name(), MemberRole.ADMIN.name()));
+                        .hasAnyAuthority(MemberRole.USER.name(), MemberRole.ADMIN.name(), MemberRole.CONTENT_PROVIDER.name()));
 
         http.exceptionHandling(exception -> exception
                 .accessDeniedHandler(jwtAccessDeniedHandler)
