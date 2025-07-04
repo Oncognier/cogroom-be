@@ -111,11 +111,5 @@ public class AuthController implements AuthControllerDocs {
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, emailService.verifiedEmail(request)));
     }
 
-    @DeleteMapping("/withdraw")
-    public ResponseEntity<ApiResponse<Void>> withdrawMember(@RequestBody AuthRequest.WithdrawDTO request,
-                                                            @RequestHeader("Authorization") String accessToken) {
-        router.withdraw(request, accessToken);
 
-        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
-    }
 }

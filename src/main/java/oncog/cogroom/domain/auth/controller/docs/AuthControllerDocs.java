@@ -71,14 +71,5 @@ public interface AuthControllerDocs {
     public ResponseEntity<ApiResponse<Void>> logout(HttpServletRequest request);
 
 
-    @ApiErrorCodeExamples(
-            value = {AuthErrorCode.class, MemberErrorCode.class, ApiErrorCode.class},
-            include = {"TOKEN_INVALID_ERROR", "TOKEN_BLACK_LIST_ERROR", "TOKEN_EXPIRED_ERROR", "MEMBER_NOT_FOUND_ERROR",
-            "EMPTY_FIELD_ERROR", "BAD_REQUEST_ERROR","TYPE_MISMATCH_ERROR", "INTERNAL_SERVER_ERROR",
-                    "KAKAO_REQUEST_ERROR"
-            }
-    )
-    @Operation(summary = "회원탈퇴 API", description = "회원 탈퇴 API 입니다.")
-    public ResponseEntity<ApiResponse<Void>> withdrawMember(@RequestBody AuthRequest.WithdrawDTO request,
-                                                            @RequestHeader("Authorization") String accessToken);
+
 }

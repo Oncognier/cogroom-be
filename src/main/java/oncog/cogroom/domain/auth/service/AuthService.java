@@ -14,8 +14,6 @@ public interface AuthService {
 
     SignupResultDTO signup(SignupDTO request);
 
-    void withdraw(WithdrawDTO request, String accessToken);
-
     void unlink(Member member);
     Provider getProvider();
 }

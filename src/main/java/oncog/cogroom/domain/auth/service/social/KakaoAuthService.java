@@ -2,6 +2,7 @@ package oncog.cogroom.domain.auth.service.social;
 import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.auth.dto.response.SocialTokenResponse;
 import oncog.cogroom.domain.auth.exception.AuthErrorCode;
+import oncog.cogroom.domain.auth.repository.WithdrawReasonRepository;
 import oncog.cogroom.domain.auth.service.EmailService;
 import oncog.cogroom.domain.auth.service.TokenService;
 import oncog.cogroom.domain.auth.userInfo.KakaoUserInfo;
@@ -34,11 +35,10 @@ public class KakaoAuthService extends AbstractAuthService {
 
     public KakaoAuthService(MemberRepository memberRepository,
                             TokenUtil tokenUtil,
-                            TokenService tokenService,
                             EmailService emailService,
                             RestTemplate restTemplate,
                             RedisTemplate<String, String> redisTemplate) {
-        super( memberRepository, emailService ,tokenUtil, redisTemplate, tokenService);
+        super( memberRepository, emailService ,tokenUtil, redisTemplate);
         this.restTemplate = restTemplate;
     }
     // 카카오 액세스 토큰 조회

@@ -1,8 +1,10 @@
 package oncog.cogroom.domain.member.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import oncog.cogroom.domain.auth.dto.request.AuthRequest;
 import oncog.cogroom.domain.daily.dto.response.DailyResponse;
 import oncog.cogroom.domain.daily.service.DailyService;
 import oncog.cogroom.domain.member.controller.docs.MemberControllerDocs;
@@ -67,4 +69,11 @@ public class MemberController implements MemberControllerDocs {
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, isExist));
     }
 
+    @DeleteMapping("/withdraw")
+    public ResponseEntity<ApiResponse<Void>> withdrawMember(@RequestBody MemberRequest.WithdrawDTO request,
+                                                            HttpServletRequest servletRequest) {
+        memberService.withdraw(request, servletRequest);
+
+        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
+    }
 }

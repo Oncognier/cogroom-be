@@ -3,6 +3,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.auth.dto.request.AuthRequest;
 import oncog.cogroom.domain.auth.dto.response.AuthResponse;
+import oncog.cogroom.domain.auth.entity.WithdrawReason;
+import oncog.cogroom.domain.auth.repository.WithdrawReasonRepository;
 import oncog.cogroom.domain.auth.service.AuthService;
 import oncog.cogroom.domain.auth.service.EmailService;
 import oncog.cogroom.domain.auth.service.TokenService;
@@ -29,7 +31,6 @@ public abstract class AbstractAuthService implements AuthService {
     private final EmailService emailService;
     private final TokenUtil tokenUtil;
     private final RedisTemplate<String, String> redisTemplate;
-    private final TokenService tokenService;
 
     @Value("${jwt.refresh-token-expiration}")
     private long refreshExpiration;
@@ -91,17 +92,6 @@ public abstract class AbstractAuthService implements AuthService {
                 .build();
     }
 
-    public final void withdraw(AuthRequest.WithdrawDTO request, String accessToken) {
-        Member member = memberRepository.findById(request.getMemberId()).orElseThrow(
-                () -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND_ERROR)
-        );
-
-        member.updateMemberStatusToPending();
-
-        tokenService.expireToken(accessToken.substring(7), member.getId());
-
-        memberRepository.save(member);
-    }
 
 
     public final void saveRefreshTokenToRedis(String refreshToken, Long memberId) {

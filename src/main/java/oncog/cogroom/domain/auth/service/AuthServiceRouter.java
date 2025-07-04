@@ -41,9 +41,4 @@ public class AuthServiceRouter {
         return service.signup(request);
     }
 
-    public void withdraw(AuthRequest.WithdrawDTO request, String accessToken) {
-        AuthService service = serviceMap.get(request.getProvider());
-
-        service.withdraw(request, accessToken);
-    }
 }
