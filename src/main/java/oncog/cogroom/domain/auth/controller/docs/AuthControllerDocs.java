@@ -53,7 +53,7 @@ public interface AuthControllerDocs {
                                                          @RequestParam String verificationCode);
 
     @Operation(summary = "이메일 인증 여부 반환", description = "이메일의 인증이 완료되었는지 여부를 반환합니다.")
-    public ResponseEntity<ApiResponse<Boolean>> checkEmailVerificationStatus(@RequestBody @Valid AuthRequest.EmailDTO request);
+    public ResponseEntity<ApiResponse<Boolean>> checkEmailVerificationStatus(@RequestParam String email);
 
     @ApiErrorCodeExamples(
             value = {AuthErrorCode.class, MemberErrorCode.class},

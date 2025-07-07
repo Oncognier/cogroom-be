@@ -104,9 +104,8 @@ public class EmailService {
     }
 
     // 이메일의 인증 상태 반환
-    public boolean verifiedEmail(AuthRequest.EmailDTO request) {
-        String toEmail = request.getEmail();
-        return emailRepository.existsByEmailAndVerifyStatus(toEmail,true);
+    public boolean verifiedEmail(String email) {
+        return emailRepository.existsByEmailAndVerifyStatus(email,true);
     }
 
     // 이메일 인증 유무 검사
