@@ -137,7 +137,7 @@ public class EmailService {
 
         saveEmail(toEmail, String.valueOf(verificationCode));
 
-        return String.format("%s/api/v1/auth/check-verification?userEmail=%s&verificationCode=%s", emailLinkUrl, toEmail ,verificationCode);
+        return String.format("%s?userEmail=%s&verificationCode=%s", emailLinkUrl, toEmail ,verificationCode);
     }
 
     // 인증 코드 생성
