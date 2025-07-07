@@ -40,8 +40,6 @@ public class SwaggerConfig {
                 .description("JWT 인증 토큰 사용 (Bearer {Token})");
 
         SecurityRequirement securityRequirement = new SecurityRequirement().addList("JWT TOKEN");
-        Server server = new Server();
-        server.setUrl("https://api.cogroom.com");
 
         return new OpenAPI()
                 .components(new Components().addSecuritySchemes("JWT TOKEN", securityScheme))
@@ -50,7 +48,11 @@ public class SwaggerConfig {
                         .title("Cogroom API")
                         .version("1.0")
                         .description("온코그니어 코그룸 API 명세서입니다."))
-                .servers(List.of(server));
+                .servers(List.of(
+                        new Server().url("https://api.cogroom.com").description("Production server"),
+                        new Server().url("https://dev-api.cogroom.com").description("Development server"),
+                        new Server().url("https://staging-api.cogroom.com").description("Staging server")
+                ));
     }
 
     // 커스텀 어노테이션 정보 가져오기
