@@ -20,9 +20,6 @@ public class Streak {
     @JoinColumn(nullable = false, unique = true)
     private Member member;
 
-    @Column
-    private String shareUrl;
-
     @Column(nullable = false)
     @Builder.Default
     private Integer dailyStreak = 0; // 누적 스트릭 일 수
