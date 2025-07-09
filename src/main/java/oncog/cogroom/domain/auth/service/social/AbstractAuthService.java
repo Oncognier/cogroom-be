@@ -1,19 +1,15 @@
 package oncog.cogroom.domain.auth.service.social;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import oncog.cogroom.domain.auth.dto.request.AuthRequest;
 import oncog.cogroom.domain.auth.dto.response.AuthResponse;
-import oncog.cogroom.domain.auth.entity.WithdrawReason;
-import oncog.cogroom.domain.auth.repository.WithdrawReasonRepository;
 import oncog.cogroom.domain.auth.service.AuthService;
 import oncog.cogroom.domain.auth.service.EmailService;
-import oncog.cogroom.domain.auth.service.TokenService;
 import oncog.cogroom.domain.auth.userInfo.SocialUserInfo;
 import oncog.cogroom.domain.member.entity.Member;
 import oncog.cogroom.domain.member.enums.MemberRole;
 import oncog.cogroom.domain.member.enums.MemberStatus;
-import oncog.cogroom.domain.member.exception.MemberErrorCode;
-import oncog.cogroom.domain.member.exception.MemberException;
 import oncog.cogroom.domain.member.repository.MemberRepository;
 import oncog.cogroom.global.common.util.TokenUtil;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,8 +43,12 @@ public abstract class AbstractAuthService implements AuthService {
             Member member = memberOpt.get();
 
             // 탈퇴 유예 기간에 재로그인 하는 경우 다시 계정 활성화
-            if(member.getStatus().equals(MemberStatus.PENDING)) member.updateMemberStatusToActive();
+            if(member.getStatus().equals(MemberStatus.PENDING)) {
+                member.updateMemberStatusToActive();
 
+                // ACTIVE로 변경된 사용자 상태 저장
+                memberRepository.save(member);
+            }
             AuthResponse.ServiceTokenDTO tokenDTO = tokenUtil.createTokens(member);
 
             // redis에 refreshToken 저장
