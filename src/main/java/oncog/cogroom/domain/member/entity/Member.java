@@ -67,7 +67,7 @@ public class Member extends BaseTimeEntity {
 
 
     public void updateMemberStatusToActive(){
-        this.status = MemberStatus.PENDING;
+        this.status = MemberStatus.ACTIVE;
     }
 
     public void updateMemberRole(MemberRole role) {
