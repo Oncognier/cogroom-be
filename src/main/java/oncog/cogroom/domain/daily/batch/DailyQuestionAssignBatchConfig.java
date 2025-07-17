@@ -39,7 +39,7 @@ public class DailyQuestionAssignBatchConfig {
 
     private final JobRepository jobRepository;
     private final PlatformTransactionManager transactionManager;
-    private final JobExecutionTimerLogger jobExecutionTimerLogger;
+    private final JobExecutionLogger jobExecutionLogger;
 
     private final MemberRepository memberRepository;
     private final QuestionRepository questionRepository;
@@ -53,7 +53,7 @@ public class DailyQuestionAssignBatchConfig {
     public Job dailyQuestionAssignJob() {
         return new JobBuilder("dailyQuestionAssignJob", jobRepository)
                 .incrementer(new RunIdIncrementer())    // 매번 새로운 JobInstance 생성
-                .listener(jobExecutionTimerLogger)
+                .listener(jobExecutionLogger)
                 .start(dailyQuestionAssignStep())
                 .build();
     }
