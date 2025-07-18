@@ -1,0 +1,10 @@
+groups:
+  - name: spring-rules
+    rules:
+      - alert: HighCPUUsage
+        expr: process_cpu_usage > 0.7
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Spring 앱의 CPU 사용률이 70%를 초과했습니다 (현재: {{ $value }})."
