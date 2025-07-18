@@ -1,18 +1,30 @@
-package oncog.cogroom.global.common.logging;
+package oncog.cogroom.global.common.batch.logging;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import oncog.cogroom.global.common.batch.repository.BatchJobExecutionNativeRepository;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class BatchJobLogger implements JobExecutionListener {
 
+    private final BatchJobExecutionNativeRepository batchJobExecutionNativeRepository;
     private long startTime;
 
     @Override
     public void beforeJob(JobExecution jobExecution) {
+        String jobName = jobExecution.getJobInstance().getJobName();
+
+        int count = batchJobExecutionNativeRepository.countTodayCompletedExecutions(jobName);
+        if (count > 0) {
+            log.warn("[배치 중단] Job: {} → 오늘 이미 COMPLETED 상태로 실행된 이력이 있어 실행 중지", jobName);
+            throw new RuntimeException("이미 실행된 배치입니다: " + jobName);
+        }
+
         startTime = System.currentTimeMillis();
         log.info("[배치 시작] Job: {}", jobExecution.getJobInstance().getJobName());
     }

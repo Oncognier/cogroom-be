@@ -1,5 +1,6 @@
 package oncog.cogroom.domain.daily.batch;
 
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import oncog.cogroom.domain.daily.entity.AssignedQuestion;
 import oncog.cogroom.domain.daily.service.DailyQuestionAssignService;
@@ -14,7 +15,7 @@ public class DailyQuestionAssignProcessor implements ItemProcessor<Member, Assig
     private final DailyQuestionAssignService dailyQuestionAssignService;
 
     @Override
-    public AssignedQuestion process(Member member) {
+    public AssignedQuestion process(@NonNull Member member) {
         return dailyQuestionAssignService.assignDailyQuestion(member)
                 .orElse(null);
     }

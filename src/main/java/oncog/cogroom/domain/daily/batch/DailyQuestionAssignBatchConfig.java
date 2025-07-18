@@ -6,7 +6,7 @@ import oncog.cogroom.domain.daily.repository.AssignedQuestionRepository;
 import oncog.cogroom.domain.member.entity.Member;
 import oncog.cogroom.domain.member.enums.MemberStatus;
 import oncog.cogroom.domain.member.repository.MemberRepository;
-import oncog.cogroom.global.common.logging.BatchJobLogger;
+import oncog.cogroom.global.common.batch.logging.BatchJobLogger;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;

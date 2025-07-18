@@ -24,8 +24,8 @@ public class DailyQuestionAssignBatchSchduler {
     private final JobLauncher jobLauncher;
     private final Job dailyQuestionAssignJob;
 
-//    @Scheduled(cron = "0 0 0 * * *") // 자정마다
-    @Scheduled(cron = "0 */1 * * * *") // 1분마다, 테스트용
+    @Scheduled(cron = "0 0 0 * * *") // 자정마다
+////    @Scheduled(cron = "0 */1 * * * *") // 1분마다, 테스트용
     @SchedulerLock(name = "dailyQuestionAssignJob", lockAtLeastFor = "5m", lockAtMostFor = "30m") // 최소 락 유지 시간 5분, 최대 락 유지 시간 30분
     public void assignDailyQuestionsAtMidnight() {
         log.info("데일리 질문 할당 시작");
