@@ -2,6 +2,7 @@ package oncog.cogroom.domain.daily.scheduler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -23,18 +24,18 @@ public class DailyQuestionAssignBatchSchduler {
     private final JobLauncher jobLauncher;
     private final Job dailyQuestionAssignJob;
 
-    @Scheduled(cron = "0 0 0 * * *") // 자정마다
-//    @Scheduled(cron = "0 */2 * * * *") // 1분마다, 테스트용
+//    @Scheduled(cron = "0 0 0 * * *") // 자정마다
+    @Scheduled(cron = "0 */1 * * * *") // 1분마다, 테스트용
+    @SchedulerLock(name = "dailyQuestionAssignJob", lockAtLeastFor = "5m", lockAtMostFor = "30m") // 최소 락 유지 시간 5분, 최대 락 유지 시간 30분
     public void assignDailyQuestionsAtMidnight() {
         log.info("데일리 질문 할당 시작");
         try {
             JobParameters jobParameters = new JobParametersBuilder()
-                    .addString("datetime", LocalDateTime.now().toString())  // 실행 시간을 파라미터로 추가
+                    .addString("datetime", LocalDateTime.now().toString())
                     .toJobParameters();
 
             // 배치 Job 실행
             jobLauncher.run(dailyQuestionAssignJob, jobParameters);
-            log.info("데일리 질문 할당 배치 완료");
 
         } catch (JobExecutionAlreadyRunningException e) {
             // 동일한 Job이 이미 실행 중인 경우
