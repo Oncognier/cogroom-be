@@ -1,4 +1,4 @@
-package oncog.cogroom.domain.daily.batch;
+package oncog.cogroom.global.common.logging;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.JobExecution;
@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class JobExecutionLogger implements JobExecutionListener {
+public class BatchJobLogger implements JobExecutionListener {
 
     private long startTime;
 
