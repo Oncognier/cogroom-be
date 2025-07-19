@@ -25,6 +25,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     List<Member> findByStatus(MemberStatus status);
 
+    // 데일리 질문 배치용
+    Page<Member> findByStatus(MemberStatus status, Pageable pageable);
+
     Optional<Member> findByEmail(String email);
 
     @Query("""

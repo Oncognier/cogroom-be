@@ -106,9 +106,9 @@ public class AuthController implements AuthControllerDocs {
         return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS));
     }
 
-    @PostMapping("/email/status")
-    public ResponseEntity<ApiResponse<Boolean>> checkEmailVerificationStatus(@RequestBody @Valid AuthRequest.EmailDTO request) {
-        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, emailService.verifiedEmail(request)));
+    @GetMapping("/email/status")
+    public ResponseEntity<ApiResponse<Boolean>> checkEmailVerificationStatus(@RequestParam String email) {
+        return ResponseEntity.ok(ApiResponse.of(ApiSuccessCode.SUCCESS, emailService.verifiedEmail(email)));
     }
 
 
