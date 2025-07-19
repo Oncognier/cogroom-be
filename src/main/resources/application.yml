@@ -9,7 +9,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
@@ -32,6 +32,11 @@ spring:
       host: ${REDIS_HOST}
       password: ${REDIS_PASSWORD}
       connect-timeout: 2s
+  batch:
+    jdbc:
+      initialize-schema: never
+  aop:
+    proxy-target-class: true
 oauth:
   kakao:
     client-id: ${KAKAO_REST_API_KEY}

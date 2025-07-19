@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -34,36 +35,6 @@ public class DailyQuestionAssignService {
 
     private static final long FIRST_QUESTION_ID = 1; // 회원가입 시 할당받는 최초 질문 id
 
-    @Transactional
-    public void assignDailyQuestions() {
-        List<Member> members = memberRepository.findAll();
-        members.forEach(this::assignDailyQuestion); // 많은 양의 insert문이 실행되므로 배치 적용 필요
-    }
-
-    // 질문을 아직 할당받지 않은 멤버에게 랜덤 질문 할당
-    private void assignDailyQuestion(Member member) {
-        if (alreadyAssignedQuestionToday(member)) {
-            log.info("멤버: {} 에게 이미 질문이 할당되었습니다.", member.getId());
-            return;
-        }
-
-        QuestionLevel level = getNextQuestionLevel(member);
-        log.info("Assigned {} questions to {}", level, member.getId());
-
-        List<Question> candidates = (level != null)
-                ? questionRepository.findUnansweredByMemberAndLevel(member.getId(), level)
-                : questionRepository.findAll();
-
-        if (candidates.isEmpty()) {
-            log.info("할당 가능한 질문이 없습니다. memberId={}, level={}", member.getId(), level);
-            return;
-        }
-
-        Question question = candidates.get(random.nextInt(candidates.size()));
-
-        saveAssignedQuestion(member, question);
-    }
-
     // 회원가입 시 질문 할당
     @Transactional
     public void assignDailyQuestionAtSignup(Provider provider, String providerId) {
@@ -73,15 +44,63 @@ public class DailyQuestionAssignService {
         assignFirstDailyQuestion(member);
     }
 
-//     오늘 이미 질문이 할당됐는지 확인 (질문 중복 할당 방지)
-    private boolean alreadyAssignedQuestionToday(Member member) {
+    private void assignFirstDailyQuestion(Member member) {
+        if (isAlreadyAssigned(member)) return;
+
+        Question question = questionRepository.findById(FIRST_QUESTION_ID)
+                .orElseThrow(() -> new DailyException(DailyErrorCode.FIRST_QUESTION_NOT_FOUND_ERROR));
+
+        assignedQuestionRepository.save(buildAssignedQuestion(member, question));
+    }
+
+    // 질문 할당 로직 - 배치에서 실행
+    public Optional<AssignedQuestion> assignDailyQuestion(Member member) {
+        if (isAlreadyAssigned(member)) {
+            return Optional.empty();
+        }
+
+        QuestionLevel level = getNextQuestionLevel(member);
+        List<Question> candidates = findCandidateQuestions(member, level);
+
+        if (candidates.isEmpty()) {
+            log.info("할당 가능한 질문이 없습니다. memberId={}, level={}", member.getId(), level);
+            return Optional.empty();
+        }
+
+        Question selected = pickRandomQuestion(candidates);
+        return Optional.of(buildAssignedQuestion(member, selected));
+    }
+
+    private boolean isAlreadyAssigned(Member member) {
+        if (alreadyAssignedQuestionToday(member)) {
+            log.info("멤버: {} 에게 이미 질문이 할당되었습니다.", member.getId());
+            return true;
+        }
+        return false;
+    }
+
+    // 할당 가능한 후보 질문 조회
+    private List<Question> findCandidateQuestions(Member member, QuestionLevel level) {
+        log.info("멤버 {} 에게 질문 레벨 {}을 할당합니다.", member.getId(), level);
+        return (level != null)
+                ? questionRepository.findUnansweredByMemberAndLevel(member.getId(), level)
+                : questionRepository.findAll();
+    }
+
+    // 랜덤으로 질문 선택
+    private Question pickRandomQuestion(List<Question> questions) {
+        return questions.get(random.nextInt(questions.size()));
+    }
+
+    // 오늘 이미 질문이 할당됐는지 확인 (질문 중복 할당 방지)
+    public boolean alreadyAssignedQuestionToday(Member member) {
         LocalDateTime startOfToday = dailyService.getStartOfToday();
         LocalDateTime endOfToday = dailyService.getEndOfToday();
         return assignedQuestionRepository.existsByMemberAndAssignedDateBetween(member, startOfToday, endOfToday);
     }
 
     // 멤버에게 할당할 질문 레벨 조회
-    private QuestionLevel getNextQuestionLevel(Member member) {
+    public QuestionLevel getNextQuestionLevel(Member member) {
         for (QuestionLevel level : QuestionLevel.values()) {
             int count = questionRepository.countUnansweredByMemberAndLevel(member.getId(), level);
 
@@ -92,26 +111,12 @@ public class DailyQuestionAssignService {
         return null; // 모든 질문을 다 답한 경우
     }
 
-    private void saveAssignedQuestion(Member member, Question question) {
-        AssignedQuestion assignedQuestion = AssignedQuestion.builder()
+    private AssignedQuestion buildAssignedQuestion(Member member, Question question) {
+        return AssignedQuestion.builder()
                 .member(member)
                 .question(question)
                 .isAnswered(false)
                 .assignedDate(LocalDateTime.now().toLocalDate().atStartOfDay())
                 .build();
-
-        assignedQuestionRepository.save(assignedQuestion);
-    }
-
-    private void assignFirstDailyQuestion(Member member) {
-        if (alreadyAssignedQuestionToday(member)) {
-            log.info("멤버: {} 에게 이미 질문이 할당되었습니다.", member.getId());
-            return;
-        }
-
-        Question question = questionRepository.findById(FIRST_QUESTION_ID)
-                .orElseThrow(() -> new DailyException(DailyErrorCode.FIRST_QUESTION_NOT_FOUND_ERROR));
-
-        saveAssignedQuestion(member, question);
     }
 }
