@@ -12,10 +12,14 @@ rule_files:
 
 scrape_configs:
   - job_name: "auto-green"
+    metrics_path: /actuator/prometheus
     ec2_sd_configs:
       - region: ap-northeast-2
         port: 8080
     relabel_configs:
+      - source_labels: [ __meta_ec2_instance_state ]  # running 상태만 유지
+        regex: running
+        action: keep
       - source_labels: [__meta_ec2_tag_Name] # auto-green 인스턴스 Tag로 추적
         regex: auto-green
         action: keep
@@ -24,10 +28,14 @@ scrape_configs:
         replacement: ${1}:8080
 
   - job_name: "auto-blue"
+    metrics_path: /actuator/prometheus
     ec2_sd_configs:
       - region: ap-northeast-2
         port: 8080
     relabel_configs:
+      - source_labels: [ __meta_ec2_instance_state ]  # running 상태만 유지
+        regex: running
+        action: keep
       - source_labels: [__meta_ec2_tag_Name] # auto-blue 인스턴스 Tag로 추적
         regex: auto-blue
         action: keep
