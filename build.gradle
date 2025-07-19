@@ -65,6 +65,14 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
 	implementation 'org.springframework.boot:spring-boot-starter-batch' // 배치
+
+	implementation 'org.springframework.boot:spring-boot-starter-actuator' //
+
+	implementation 'io.micrometer:micrometer-registry-prometheus' //프로메테우스
+
+	implementation 'net.javacrumbs.shedlock:shedlock-spring:5.16.0'
+	implementation 'net.javacrumbs.shedlock:shedlock-provider-redis-spring:5.16.0'
+
 }
 
 def querydslDir = file("$buildDir/generated/querydsl")
